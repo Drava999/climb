@@ -46,6 +46,9 @@ function purposeOf(prompt) {
   if (p.startsWith("A learner studying")) return "explain_deeper";
   if (p.startsWith("Explain \"")) return "explain_simpler";
   if (p.startsWith("In a course called")) return "term_example";
+  if (p.startsWith("You are planning the full curriculum map")) return "course_map";
+  if (p.startsWith("A learner in a course called")) return "explain_term";
+  if (p.startsWith("A course called")) return "suggest_fields";
   return "other";
 }
 function logGeneration(env, ctx, row) {

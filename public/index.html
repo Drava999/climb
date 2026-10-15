@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="description" content="Learn any topic through short, visual lessons that get harder as you improve.">
 <meta name="theme-color" content="#2A55E5">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -211,6 +211,27 @@ main.lesson{padding-bottom:100px}
 .srow.ok{border-color:var(--good);background:var(--good-soft)}
 .srow.no{border-color:var(--bad);background:var(--bad-soft)}
 .srow .seg{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+.fields{display:flex;flex-direction:column;gap:10px}
+details.field{border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+details.field>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px;padding:14px 16px}
+details.field>summary::-webkit-details-marker{display:none}
+details.field>summary .fh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+details.field>summary .fh b{font-size:17px}
+details.field>summary .fh b::before{content:"▸";display:inline-block;margin-right:8px;color:var(--muted);transition:transform .15s}
+details.field[open]>summary .fh b::before{transform:rotate(90deg)}
+.fbar{display:block;height:6px;border-radius:99px;background:var(--line);overflow:hidden}.fbar>i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.fbody{display:flex;flex-direction:column;gap:12px;padding:0 16px 16px}
+.fact{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fact .btn{min-width:0;padding-left:10px;padding-right:10px}
+/* phone pass */
+body:has(main.lesson) header.top{display:none}
+body:has(main.lesson){padding-top:calc(6px + env(safe-area-inset-top,0px))}
+.seg button{line-height:1.2;overflow-wrap:anywhere}
+@media (max-width:380px){.seg button{font-size:13px;padding:9px 2px}.card{padding:16px}h1{font-size:27px}}
+@media (pointer:coarse){.chip{padding:9px 14px}.btn.sm{padding:10px 14px}.stop{padding:11px 0}.x{padding:8px 10px;font-size:22px}}
+.fact small{display:block;font-weight:500;font-size:12px;opacity:.85}
+.term.lw{text-decoration-style:solid;text-decoration-thickness:1px;text-decoration-color:color-mix(in srgb,var(--accent) 60%,transparent)}
+.wcard{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0}
+.askpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:35;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font:700 15px var(--ui);padding:12px 18px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100% - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .term{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-decoration:underline dotted var(--accent);text-decoration-thickness:2px;text-underline-offset:4px;cursor:help;display:inline}
 .term:hover{color:var(--accent)}
 .vcap{margin-top:-6px}
@@ -639,26 +660,94 @@ function glossMap(c){
   Object.values(c.glossary||{}).forEach(x=>{ g[x.term.toLowerCase()]=x; });
   return g;
 }
+const ACR_STOP = new Set(["OK","AM","PM","I","A"]);
+function acronyms(html){
+  // underline short ALL-CAPS abbreviations (TEU, GDP, DNA) outside existing buttons and tags
+  return html.split(/(<button[\s\S]*?<\/button>|<[^>]+>)/).map((seg,i)=>i%2 ? seg : seg.replace(/(^|[^A-Za-z0-9&#])([A-Z][A-Z0-9]{1,5})(s?)(?=$|[^A-Za-z0-9])/g,(m,pre,w,pl)=>{
+    if(ACR_STOP.has(w) || !/[A-Z].*[A-Z]/.test(w)) return m;
+    return `${pre}<button type="button" class="term" data-t="${encodeURIComponent("?"+w)}">${w}${pl}</button>`; })).join("");
+}
 function gloss(text, skip){
   const safe=esc(text), c=(LS&&LS.c)||S.cur; if(!c||!text) return safe;
   const map=glossMap(c); if(skip) delete map[String(skip).toLowerCase()];
-  const keys=Object.keys(map).sort((a,b)=>b.length-a.length); if(!keys.length) return safe;
+  const keys=Object.keys(map).sort((a,b)=>b.length-a.length); if(!keys.length) return acronyms(safe);
   const byEsc={}; keys.forEach(k=>byEsc[esc(k)]=k);
   const re=new RegExp("(^|[^A-Za-z0-9])((?:"+Object.keys(byEsc).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")(?:e?s)?)(?=$|[^A-Za-z0-9])","gi");
   const used=new Set();
-  return safe.replace(re,(m,pre,word)=>{ const w=word.toLowerCase(), key=byEsc[w]||byEsc[w.replace(/s$/,"")]||byEsc[w.replace(/es$/,"")]; if(!key||used.has(key)) return m; used.add(key); return `${pre}<button type="button" class="term" data-t="${encodeURIComponent(key)}">${word}</button>`; });
+  return acronyms(safe.replace(re,(m,pre,word)=>{ const w=word.toLowerCase(), key=byEsc[w]||byEsc[w.replace(/s$/,"")]||byEsc[w.replace(/es$/,"")]; if(!key||used.has(key)) return m; used.add(key); return `${pre}<button type="button" class="term" data-t="${encodeURIComponent(key)}">${word}</button>`; }));
 }
-function termSheet(key){
-  L("term_tap",{data:{term:key}});
-  const c=(LS&&LS.c)||S.cur, x=glossMap(c)[key]; if(!x) return;
+/* language words: wrap known words/phrases so they can be tapped for pinyin and meaning */
+function langItems(c){ const m=new Map(); if(c&&c.concepts) Object.values(c.concepts).forEach(k=>(k.items||[]).forEach(x=>{ if(x&&x.t&&!m.has(x.t)) m.set(x.t,x); })); return m; }
+function langTap(c, t){
+  if(!isLang(c)||!t) return esc(t);
+  const items=langItems(c), keys=[...items.keys()].filter(k=>k.length<=12).sort((a,b)=>b.length-a.length);
+  if(!keys.length) return esc(t);
+  const re=new RegExp("("+keys.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","g");
+  return String(t).split(re).map((seg,i)=>i%2 ? `<button type="button" class="term lw" data-t="${encodeURIComponent("@"+seg)}">${esc(seg)}</button>` : esc(seg)).join("");
+}
+function tapContext(el){
+  const box = el && el.closest && el.closest("p,li,.prompt,.eli5,.read,.vans,.dline,.lbubble,.verdict,.sheet,.card");
+  const ctx = box ? box.textContent.replace(/\s+/g," ").trim().slice(0,400) : "";
+  const pr = main.querySelector(".card .prompt"), open = LS && pr && !main.querySelector(".verdict");
+  return {ctx, q: open ? pr.textContent.replace(/\s+/g," ").trim().slice(0,300) : ""};
+}
+const explainCache = {};
+async function explainTerm(c, term, where){
+  const lang = isLang(c), ck = c.id+"|"+term.toLowerCase();
+  if(explainCache[ck] && !where.q) return explainCache[ck];
+  const out = await S.sample.json(`A learner in a course called "${c.title}"${lang?` (learning ${c.language.name})`:""} tapped "${term}" while reading: "${where.ctx||term}".
+${where.q?`They are in the middle of answering this question, so do NOT give away its answer: "${where.q}". Explain only what the term means in general.\n`:""}Explain "${term}" for this learner (${levelText(c.level)}) in plain words, as it is used here, in under 45 words. If it is an abbreviation, start with what it stands for.${lang?` If it is ${c.language.name} text, also give "r" (${c.language.roman||"the romanisation"}, with tone marks if the language has tones) and "m" (English meaning), and use "def" to break down the words or characters.`:""}
+Return ONLY JSON: {"term": "${term.replace(/"/g,"'")}", "def": "", ${lang?'"r": "", "m": "", ':""}"example": one short example sentence${lang?` in ${c.language.name} with its meaning in brackets`:""}}`, {modelTier:"quick"});
+  const x = {term, def:String(out&&out.def||""), r:String(out&&out.r||""), m:String(out&&out.m||""), example:String(out&&out.example||""), ai:true};
+  if(!x.def && !x.m) throw {message:"No explanation came back"};
+  if(!where.q){ explainCache[ck]=x; if(term.length<=40){ c.glossary=c.glossary||{}; c.glossary[term.toLowerCase()]={term, def:(x.m?x.m+". ":"")+x.def.slice(0,200)}; saveCourse(c); } }
+  return x;
+}
+function termSheet(key, el){
+  const c=(LS&&LS.c)||S.cur; if(!c) return;
+  const kind = key[0]==="@" ? "lang" : key[0]==="?" ? "ask" : "gloss", term = kind==="gloss" ? key : key.slice(1);
+  L("term_tap",{course:c.title, data:{term, kind}});
+  let x = kind==="gloss" ? glossMap(c)[key] : kind==="lang" ? langItems(c).get(term) : (glossMap(c)[term.toLowerCase()]||null);
+  const where = tapContext(el);
   const bg=document.createElement("div"); bg.className="sheet-bg";
-  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(x.term)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(x.term)}</h2><button class="x" aria-label="Close">✕</button></div><p class="eli5" style="font-size:18px">${esc(x.def)}</p>${S.sample?`<button class="linkbtn" id="tmore" type="button" style="align-self:flex-start">Explain with an example</button><div id="tout"></div>`:""}</div>`;
+  const say = isLang(c) && canSpeak(c);
+  const body = x0 => x0.m||x0.r||kind==="lang"
+    ? `<div class="wcard"><div class="lbig">${esc(x0.t||x0.term||term)}</div>${x0.r?`<div class="lr">${esc(x0.r)}</div>`:""}${say?`<div class="row" style="justify-content:center">${playBtn(x0.t||term)}${playBtn(x0.t||term,true)}</div>`:""}${x0.m?`<p class="eli5" style="font-size:19px;text-align:center">${esc(x0.m)}</p>`:""}</div>${x0.def&&x0.def!==x0.m?`<p class="read" style="font-size:16px">${esc(x0.def)}</p>`:""}${x0.example?`<div class="ex"><span class="label">Example</span><span>${esc(x0.example)}</span></div>`:""}`
+    : `<p class="eli5" style="font-size:18px">${esc(x0.def)}</p>${x0.example?`<div class="ex"><span class="label">Example</span><span>${esc(x0.example)}</span></div>`:""}`;
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(term)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${kind==="lang"?(isLang(c)?esc(c.language.name)+" word":"Word"):esc(x&&x.term||term)}</h2><button class="x" aria-label="Close">✕</button></div>
+    <div id="tbody">${x?body(x):`<div class="row"><div class="spinner"></div><span class="muted">Looking it up…</span></div>`}</div>
+    ${S.sample?`<button class="linkbtn" id="tmore" type="button" style="align-self:flex-start"${x?"":" hidden"}>${kind==="lang"?"Explain how it's used":"Explain with an example"}</button><div id="tout"></div>`:""}</div>`;
   const close=()=>bg.remove();
   bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
   document.body.appendChild(bg);
-  const tm=bg.querySelector("#tmore"); if(tm) tm.onclick=()=>{ tm.remove(); const box=bg.querySelector("#tout"); box.className="deep"; box.innerHTML=`<div class="read" style="font-size:16px"></div>`; streamInto(box.firstElementChild, `In a course called "${c.title}", explain the term "${x.term}" to a curious 12-year-old in under 60 words, with one concrete everyday example. Plain definition: ${x.def}. No preamble.`); };
+  if(!x){
+    if(!S.sample){ bg.querySelector("#tbody").innerHTML=`<p class="muted">Explanations need Claude access in this view.</p>`; }
+    else explainTerm(c, term, where).then(r=>{ x=r; if(!bg.isConnected) return; bg.querySelector("#tbody").innerHTML=body(r); const tm=bg.querySelector("#tmore"); if(tm) tm.hidden=false; })
+      .catch(e=>{ if(bg.isConnected) bg.querySelector("#tbody").innerHTML=`<p class="muted">${esc(aiErr(e))}</p>`; });
+  }
+  const tm=bg.querySelector("#tmore"); if(tm) tm.onclick=()=>{ tm.remove(); const box=bg.querySelector("#tout"); box.className="deep"; box.innerHTML=`<div class="read" style="font-size:16px"></div>`;
+    const lang=isLang(c);
+    streamInto(box.firstElementChild, lang
+      ? `In a ${c.language.name} course called "${c.title}", explain how "${term}"${x&&x.r?" ("+x.r+")":""} is used, for a learner who is a ${levelText(c.level)}. Give 2 short natural example sentences, each with ${c.language.roman||"romanisation"} and English. Under 80 words. No preamble.`
+      : `In a course called "${c.title}", explain "${term}" to a curious 12-year-old in under 60 words, with one concrete everyday example.${x&&x.def?" Plain definition: "+x.def+".":""}${where.q?` Don't give away the answer to: "${where.q}".`:""} No preamble.`); };
 }
-document.addEventListener("click", e=>{ const t=e.target.closest&&e.target.closest(".term"); if(!t) return; e.preventDefault(); e.stopPropagation(); termSheet(decodeURIComponent(t.dataset.t)); }, true);
+document.addEventListener("click", e=>{ const t=e.target.closest&&e.target.closest(".term"); if(!t) return; e.preventDefault(); e.stopPropagation(); hideAskPill(); termSheet(decodeURIComponent(t.dataset.t), t); }, true);
+/* press-and-hold (select) any word or phrase -> "Explain" pill */
+let askPill=null, askSel=null;
+function hideAskPill(){ if(askPill) askPill.hidden=true; }
+document.addEventListener("selectionchange", ()=>{
+  clearTimeout(hideAskPill.t);
+  hideAskPill.t = setTimeout(()=>{
+    const sel = window.getSelection && window.getSelection(), txt = sel ? String(sel).replace(/\s+/g," ").trim() : "";
+    const node = sel && sel.anchorNode && (sel.anchorNode.nodeType===1 ? sel.anchorNode : sel.anchorNode.parentElement);
+    const ok = txt && txt.length<=60 && txt.split(" ").length<=6 && node && node.closest && node.closest("main,.sheet") && !node.closest("input,textarea,button.opt,.tiles,.tile") && ((LS&&LS.c)||S.cur);
+    if(!ok){ hideAskPill(); return; }
+    askSel = {term:txt, el:node};
+    if(!askPill){ askPill=document.createElement("button"); askPill.type="button"; askPill.className="askpill"; document.body.appendChild(askPill);
+      askPill.onclick=()=>{ const s=askSel; hideAskPill(); try{ window.getSelection().removeAllRanges(); }catch(e){} if(s) termSheet("?"+s.term, s.el); }; }
+    askPill.textContent = `Explain “${txt.length>24?txt.slice(0,22)+"…":txt}”`; askPill.hidden=false;
+  }, 250);
+});
 const inflightT = {};
 async function ensureTeach(c, ids){
   if(isLang(c)) return;
@@ -759,8 +848,9 @@ function pickVariant(k, type){
 }
 function markUsed(k, type, x){ const key=qkey(type,x); k.used[key]=(k.used[key]||0)+1; k.last=key; }
 async function addBranch(c, o){
-  let ask;
-  if(o.parent) ask = `Write a BRANCH that goes deeper into the concept "${o.parent.name}" (${o.parent.summary}). Break it into 4 more advanced sub-concepts: how it works in detail, special cases and limits, real applications, and subtleties an expert would know.`;
+  let ask = o.ask;
+  if(ask){}
+  else if(o.parent) ask = `Write a BRANCH that goes deeper into the concept "${o.parent.name}" (${o.parent.summary}). Break it into 4 more advanced sub-concepts: how it works in detail, special cases and limits, real applications, and subtleties an expert would know.`;
   else if(o.angle) ask = `Write a BRANCH that explores this side of the topic: "${o.angle}". 4 concepts that cover it properly and build on what the learner already knows.`;
   else ask = `Write the NEXT unit on the main route: 4 new concepts that build on these and go deeper or wider.`;
   const prompt = `You are extending a course called "${c.title}" for a learner who is a ${levelText(c.level)}${c.goal?" (goal: "+c.goal+")":""}.
@@ -772,11 +862,91 @@ Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 w
   const before = c.units.length; addUnits(c, [out]);
   if(c.units.length===before) throw {message:"No new concepts came back"};
   const u = c.units.pop();
-  if(o.parent){ u.parent=o.parent.id; const pi=c.units.findIndex(x=>x.concepts.includes(o.parent.id)); c.units.splice(pi+1, 0, u); }
+  if(o.parent){ u.parent=o.parent.id; const pi=c.units.findIndex(x=>x.concepts.includes(o.parent.id)); const pu=c.units[pi]; c.units.splice(pi+1, 0, u);
+    if(pu&&pu.mod){ u.mod=pu.mod; u.stage=(pu.stage||1)+1; } }
   else { if(o.angle){ u.angle=o.angle; c.angles=(c.angles||[]).filter(a=>a!==o.angle); } c.units.push(u); }
-  if(o.parent||o.angle) c.focus=u.id;
-  L("branch",{course:c.title, concept:o.parent?o.parent.name:null, data:{type:o.parent?"deeper":o.angle?"angle":"next_unit", angle:o.angle||null, title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}});
+  if(o.mod){ u.mod=o.mod; u.stage=o.stage||1; }
+  if(o.parent||o.angle||o.mod) c.focus=u.id;
+  L("branch",{course:c.title, concept:o.parent?o.parent.name:null, data:{type:o.mode||(o.parent?"deeper":o.angle?"angle":"next_unit"), angle:o.angle||null, field:o.modTitle||null, stage:o.stage||null, title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}});
   saveCourse(c); return u;
+}
+
+/* ---------- course map: fields (modules) that grow in content and difficulty for as long as the learner wants ---------- */
+const STAGES = ["Foundations","Intermediate","Advanced","Expert"];
+const stageName = n => n<=4 ? STAGES[Math.max(1,n)-1] : `Frontier ${n-4}`;
+function stageStyle(n){
+  return n<=1 ? "FOUNDATIONS: the field's core ideas and vocabulary, explained from the ground up with one strong analogy each."
+    : n===2 ? "INTERMEDIATE: how it really works: mechanisms, calculations, standard tools, documents and terms practitioners use. Concrete worked examples."
+    : n===3 ? "ADVANCED: precise technical detail, multi-step problems with real numbers, edge cases, trade-offs and how the pieces interact."
+    : n===4 ? "EXPERT: what a seasoned professional or specialist knows: judgement calls, real case studies, sophisticated models, current debates."
+    : "FRONTIER: specialist material beyond standard courses: niche techniques, recent developments, research findings, open questions, deep case analysis. Still accurate and specific.";
+}
+const hasMap = c => !!(c && c.modules && c.modules.length);
+const modUnits = (c,m) => c.units.filter(u=>u.mod===m.id);
+const modCons = (c,m) => modUnits(c,m).flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean);
+const modStage = (c,m) => Math.max(0, ...modUnits(c,m).map(u=>u.stage||1));
+function modProgress(c,m){ const ks=modCons(c,m); return ks.length ? Math.round(ks.reduce((s,k)=>s+k.rung,0)/(ks.length*5)*100) : 0; }
+function stageReady(c,m){ const st=modStage(c,m); const ks=modUnits(c,m).filter(u=>(u.stage||1)===st).flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean); return !ks.length || ks.filter(k=>k.rung>=3).length/ks.length>=.8; }
+function examMapText(c){
+  const sy=c.exam&&c.exam.syllabus;
+  return c.exam ? `This is ${c.exam.label} exam preparation${sy?` (official syllabus ${sy.code||""})`:""}. Fields must follow the exam's syllabus topic areas${sy&&sy.topics&&sy.topics.length?": "+sy.topics.map(t=>t.title).join("; "):""}.` : "";
+}
+async function planMap(c){
+  const lang=isLang(c);
+  const prompt = `You are planning the full curriculum map for a course called "${c.title}" (topic: ${c.topic||c.title}${c.focus_text?`; the learner chose to start with: ${c.focus_text}`:""}) for a learner who is a ${levelText(c.level)}${c.goal?` (goal: ${c.goal})`:""}.
+The course already has these units:
+${c.units.map((u,i)=>`${i+1}. ${u.title}: ${u.concepts.map(id=>c.concepts[id]&&c.concepts[id].name).filter(Boolean).join("; ")}`).join("\n")}
+Design 6-10 FIELDS (modules) that together cover the WHOLE subject the way a strong university course or professional training would, in a sensible learning order. Each field will later grow, on demand, from Foundations to Expert level and beyond.
+Put each existing unit into the field it belongs to, by its number (several units may share a field; every unit must be placed). Add the fields not yet covered; they start empty and are written later.
+${lang?"This is a language course: fields are areas of real-life use and skill (for example daily life, food and shopping, travel, work and study, reading, listening, writing), in a sensible order.":""}
+${examMapText(c)}
+Return ONLY JSON: {"modules":[{"title": 2-5 words, "desc": what this field covers, max 16 words, "units":[existing unit numbers]}]}`;
+  const out = await S.sample.json(prompt, {modelTier:"default"});
+  const mods = arrOf(out&&out.modules).filter(m=>m&&m.title).slice(0,12);
+  if(!mods.length) throw {message:"The course map came back empty"};
+  c.modules = mods.map(m=>({id:uidGen(), title:String(m.title).slice(0,60), desc:String(m.desc||"").slice(0,160)}));
+  mods.forEach((m,i)=>arrOf(m.units).forEach(n=>{ const u=c.units[(parseInt(n)||0)-1]; if(u && !u.mod){ u.mod=c.modules[i].id; } }));
+  let last = c.modules[0].id;
+  c.units.forEach(u=>{ if(!u.mod) u.mod = (u.parent && (c.units.find(x=>x.concepts.includes(u.parent))||{}).mod) || last; last=u.mod; });
+  c.units.forEach(u=>{ if(!u.stage){ const pu=u.parent&&c.units.find(x=>x.concepts.includes(u.parent)); u.stage = pu ? (pu.stage||1)+1 : 1; } });
+  L("map_built",{course:c.title, data:{fields:c.modules.map(m=>m.title)}});
+  saveCourse(c); return c.modules;
+}
+async function expandField(c, m, mode){
+  const st = mode==="deeper" ? modStage(c,m)+1 : Math.max(1, modStage(c,m));
+  const names = order(c).map(id=>c.concepts[id].name);
+  const mine = modCons(c,m).map(k=>k.name);
+  const sy = c.exam&&c.exam.syllabus;
+  const examLine = !c.exam ? "" : st<=3
+    ? `EXAM: stay within the ${c.exam.label} syllabus for this field and match the depth its questions demand.${sy&&sy.topics?" Syllabus: "+sy.topics.map(t=>`${t.title} (${(t.outcomes||[]).join("; ")})`).join(" | ").slice(0,3500):""}`
+    : `EXAM: the learner has covered the exam level for this field. Go beyond the syllabus for top students, focusing on what sharpens answers to the hardest exam questions.`;
+  const what = mode==="deeper" ? `Go a clear step deeper than this field's earlier concepts (${mine.join("; ")}). Build directly on them; their terms can now be used freely.`
+    : mode==="more" ? `Stay at this level but cover NEW ground in this field that hasn't been taught yet: other sub-areas, tools, cases or applications.${mine.length?" Already taught here: "+mine.join("; ")+".":""}`
+    : `This is the first unit in this field: start with its most important core ideas, building on what the course has already taught.`;
+  const ask = isLang(c)
+    ? `Write the next unit for the area "${m.title}" (${m.desc}). LEVEL: ${stageName(st)} (${st<=1?"beginner":st===2?"elementary to intermediate":st===3?"upper intermediate":st===4?"advanced":"near-native, idiomatic"}). ${what} 4 concepts.`
+    : `Write the next unit for the field "${m.title}" (${m.desc}) in a course organised into these fields: ${c.modules.map(x=>x.title).join("; ")}.
+STAGE: ${stageName(st)}. ${stageStyle(st)}
+${what}
+${examLine}
+4 concepts, each building on the one before.`;
+  const u = await addBranch(c, {ask, mod:m.id, stage:st, mode:"field_"+mode, modTitle:m.title});
+  return u;
+}
+async function addField(c, title){
+  const m = {id:uidGen(), title:String(title).slice(0,60), desc:""};
+  c.modules = c.modules || []; c.modules.push(m);
+  c.angles = (c.angles||[]).filter(a=>a!==title);
+  try{ await expandField(c, m, "open"); }catch(e){ c.modules = c.modules.filter(x=>x!==m); throw e; }
+  return m;
+}
+async function suggestFields(c){
+  const out = await S.sample.json(`A course called "${c.title}" (topic: ${c.topic||c.title}) currently has these fields: ${(c.modules||[]).map(m=>m.title).join("; ")}.
+Suggest 6 more fields a serious learner could add to go wider: real sub-areas, neighbouring disciplines, applications, careers, history or debates. Specific, 2-5 words each, none overlapping the existing fields.
+Return ONLY JSON: {"fields":[""]}`, {modelTier:"quick"});
+  const have = new Set((c.modules||[]).map(m=>norm(m.title)));
+  c.angles = strs(out&&out.fields).filter(f=>!have.has(norm(f))).slice(0,6);
+  saveCourse(c); return c.angles;
 }
 
 /* ---------- lesson engine ---------- */
@@ -889,7 +1059,7 @@ document.addEventListener("click", e=>{
   const c = (LS && LS.c) || S.cur; speak(c, b.dataset.say, !!b.dataset.slow);
   L("audio_play", {course:c&&c.title, data:{text:b.dataset.say, slow:!!b.dataset.slow}});
 }, true);
-const showTR = (x, big) => `<div class="${big?"lbig":"lt"}">${esc(x.t)}</div>${x.r?`<div class="lr">${esc(x.r)}</div>`:""}`;
+const showTR = (x, big, tap) => `<div class="${big?"lbig":"lt"}">${tap?langTap((LS&&LS.c)||S.cur, x.t):esc(x.t)}</div>${x.r?`<div class="lr">${esc(x.r)}</div>`:""}`;
 function itemHtml(c, it){ return `<div class="litem">${canSpeak(c)?playBtn(it.t):'<span></span>'}<div style="min-width:0">${showTR(it)}<div class="lm">${esc(it.m)}</div></div></div>`; }
 function langNorm(s){ return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[1-5]/g,"").toLowerCase().replace(/[^\p{L}\p{N}]/gu,""); }
 function langMatch(guess, targets){
@@ -956,7 +1126,7 @@ Return ONLY JSON: {"items":[{"name": concept name exactly as given, "sentences":
   saveCourse(c);
 }
 async function addLangBranch(c, o){
-  const ask = o.parent ? `Write a BRANCH going deeper into "${o.parent.name}": 4 concepts with more advanced or alternative ways to say these things.`
+  const ask = o.ask ? o.ask : o.parent ? `Write a BRANCH going deeper into "${o.parent.name}": 4 concepts with more advanced or alternative ways to say these things.`
     : o.angle ? `Write a BRANCH about this situation or skill: "${o.angle}". 4 concepts.` : `Write the NEXT unit: 4 new practical concepts that build on what has been taught.`;
   const prompt = `You are extending a ${c.language.name} course called "${c.title}" for a learner who is a ${levelText(c.level)}.
 Concepts so far: ${order(c).map(id=>c.concepts[id].name).join("; ")}.
@@ -979,8 +1149,8 @@ function renderLangIntro(k){
     L("intro_card",{course:c.title, concept:k.name, data:{card:kind, index:idx, of:cards.length, plan:"language"}});
     const dots = `<div class="tdots">${cards.map((_,i)=>`<i class="${i===idx?"on":i<idx?"done":""}"></i>`).join("")}</div>`;
     let body = "";
-    if(kind==="words") body = `<p class="muted">${esc(k.summary)}</p><div>${(k.items||[]).map(it=>itemHtml(c,it)).join("")}</div>${sp?`<p class="tiny muted">Tap the speaker to hear each one. Say it out loud after it.</p>`:`<p class="tiny muted">This browser has no ${esc(c.language.name)} voice installed, so audio is off.</p>`}`;
-    else if(kind==="dialogue") body = `<div class="dlg">${d.dialogue.map(l=>`<div class="dline ${l.s==="B"?"b":""}"><span class="spk">${esc(l.s||"")}</span><div style="min-width:0">${showTR(l)}<div class="lm dm" hidden>${esc(l.m)}</div></div>${sp?playBtn(l.t):""}</div>`).join("")}</div><button class="btn soft sm" id="dmBtn" type="button" style="align-self:flex-start">Show meanings</button>`;
+    if(kind==="words") body = `<p class="muted">${esc(k.summary)}</p><div>${(k.items||[]).map(it=>itemHtml(c,it)).join("")}</div>${sp?`<p class="tiny muted">Tap the speaker to hear each one. Say it out loud after it. Press and hold any word to have it explained.</p>`:`<p class="tiny muted">This browser has no ${esc(c.language.name)} voice installed, so audio is off.</p>`}`;
+    else if(kind==="dialogue") body = `<div class="dlg">${d.dialogue.map(l=>`<div class="dline ${l.s==="B"?"b":""}"><span class="spk">${esc(l.s||"")}</span><div style="min-width:0">${showTR(l,false,true)}<div class="lm dm" hidden>${esc(l.m)}</div></div>${sp?playBtn(l.t):""}</div>`).join("")}</div><button class="btn soft sm" id="dmBtn" type="button" style="align-self:flex-start">Show meanings</button>`;
     else body = `<div class="hook"><span class="label">Tip</span><span>${esc(k.note)}</span></div>`;
     main.innerHTML = head()+`<div class="card pop">${dots}<span class="label">${LBL[kind]}</span><div class="intro-name" style="font-size:22px">${esc(k.name)}</div>${body}</div>`;
     wireQuit();
@@ -1298,7 +1468,7 @@ async function onBuild(){
     steps(true,false, `<div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(c.title)}</h3>${c.units.map((u,i)=>`<div><span class="label">Unit ${i+1}</span><p class="small"><b>${esc(u.title)}</b>: <span class="muted">${u.concepts.map(id=>esc(c.concepts[id].name)).join(" · ")}</span></p></div>`).join("")}</div>`);
     saveCourse(c);
     const first=buildLesson(c);
-    await Promise.all([ensureBanks(c, first.all).catch(()=>{}), ensureTeach(c, first.fresh).catch(()=>{})]);
+    await Promise.all([ensureBanks(c, first.all).catch(()=>{}), ensureTeach(c, first.fresh).catch(()=>{}), planMap(c).catch(e=>L("map_failed",{course:c.title, data:{error:String(e&&e.message)}}))]);
     S.draft={topic:"",level:d.level,goal:"",notes:"",images:[],purpose:d.purpose,exam:d.exam,examName:"",examDate:""};
     S.cur=c; go("course"); prefetch(c);
   }catch(e){
@@ -1331,20 +1501,24 @@ function renderCourse(){
     <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start">
       <div style="min-width:0;display:flex;flex-direction:column;gap:4px"><span class="label">${c.example?"Example course":"Course"}</span><h1 style="font-size:26px">${esc(c.title)}</h1><p class="small muted">${esc(c.goal||"")}</p>${c.writer?`<p class="tiny muted">Written by ${esc(c.writer)}</p>`:""}</div>${ring(p,64)}</div>
     <button class="btn block" id="go">Start lesson</button>
-    <p class="small muted" style="text-align:center">${fu?`Next up: your branch <b>${esc(fu.title)}</b> · `:""}${sub} · about 4 minutes</p>
+    <p class="small muted" style="text-align:center">${fu?`Next up: <b>${esc(fu.title)}</b> · `:""}${sub} · about 4 minutes</p>
+    ${!newCount(c)&&!c.example?`<p class="small" style="text-align:center">You've met every concept so far. ${hasMap(c)?"Expand a field below to keep climbing.":"Grow the course below to keep climbing."}</p>`:""}
   </div>
   ${isExam(c)?(()=>{ const e=c.exam, sy=e.syllabus, pc=pacing(c);
     return `<div class="card"><span class="label">Exam</span><h2>${esc(e.label)} ${esc(sy&&sy.subject||e.subject)}</h2>
       ${sy?`<p class="small">Built from the official SEAB syllabus${sy.code?" "+esc(sy.code):""}${sy.year?" ("+esc(sy.year)+")":""}${sy.checked?" · checked "+esc(sy.checked):""}. <a href="${esc(sy.source_url)}" target="_blank" rel="noopener">Open the syllabus</a></p>${sy.assessment&&sy.assessment.length?`<p class="small muted">${sy.assessment.map(p=>esc(`${p.paper}${p.duration?" · "+p.duration:""}${p.marks?" · "+p.marks+" marks":""}`)).join("<br>")}</p>`:""}`:`<p class="small muted">No official syllabus was found, so this course follows the usual content of this exam. Add your syllabus or notes when building for a closer match.</p>`}
       ${pc?(pc.days>0?`<p class="small"><b>${pc.days} days to go.</b> ${pc.remain} concepts left, so lessons now introduce about ${pc.perDay} a day, leaving two weeks for revision.</p>`:`<p class="small">Exam date has passed.</p>`):""}
       <button class="btn soft block" id="mockBtn">Take a mock test · 10 questions · 15 min</button></div>`; })():""}
-  <div class="card">
+  ${hasMap(c) ? mapHtml(c) : `<div class="card">
     ${(()=>{ const pl=planOf(c); return `<span class="plan">${esc(pl.label)} lesson plan</span><p class="small muted">${esc(pl.desc)}</p>`; })()}
     <div class="row" style="justify-content:space-between"><h2>Your route</h2>${pips(5)}</div>
     <p class="small muted">Each concept climbs five levels: recognise, cue, recall, apply, then explain. Tap a concept to see its notes or go deeper.</p>
     ${c.units.map(u=>{ const br=!!(u.parent||u.angle); const lab=br?unitLabel(c,u):unitLabel(c,u,++n);
       return `<div class="unit${br?" branch":""}"><span class="label">${lab}</span><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`; }).join("")}
   </div>
+  ${c.example?"":`<div class="card" id="mapCard"><h2>Grow this into a full course</h2>
+    <p class="small muted">Map out the whole subject as fields you can keep expanding, wider and deeper, for as long as you like. Your progress stays.</p>
+    <button class="btn block" id="mapBtn"${S.sample?"":" disabled"}>Map out the full subject</button></div>`}
   <div class="card" id="branchCard">
     <h2>Branch out</h2>
     <p class="small muted">Explore another side of this topic. A new branch jumps to the front of your next lesson.</p>
@@ -1352,13 +1526,17 @@ function renderCourse(){
     <form class="row" id="angleForm" autocomplete="off"><input type="text" id="angleIn" placeholder="Or your own, e.g. the maths behind it" style="flex:1 1 200px"><button class="btn sm" type="submit">Build branch</button></form>
     <button class="btn soft block" id="nextUnit">Continue the main route</button>
     ${S.sample?"":`<p class="small muted">Branching needs Claude access in this view.</p>`}
-  </div>
+  </div>`}
   ${c.example?"":`<div class="row"><button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`}`;
   $("back").onclick=()=>go("home");
   $("go").onclick=()=>startLesson();
   const mb=$("mockBtn"); if(mb) mb.onclick=()=>startMock();
   main.querySelectorAll(".stop").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.id]));
+  if(hasMap(c)){ wireMap(c); }
+  const mapBtn=$("mapBtn"); if(mapBtn) mapBtn.onclick=async()=>{ mapBtn.disabled=true; mapBtn.innerHTML='<span class="spinner"></span> Mapping the whole subject…';
+    try{ await planMap(c); toast("Course map ready"); renderCourse(); }catch(e){ toast(aiErr(e)); mapBtn.disabled=false; mapBtn.textContent="Map out the full subject"; } };
   const card=$("branchCard");
+  if(card){
   if(!S.sample) card.querySelectorAll("button,input").forEach(x=>x.disabled=true);
   const run = async (o, label)=>{
     card.querySelectorAll("button,input").forEach(x=>x.disabled=true);
@@ -1369,7 +1547,60 @@ function renderCourse(){
   card.querySelectorAll(".chip").forEach(b=>b.onclick=()=>run({angle:angles[+b.dataset.i]}, `Building a branch on ${angles[+b.dataset.i]}…`));
   $("angleForm").onsubmit=e=>{ e.preventDefault(); const v=$("angleIn").value.trim(); if(!v){ $("angleIn").focus(); return; } run({angle:v}, `Building a branch on ${v}…`); };
   $("nextUnit").onclick=()=>run({}, "Writing the next unit…");
+  }
   const del=$("del"); if(del) del.onclick=()=>{ $("confirm").innerHTML=`<div class="fb no"><strong>Delete "${esc(c.title)}" and all its progress?</strong><div class="row"><button class="btn sm" id="yes">Delete</button><button class="btn ghost sm" id="no">Cancel</button></div></div>`; $("yes").onclick=async()=>{ await deleteCourse(c.id); S.cur=null; go("home"); toast("Course deleted"); }; $("no").onclick=()=>$("confirm").innerHTML=""; };
+}
+
+function fieldHtml(c, m, openId){
+  const st=modStage(c,m), ks=modCons(c,m), pr=modProgress(c,m), units=modUnits(c,m);
+  const open = m.id===openId;
+  return `<details class="field" data-m="${esc(m.id)}"${open?" open":""}>
+    <summary><span class="fh"><b>${esc(m.title)}</b><span class="small muted">${st?`${stageName(st)} · ${ks.length} concept${ks.length===1?"":"s"}`:"Not started"}</span></span><span class="fbar" aria-label="${pr}% climbed"><i style="width:${pr}%"></i></span></summary>
+    <div class="fbody">
+      ${m.desc?`<p class="small muted">${esc(m.desc)}</p>`:""}
+      ${units.map(u=>`<div class="unit${u.parent?" branch":""}"><span class="label">${esc(stageName(u.stage||1))}${u.parent?" · branch":""}</span><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`).join("")}
+      ${st ? `<div class="fact"><button class="btn soft" data-act="more" type="button"><span>More on this<small>same level</small></span></button><button class="btn" data-act="deeper" type="button"><span>Go deeper<small>to ${esc(stageName(st+1))}</small></span></button></div>
+        ${stageReady(c,m)?"":`<p class="tiny muted">Tip: practise the ${esc(stageName(st))} concepts a little more first for the best results, but it's your call.</p>`}`
+        : `<button class="btn soft block" data-act="open" type="button">Start this field</button>`}
+    </div></details>`;
+}
+function mapHtml(c){
+  const pl=planOf(c), mods=c.modules;
+  const fu = c.focus && c.units.find(u=>u.id===c.focus);
+  const nextNew = order(c).map(id=>c.concepts[id]).find(k=>k.rung===0);
+  const openId = (fu&&fu.mod) || (nextNew && (c.units.find(u=>u.concepts.includes(nextNew.id))||{}).mod) || (mods[0]&&mods[0].id);
+  const sugg = (c.angles||[]).filter(a=>!mods.some(m=>norm(m.title)===norm(a))).slice(0,6);
+  return `<div class="card">
+    <span class="plan">${esc(pl.label)} lesson plan</span>
+    <div class="row" style="justify-content:space-between"><h2>Course map</h2><span class="small muted">${mods.length} fields · ${order(c).length} concepts</span></div>
+    <p class="small muted">Every field grows as far as you want. <b>More on this</b> adds new ground at the same level; <b>Go deeper</b> takes it to the next stage: ${STAGES.join(" → ")} → beyond.</p>
+    <div class="fields">${mods.map(m=>fieldHtml(c,m,openId)).join("")}</div>
+  </div>
+  <div class="card" id="fieldCard">
+    <h2>Add a field</h2>
+    <p class="small muted">Widen the course with a new area. It starts at Foundations and grows like the others.</p>
+    ${sugg.length?`<div class="chips" id="fieldChips">${sugg.map((a,i)=>`<button class="chip" type="button" data-i="${i}">${esc(a)}</button>`).join("")}</div>`:""}
+    <form class="row" id="fieldForm" autocomplete="off"><input type="text" id="fieldIn" placeholder="Any area, e.g. ship finance" style="flex:1 1 180px"><button class="btn sm" type="submit">Add</button></form>
+    <button class="linkbtn" id="suggestBtn" type="button">Suggest more fields</button>
+    ${S.sample?"":`<p class="small muted">Growing the course needs Claude access in this view.</p>`}
+  </div>`;
+}
+function wireMap(c){
+  const busy = (el, txt) => { main.querySelectorAll(".fact button,[data-act],#fieldCard button,#fieldCard input").forEach(x=>x.disabled=true); if(el) el.innerHTML=`<span class="spinner"></span> ${esc(txt)}`; };
+  const done = msg => { if(msg) toast(msg); renderCourse(); prefetch(c); };
+  main.querySelectorAll(".field [data-act]").forEach(b=>{ if(!S.sample){ b.disabled=true; return; }
+    b.onclick=async()=>{ const m=c.modules.find(x=>x.id===b.closest(".field").dataset.m), act=b.dataset.act;
+      const st=modStage(c,m);
+      busy(b, act==="deeper"?`Writing ${stageName(st+1)}…`:act==="more"?"Adding more…":"Starting this field…");
+      try{ await expandField(c, m, act); done(act==="deeper"?`${m.title}: ${stageName(st+1)} added. Your next lesson starts it.`:"Added. Your next lesson starts it."); }
+      catch(e){ toast(aiErr(e)); renderCourse(); } }; });
+  main.querySelectorAll(".field").forEach(d=>d.addEventListener("toggle",()=>{ if(d.open) L("field_open",{course:c.title, data:{field:(c.modules.find(m=>m.id===d.dataset.m)||{}).title}}); }));
+  const sugg=(c.angles||[]).filter(a=>!c.modules.some(m=>norm(m.title)===norm(a))).slice(0,6);
+  const add = async (title, el) => { busy(el, `Adding ${title}…`); try{ await addField(c, title); done(`${title} added. Your next lesson starts it.`); }catch(e){ toast(aiErr(e)); renderCourse(); } };
+  main.querySelectorAll("#fieldChips .chip").forEach(b=>b.onclick=()=>add(sugg[+b.dataset.i], b));
+  const f=$("fieldForm"); f.onsubmit=e=>{ e.preventDefault(); const v=$("fieldIn").value.trim(); if(!v){ $("fieldIn").focus(); return; } add(v, f.querySelector("button")); };
+  const sb=$("suggestBtn"); sb.onclick=async()=>{ sb.disabled=true; sb.textContent="Thinking of more fields…"; try{ await suggestFields(c); }catch(e){ toast(aiErr(e)); } renderCourse(); setTimeout(()=>{ const fc=$("fieldCard"); if(fc) fc.scrollIntoView({block:"center"}); },50); };
+  if(!S.sample) main.querySelectorAll("#fieldCard button,#fieldCard input").forEach(x=>x.disabled=true);
 }
 function sheet(c, k){
   const met = k.seen>0 || k.rung>0;
@@ -1386,7 +1617,7 @@ function sheet(c, k){
   :`<p class="muted">You'll meet this one in a lesson soon. Learning it there first, then being tested, makes it stick better than reading ahead.</p>`}
   ${kids.length?`<p class="small muted">Already branched: ${kids.map(u=>esc(u.title)).join(", ")}</p>`:""}
   <button class="btn soft block" id="deepBtn"${S.sample?"":" disabled"}>Go deeper into ${esc(k.name)}</button>
-  <p class="tiny muted" style="text-align:center">Adds a branch of 4 more advanced concepts after this one.</p></div>`;
+  <p class="tiny muted" style="text-align:center">Adds 4 more advanced concepts that build on this one${hasMap(c)?", one stage up in its field":""}.</p></div>`;
   const close=()=>bg.remove();
   bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
   document.body.appendChild(bg);
@@ -1701,6 +1932,7 @@ function answered(out, o){
   const last = LS.i+1>=LS.steps.length && out!=="wrong" && !(LS.fresh.has(k.id)&&(LS.count[k.id]||0)<1);
   bar(`<button class="btn block" id="next">${last?"Finish lesson":"Continue"}</button>`);
   $("next").onclick=nextStep;
+  if(isLang(LS.c)) main.querySelectorAll(".card .lbig,.card .lt,.vans span:last-child").forEach(el=>{ if(!el.closest("button") && !el.querySelector("button")) el.innerHTML=langTap(LS.c, el.textContent); });
   try{ $("verdict").scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(e){}
   const g=$("guess"); if(g) g.onclick=()=>regrade("lucky","It'll come back sooner so you can lock it in.");
   const m=$("mine"); if(m) m.onclick=()=>regrade("right","Counted as correct.");
@@ -1795,6 +2027,14 @@ async function boot(){
   renderHeader();
   if(S.view==="home"||S.view==="course") render();
 }
+function fitScreen(){
+  try{
+    const touch = matchMedia("(pointer:coarse)").matches, w = window.innerWidth;
+    const z = touch && w>=600 && w<1100 ? Math.min(1.4, Math.max(1, (w-32)/560)) : 1;
+    document.documentElement.style.zoom = z===1 ? "" : z.toFixed(3);
+  }catch(e){}
+}
+fitScreen(); window.addEventListener("resize", ()=>{ clearTimeout(fitScreen.t); fitScreen.t=setTimeout(fitScreen,150); });
 boot();
 })();
 </script>
