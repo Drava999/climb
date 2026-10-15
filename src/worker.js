@@ -64,7 +64,8 @@ async function handleSample(request, env) {
   }
   content.push({ type: "text", text: b.json ? `${prompt}\n\nReply with valid JSON only, no other text.` : prompt });
 
-  const maxTokens = b.json ? 8192 : tier === "quick" ? 1024 : 2048;
+  // Generous ceilings: course outlines, lessons and question sets are long. Billing is per token actually written.
+  const maxTokens = tier === "quick" && !b.json ? 2048 : 16000;
   let model = wanted || TIER[tier];
   let res = await callClaude(env, model, content, maxTokens);
   if (!res.ok && wanted && (res.status === 400 || res.status === 403 || res.status === 404)) {
@@ -84,7 +85,11 @@ async function handleSample(request, env) {
   };
   if (b.json) {
     try { out.data = parseJson(res.text); }
-    catch { return json({ code: "bad_json", message: "The AI reply wasn't valid data. Try again." }, 502); }
+    catch {
+      return json(res.truncated
+        ? { code: "truncated", message: "The AI's reply was cut off before it finished" }
+        : { code: "bad_json", message: "The AI's reply came back in the wrong format" }, 502);
+    }
   }
   return json(out);
 }

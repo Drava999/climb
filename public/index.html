@@ -399,7 +399,7 @@ function parseJson(t){ const s=String(t||""); const a=s.indexOf("{"), b=s.lastIn
 async function writerJson(prompt, extra){
   const m = curModel();
   const r = await S.sample(prompt+"\nReply with the JSON only, no other text.", {...(extra||{}), model:m.id, modelTier:m.tier});
-  try{ return {data:parseJson(r.text), writer:writerLabel(r.modelApplied, r.modelTierApplied)}; }
+  try{ if(r.truncated) throw new Error("cut off"); return {data:parseJson(r.text), writer:writerLabel(r.modelApplied, r.modelTierApplied)}; }
   catch(e){ const data = await S.sample.json(prompt, {...(extra||{}), modelTier:m.tier}); return {data, writer:writerLabel(null, m.tier)}; }
 }
 function modelSheet(){
@@ -513,8 +513,8 @@ const needsBank = k => k && (!k.bank || (k.bank.v!==2 && k.rung===0 && !k.seen))
 const inflight = {};
 async function ensureBanks(c, ids){
   const need = ids.filter(id=>needsBank(c.concepts[id]) && !inflight[id]);
-  for(let i=0;i<need.length;i+=3){
-    const ch = need.slice(i,i+3);
+  for(let i=0;i<need.length;i+=2){
+    const ch = need.slice(i,i+2);
     const p = genBank(c, ch).finally(()=>ch.forEach(id=>delete inflight[id]));
     ch.forEach(id=>inflight[id]=p);
   }
@@ -622,8 +622,8 @@ document.addEventListener("click", e=>{ const t=e.target.closest&&e.target.close
 const inflightT = {};
 async function ensureTeach(c, ids){
   const need = ids.filter(id=>needsTeach(c.concepts[id]) && !inflightT[id]);
-  for(let i=0;i<need.length;i+=3){
-    const ch = need.slice(i,i+3);
+  for(let i=0;i<need.length;i+=2){
+    const ch = need.slice(i,i+2);
     const p = genTeach(c, ch).catch(()=>ch.forEach(id=>{ if(c.concepts[id]) c.concepts[id].teachTried=true; })).finally(()=>ch.forEach(id=>delete inflightT[id]));
     ch.forEach(id=>inflightT[id]=p);
   }
