@@ -75,6 +75,100 @@ async function handleLog(request, env, ctx) {
   return json({ ok: true, n: batch.length });
 }
 
+// ---------- official syllabus lookup (Singapore exams) ----------
+const SG_EXAMS = { psle: "PSLE", olevel: "GCE O-Level", nalevel: "GCE N(A)-Level", ntlevel: "GCE N(T)-Level", alevel: "GCE A-Level" };
+const SYL_DOMAINS = ["seab.gov.sg", "www.seab.gov.sg", "isomer-user-content.by.gov.sg", "moe.gov.sg", "www.moe.gov.sg"];
+const SYL_TTL_DAYS = 60;
+
+async function claudeWithTools(env, body) {
+  // Server tools can pause long turns; continue up to 4 times.
+  const messages = body.messages.slice();
+  let last;
+  for (let i = 0; i < 4; i++) {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ ...body, messages }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) return { ok: false, status: r.status, message: (d.error && d.error.message) || "Claude API error" };
+    last = d;
+    if (d.stop_reason !== "pause_turn") break;
+    messages.push({ role: "assistant", content: d.content });
+  }
+  const text = (last.content || []).filter((x) => x.type === "text").map((x) => x.text).join("");
+  const searches = (last.usage && last.usage.server_tool_use) || {};
+  return { ok: true, text, truncated: last.stop_reason === "max_tokens", searches };
+}
+
+async function handleSyllabus(request, env, ctx) {
+  if (request.method !== "POST") return json({ code: "method" }, 405);
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).host !== new URL(request.url).host) return json({ code: "forbidden", message: "Not allowed" }, 403);
+  const ip = request.headers.get("cf-connecting-ip") || "anon";
+  if (env.RL_BURST) { const { success } = await env.RL_BURST.limit({ key: ip }); if (!success) return json({ code: "rate_limited", message: "Too many requests. Wait a minute and try again." }, 429); }
+  if (!env.ANTHROPIC_API_KEY) return json({ code: "not_configured", message: "The site isn't connected to Claude yet." }, 500);
+
+  let b; try { b = await request.json(); } catch { return json({ code: "bad_request" }, 400); }
+  const exam = SG_EXAMS[b.exam];
+  const subject = String(b.subject || "").trim().slice(0, 80);
+  if (!exam || !subject) return json({ code: "bad_request", message: "Choose an exam and a subject." }, 400);
+  const year = /^\d{4}$/.test(String(b.year)) ? String(b.year) : String(new Date().getFullYear());
+  const key = `${b.exam}|${subject.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()}|${year}`;
+
+  if (env.LOGS) {
+    const row = await env.LOGS.prepare("SELECT ts, json FROM syllabi WHERE key = ?").bind(key).first().catch(() => null);
+    if (row && Date.now() - Date.parse(row.ts) < SYL_TTL_DAYS * 864e5) {
+      try { return json({ cached: true, syllabus: JSON.parse(row.json) }); } catch {}
+    }
+  }
+
+  const prompt = `Find the official ${exam} syllabus for "${subject}" for examinations in ${year}, published by SEAB (Singapore Examinations and Assessment Board).
+Steps:
+1. Search seab.gov.sg for the ${exam} syllabuses page for ${year} (school candidates).
+2. Open that page and find this subject's syllabus. Choose the standard version (not private-candidate, not a different language medium) unless the subject name asks for a variant. If the ${year} page isn't available, use the most recent year and say so in "notes".
+3. Fetch the syllabus PDF and read it carefully.
+Then return ONLY JSON:
+{"found": true, "exam": "${exam}", "subject": "official subject title", "code": "syllabus code", "year": "year it applies to", "source_url": "the PDF URL", "page_url": "the listing page URL",
+ "assessment": [{"paper": "", "duration": "", "marks": "", "weighting": "", "format": "one sentence on the question types"}],
+ "command_words": ["up to 12 command words used in questions, e.g. State, Explain, Calculate"],
+ "topics": [{"title": "topic or theme title", "outcomes": ["up to 6 short learning outcomes in plain words"]}],
+ "notes": "one sentence on anything important, e.g. a practical exam or set texts"}
+Include every topic area in syllabus order (max 25 topics). If you cannot find the syllabus, return {"found": false, "reason": "why"}.`;
+
+  const t0 = Date.now();
+  const res = await claudeWithTools(env, {
+    model: "claude-sonnet-5-5",
+    max_tokens: 12000,
+    system: "You research official Singapore exam syllabuses accurately. Only use information from the official documents you open.",
+    messages: [{ role: "user", content: prompt }],
+    tools: [
+      { type: "web_search_20250305", name: "web_search", max_uses: 4, allowed_domains: SYL_DOMAINS, user_location: { type: "approximate", country: "SG", timezone: "Asia/Singapore" } },
+      { type: "web_fetch_20250910", name: "web_fetch", max_uses: 4, allowed_domains: SYL_DOMAINS },
+    ],
+  });
+  const device = request.headers.get("x-climb-device") || null;
+  const logBase = { device, purpose: "syllabus", model: "claude-sonnet-5-5", tier: "default", ms: Date.now() - t0, prompt };
+  if (!res.ok) {
+    logGeneration(env, ctx, { ...logBase, ok: false, status: res.status, error: res.message });
+    return json({ code: "upstream", message: res.message }, 502);
+  }
+  let data;
+  try { data = parseJson(res.text); } catch {
+    logGeneration(env, ctx, { ...logBase, ok: false, status: "bad_json", truncated: res.truncated, reply: res.text });
+    return json({ code: "bad_json", message: "Couldn't read the syllabus" }, 502);
+  }
+  logGeneration(env, ctx, { ...logBase, ok: !!data.found, status: data.found ? 200 : "not_found", reply: res.text });
+  if (!data.found) return json({ code: "not_found", message: data.reason || "No official syllabus found" }, 404);
+  const sourceOk = /^https:\/\/([a-z0-9-]+\.)*(gov\.sg)\//i.test(String(data.source_url || ""));
+  if (!sourceOk) return json({ code: "not_found", message: "Couldn't confirm an official source" }, 404);
+  if (env.LOGS) {
+    ctx.waitUntil(env.LOGS.prepare("INSERT OR REPLACE INTO syllabi (key, ts, exam, subject, year, source, json) VALUES (?,?,?,?,?,?,?)")
+      .bind(key, now(), exam, String(data.subject || subject), String(data.year || year), String(data.source_url), JSON.stringify(data)).run().catch(() => {}));
+  }
+  return json({ cached: false, syllabus: data });
+}
+
 async function handleSample(request, env, ctx) {
   if (request.method !== "POST") return json({ code: "method", message: "Use POST" }, 405);
 
@@ -150,6 +244,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/api/sample") return handleSample(request, env, ctx);
     if (url.pathname === "/api/log") return handleLog(request, env, ctx);
+    if (url.pathname === "/api/syllabus") return handleSyllabus(request, env, ctx);
     if (url.pathname === "/api/health") return json({ ok: true, claude: !!env.ANTHROPIC_API_KEY });
     return env.ASSETS.fetch(request);
   },

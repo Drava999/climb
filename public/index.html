@@ -230,6 +230,30 @@ main.lesson{padding-bottom:100px}
 .vbar .bt i{display:block;height:100%;background:var(--accent);border-radius:7px}
 .vbar .bv{font:600 13px var(--mono)}
 .vbar.on{border-color:var(--accent);background:var(--accent-soft)}
+.play{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--accent);border-radius:999px;padding:8px 12px;font:700 13px var(--ui);flex:none}
+.play:hover{border-color:var(--accent)}
+.litem{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.lt{font:700 22px/1.3 var(--ui)}
+.lbig{font:700 32px/1.3 var(--ui);text-align:center}
+.lr{color:var(--accent);font:600 15px/1.4 var(--ui)}
+.lbig+.lr{text-align:center}
+.lm{color:var(--muted);font-size:15px}
+.lopt{font-size:20px;font-weight:700}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;padding:10px;border:1.5px dashed var(--line);border-radius:12px;align-items:center}
+.tiles.pool{border:0;padding:0;min-height:0}
+.tile{font:700 18px var(--ui);padding:9px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface)}
+.tile.placed{border-color:var(--accent);background:var(--accent-soft)}
+.lbubble{background:var(--raise);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.dlg{display:flex;flex-direction:column;gap:8px}
+.dline{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--raise);border-radius:14px;padding:10px 12px;margin-right:24px}
+.dline.b{margin-right:0;margin-left:24px;background:var(--accent-soft)}
+.spk{font:700 12px var(--mono);color:var(--muted)}
+.wsteps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.chip.on{border-color:var(--accent);background:var(--accent-soft)}
+.exambox{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:var(--raise)}
+input[type=date]{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+.plan{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--ui);letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;align-self:flex-start}
+.timer{font:600 14px var(--mono);color:var(--bad)}
 @media (prefers-reduced-motion:reduce){.pop,.spinner,.bar>i{animation:none;transition:none}}
 </style>
 
@@ -255,11 +279,11 @@ const main = $("main");
 const L = (kind, o) => { try{ window.climbLog && window.climbLog(kind, o||{}); }catch(e){} };
 const DAY = 864e5;
 const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
-const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5};
-const LEVELS = [["new","New to it"],["some","Know a bit"],["exam","Exam prep"]];
+const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
+const LEVELS = [["new","New to it"],["some","Know a bit"],["strong","Fairly confident"]];
 const SUGGEST = ["How the stock market works","Spanish for travel","Photosynthesis","Python basics","The Cold War","How vaccines work","Music theory","Supply and demand","Probability","Japanese hiragana","Climate change","First aid","Negotiation","Machine learning basics","The human heart","How shipping and trade work","Ancient Rome","Cognitive biases"];
 
-const S = { db:null, uid:null, sample:null, imagesOk:false, store:"local", courses:{}, profile:{xp:0,streak:0,lastDay:""}, view:"home", cur:null, draft:{topic:"",level:"new",goal:"",notes:"",images:[]} };
+const S = { db:null, uid:null, sample:null, imagesOk:false, store:"local", courses:{}, profile:{xp:0,streak:0,lastDay:""}, view:"home", cur:null, draft:{topic:"",level:"new",goal:"",notes:"",images:[],purpose:"understand",exam:"olevel",examName:"",examDate:""} };
 let LS = null; // live lesson
 
 /* ---------- helpers ---------- */
@@ -319,13 +343,13 @@ function renderHeader(){
 }
 
 /* ---------- course model ---------- */
-function newConcept(id,o){ return {id, name:String(o.name||""), summary:String(o.summary||""), points:Array.isArray(o.points)?o.points.filter(Boolean).map(String).slice(0,4):[], example:String(o.example||""), hook:String(o.hook||""), rung:0, s:0, due:0, seen:0, right:0, bank:null}; }
+function newConcept(id,o){ return {id, name:String(o.name||""), summary:String(o.summary||""), points:Array.isArray(o.points)?o.points.filter(Boolean).map(String).slice(0,4):[], example:String(o.example||""), hook:String(o.hook||""), rung:0, s:0, due:0, seen:0, right:0, bank:null, items:o.items?cleanItems(o.items):undefined, note:o.note?String(o.note).slice(0,300):undefined}; }
 const order = c => c.units.flatMap(u=>u.concepts).filter(id=>c.concepts[id]);
 function progress(c){ const ids=order(c); if(!ids.length) return 0; return Math.round(ids.reduce((s,id)=>s+c.concepts[id].rung,0)/(ids.length*5)*100); }
 function accuracy(c){ const a=c.acc||[]; return a.length>=4 ? a.reduce((s,x)=>s+x,0)/a.length : null; }
 function dueCount(c){ const now=Date.now(); return order(c).filter(id=>{const k=c.concepts[id]; return k.rung>0&&k.due<=now;}).length; }
 function newCount(c){ return order(c).filter(id=>c.concepts[id].rung===0).length; }
-function levelText(l){ return ({new:"complete beginner who has never studied this", some:"knows a little and wants real understanding", exam:"revising for an exam, wants depth and precision"})[l] || "general learner"; }
+function levelText(l){ return ({new:"complete beginner who has never studied this", some:"knows a little and wants real understanding", strong:"already fairly confident and wants depth and harder material", exam:"revising for an exam, wants depth and precision"})[l] || "general learner"; }
 
 /* ---------- example course ---------- */
 const EX = [
@@ -427,7 +451,8 @@ async function scopeTopic(d){
   return S.sample.json(`A learner wants to learn: "${d.topic}".
 Learner: ${levelText(d.level)}. Goal: ${d.goal||"none given"}.
 Decide whether this is too broad to teach properly in a 12-concept course. If it is, suggest 5 specific focus areas a serious learner might choose between. Each must be a real sub-area with substance, never "introduction", "overview" or "basics". Order them by how useful they are for this learner's goal. If the topic is already specific enough, set "broad" to false.
-Return ONLY JSON: {"broad": true or false, "question": a short question asking which part they want, "options": [{"title": 2-6 words, "desc": what they'd learn, max 14 words}]}`, {modelTier:"quick"});
+Also classify the subject as "kind": "language" (learning to speak, read or understand a human language, including school language subjects like Higher Chinese), "science" (natural or social science ideas, economics, psychology, technology concepts), "maths" (calculation, statistics, accounting, physics problem-solving), "history" (events, people, periods), "skill" (procedures and how-to: coding, cooking, first aid, sports), or "general".
+Return ONLY JSON: {"kind": "", "broad": true or false, "question": a short question asking which part they want, "options": [{"title": 2-6 words, "desc": what they'd learn, max 14 words}]}`, {modelTier:"quick"});
 }
 function chooseFocus(d, sc){
   return new Promise(res=>{
@@ -444,21 +469,29 @@ function chooseFocus(d, sc){
   });
 }
 async function buildCourse(o){
-  const prompt = `You are an expert teacher designing a short course that takes a learner from the basics to solid, usable understanding.
+  const plan = PLANS[o.kind]||PLANS.general, examTxt = o.exam ? examOutlineText(o) : "";
+  const prompt = o.kind==="language" ? langOutlinePrompt(o, examTxt) : `You are an expert teacher designing a course that takes a learner from the basics to solid, usable understanding.
 TOPIC: ${o.topic||"(infer it from the material)"}
 LEARNER: ${levelText(o.level)}
 GOAL OR CONTEXT: ${o.goal||"none given"}
+${o.purpose==="everyday"?"PURPOSE: practical, everyday use. Favour what the learner will actually use.":""}
 ${o.focus?`FOCUS: ${o.focus}. The whole course must be about this part of the topic specifically, going properly deep.`:o.scoped?"The learner chose a broad overview. Still make every concept specific and substantial.":""}
 ${o.notes?`SOURCE MATERIAL (base the course on this and stay faithful to it):\n"""${o.notes.slice(0,40000)}"""`:""}
 ${o.images.length?"Photos of notes are attached; use them as source material.":""}
 
-Break it into 3 units of 4 concepts (12 concepts). Order them so each concept builds on the ones before it: core ideas first, then how it works, then application and nuance. Each concept is ONE learnable idea, not a chapter. Be accurate.
+${examTxt || "Break it into 3 units of 4 concepts (12 concepts)."}
+Order the concepts so each builds on the ones before it: core ideas first, then how it works, then application and nuance. Each concept is ONE learnable idea, not a chapter. Be accurate.
+${plan.outline?"SUBJECT APPROACH: "+plan.outline:""}
 ${qualityRules(o.level)}
 Also suggest 5 "angles": other sides of this topic the learner could branch into later (2-5 words each), such as its history, real-world uses, the maths or science underneath, common myths, debates, or careers.
 Return ONLY JSON: {"title": course title (max 5 words), "angles": ["",...], "units":[{"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": plain-language explanation, max 45 words, defining any jargon, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": one concrete example, max 30 words, "hook": a memory aid such as a mnemonic, acronym, vivid image or analogy, max 25 words}]}]}`;
   const {data:out, writer} = await writerJson(prompt, o.images.length && S.imagesOk ? {images:o.images} : {});
   const c = {id:uidGen(), writer, title:String((out&&out.title)||o.topic||"New course"), topic:o.topic, level:o.level, goal:o.goal, notes:(o.notes||"").slice(0,8000), created:Date.now(), acc:[], lessons:0, units:[], concepts:{}, angles:(out&&Array.isArray(out.angles)?out.angles:[]).filter(Boolean).map(String).slice(0,6)};
   addUnits(c, out&&out.units);
+  c.kind = KINDS.includes(o.kind) ? o.kind : "general"; c.purpose = o.purpose || "understand";
+  if(c.kind==="language") setLanguage(c, out&&out.language, o.topic);
+  if(o.exam){ const sy=o.exam.syllabus; c.exam = {key:o.exam.key, label:o.exam.label, name:o.exam.name||"", date:o.exam.date||"", subject:o.topic,
+    syllabus: sy ? {exam:sy.exam, subject:sy.subject, code:sy.code, year:sy.year, source_url:sy.source_url, page_url:sy.page_url, assessment:sy.assessment||[], command_words:sy.command_words||[], notes:sy.notes||""} : null}; }
   if(!order(c).length) throw {message:"The course outline came back empty"};
   return c;
 }
@@ -470,8 +503,8 @@ const CLEAN = {
   tf: x=>x&&x.s ? {s:String(x.s), t:x.t===true||x.t==="true"} : null,
   cloze: x=>x&&x.s&&String(x.s).includes("___")&&x.a ? {s:String(x.s), a:String(x.a)} : null,
   recall: x=>x&&x.q&&x.a ? {q:String(x.q), a:String(x.a), accept:strs(x.accept)} : null,
-  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||"")} : null,
-  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points)} : null,
+  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||""), marks:parseInt(x.marks)||0} : null,
+  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points), marks:parseInt(x.marks)||0} : null,
 };
 function cleanBank(it){
   if(!it) return null;
@@ -504,7 +537,9 @@ ${c.notes?`Stay faithful to this source material:\n"""${c.notes}"""\n`:""}
 Write questions for ONLY these concepts:
 ${cons.map((k,i)=>`${i+1}. ${conceptLine(k)}`).join("\n")}
 ${refresh?`\nThe learner has already practised these questions. Write NEW ones that go deeper and harder, covering angles and details these don't:\n- ${asked.slice(0,40).join("\n- ")}\n`:""}
-${QSPEC}`;
+${QSPEC}
+${planOf(c).questions?"SUBJECT FOCUS: "+planOf(c).questions:""}
+${isExam(c)?examQuestionText(c):""}`;
   const {data:out, writer} = await writerJson(prompt);
   const items = (out&&out.items)||[];
   cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const b=cleanBank(it); if(!b) return; if(refresh && k.bank) mergeBank(k.bank,b); else { b.v=2; k.bank=b; k.used={}; k.last=null; } k.writer=writer; });
@@ -516,7 +551,7 @@ async function ensureBanks(c, ids){
   const need = ids.filter(id=>needsBank(c.concepts[id]) && !inflight[id]);
   for(let i=0;i<need.length;i+=2){
     const ch = need.slice(i,i+2);
-    const p = genBank(c, ch).finally(()=>ch.forEach(id=>delete inflight[id]));
+    const p = (isLang(c)?genLangBank:genBank)(c, ch).finally(()=>ch.forEach(id=>delete inflight[id]));
     ch.forEach(id=>inflight[id]=p);
   }
   await Promise.all([...new Set(ids.map(id=>inflight[id]).filter(Boolean))]);
@@ -553,7 +588,9 @@ function cleanTeach(it){
   if(!it) return null;
   const p=it.predict, opts=p?strs(p.options).slice(0,3):[];
   const predict = p&&p.q&&opts.length>=2 ? {q:String(p.q), options:opts, answer:Math.min(opts.length-1,Math.max(0,parseInt(p.answer)||0)), why:String(p.why||"")} : null;
-  return {anchor:String(it.anchor||""), eli5:String(it.eli5||""), simplest:String(it.simplest||""), hook:String(it.hook||""), builds:String(it.builds||""), buildsOn:String(it.builds_on||""), visual:cleanVisual(it.visual), predict, takeaway:String(it.takeaway||"")};
+  return {anchor:String(it.anchor||""), eli5:String(it.eli5||""), simplest:String(it.simplest||""), hook:String(it.hook||""), builds:String(it.builds||""), buildsOn:String(it.builds_on||""), visual:cleanVisual(it.visual), predict, takeaway:String(it.takeaway||""),
+    worked: it.worked&&it.worked.problem&&Array.isArray(it.worked.steps)&&it.worked.steps.length ? {problem:String(it.worked.problem), steps:strs(it.worked.steps).slice(0,6), answer:String(it.worked.answer||"")} : null,
+    mistakes: strs(it.mistakes).slice(0,3)};
 }
 async function genTeach(c, ids){
   const cons = ids.map(id=>c.concepts[id]);
@@ -582,7 +619,8 @@ For each concept return:
 ${ANALOGY}
 ${JARGON}
 ${CONTEXT}
-Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "predict":{}, "anchor":"", "eli5":"", "simplest":"", "hook":"", "builds_on":"", "builds":"", "visual":{}, "takeaway":"", "terms":[]}]}`;
+${planOf(c).teach?"SUBJECT APPROACH: "+planOf(c).teach:""}
+Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "predict":{}, "anchor":"", "eli5":"", "simplest":"", "hook":"", "builds_on":"", "builds":"", "visual":{}, "takeaway":"", "terms":[]${c.kind==="maths"?', "worked":{}':""}${c.kind==="skill"?', "mistakes":[]':""}}]}`;
   const {data:out} = await writerJson(prompt);
   const items = (out&&out.items)||[];
   cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const t=cleanTeach(it); if(t){ t.v=4; k.teach=t; addTerms(c, it&&it.terms); } else k.teachTried=true; });
@@ -623,6 +661,7 @@ function termSheet(key){
 document.addEventListener("click", e=>{ const t=e.target.closest&&e.target.closest(".term"); if(!t) return; e.preventDefault(); e.stopPropagation(); termSheet(decodeURIComponent(t.dataset.t)); }, true);
 const inflightT = {};
 async function ensureTeach(c, ids){
+  if(isLang(c)) return;
   const need = ids.filter(id=>needsTeach(c.concepts[id]) && !inflightT[id]);
   for(let i=0;i<need.length;i+=2){
     const ch = need.slice(i,i+2);
@@ -699,6 +738,7 @@ function prefetch(c){
   if(!S.sample) return;
   const ids = [...new Set([...buildLesson(c).all, ...order(c)])].filter(id=>needsBank(c.concepts[id]) && !inflight[id]).slice(0,3);
   if(ids.length) ensureBanks(c, ids).catch(()=>{});
+  if(isLang(c)) return;
   const tids = order(c).filter(id=>{ const k=c.concepts[id]; return k.rung===0 && needsTeach(k) && !inflightT[id]; }).slice(0,3);
   if(tids.length) ensureTeach(c, tids).catch(()=>{});
 }
@@ -728,7 +768,7 @@ Concepts already in the course: ${order(c).map(id=>c.concepts[id].name).join("; 
 ${ask} Don't repeat existing concepts. Be accurate.
 ${qualityRules(c.level)}
 Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": max 45 words, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": max 30 words, "hook": memory aid, max 25 words}]}`;
-  const {data:out} = await writerJson(prompt);
+  const out = isLang(c) ? await addLangBranch(c, o) : (await writerJson(prompt)).data;
   const before = c.units.length; addUnits(c, [out]);
   if(c.units.length===before) throw {message:"No new concepts came back"};
   const u = c.units.pop();
@@ -742,7 +782,8 @@ Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 w
 /* ---------- lesson engine ---------- */
 function buildLesson(c){
   const now=Date.now(), cons=order(c).map(id=>c.concepts[id]), a=accuracy(c);
-  const nNew = a==null ? 3 : a<.7 ? 1 : a>=.9 ? 4 : 3;
+  let nNew = a==null ? 3 : a<.7 ? 1 : a>=.9 ? 4 : 3;
+  const pc = isExam(c) ? pacing(c) : null; if(pc && pc.days>0) nNew = Math.min(5, Math.max(nNew, pc.perDay));
   const due = cons.filter(k=>k.rung>0 && k.due<=now).sort((x,y)=>x.due-y.due).slice(0,5);
   const fu = c.focus && c.units.find(u=>u.id===c.focus);
   const pool = cons.filter(k=>k.rung===0);
@@ -767,8 +808,9 @@ function visualType(k,L){
   return null;
 }
 function typeFor(k,L){
+  if(isLang(LS.c) && k.lang) return langType(k,L);
   const vt=visualType(k,L);
-  if(vt && k.lastVq!==vt && Math.random()<.45) return vt;
+  if(vt && k.lastVq!==vt && Math.random()<(vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
   const b=normBank(k.bank);
   if(L>=5 && b.connect.length && S.sample) return "connect";
   if(L>=4 && b.apply.length) return "apply";
@@ -791,6 +833,355 @@ function grade(c,k,L,out){
   return ()=>{ Object.assign(k,snap); c.acc=accCopy; if(!was) LS.touched.delete(k.id); };
 }
 
+/* ---------- lesson plans per subject type ---------- */
+const KINDS = ["language","science","maths","history","skill","general"];
+const PLANS = {
+  science: { label:"Science & ideas", desc:"Guess first, picture the mechanism, then test how and why it works.",
+    outline:"Order concepts from things the learner can observe to the mechanisms underneath. Each concept is one mechanism, law, process or model.",
+    teach:"Make the guess question about a real, everyday observation. Prefer flow, cycle, curve or parts diagrams that show the mechanism.",
+    questions:"Favour how and why questions, predicting what happens when something changes, and real-world cases.",
+    cards:["predict","idea","see","real","remember"] },
+  maths: { label:"Maths & calculation", desc:"A worked example step by step, then your own problems with real numbers.",
+    outline:"Each concept is one method, rule or formula, ordered so each method uses earlier ones. Put the formula or procedure in plain words in the summary.",
+    teach:"Include \"worked\": a fully worked example {\"problem\": max 35 words with real numbers, \"steps\": 3-5 short steps each showing one calculation, \"answer\": the result with units}. Prefer curve or bars diagrams when the idea is about how numbers change.",
+    questions:"Most \"recall\" answers should be numbers or short results. \"apply\" questions are small multi-step problems with real numbers and units. Every \"why\" shows the calculation step by step.",
+    cards:["idea","worked","see","real","remember"] },
+  history: { label:"History & events", desc:"The story of what happened, a timeline, then causes and effects.",
+    outline:"Order concepts chronologically or by cause and effect. Each concept is one event, development or person's role, with its date or period.",
+    teach:"Write \"eli5\" as a short story of what happened and why. Prefer a \"flow\" diagram used as a timeline, with years in the labels. The guess question asks what the learner thinks happened next, or why.",
+    questions:"Mix names, dates and places with causes, consequences and comparisons. \"apply\" questions ask what would likely follow from a situation.",
+    cards:["predict","idea","see","real","remember"] },
+  skill: { label:"Skills & how-to", desc:"See the steps, learn the common mistakes, then practise what comes next.",
+    outline:"Each concept is one technique or procedure, ordered from basic to advanced.",
+    teach:"Prefer a \"flow\" diagram of the steps. Include \"mistakes\": 2-3 common mistakes, each max 18 words saying what goes wrong and how to avoid it.",
+    questions:"Favour what-comes-next, spot-the-mistake and troubleshooting scenarios over definitions.",
+    cards:["idea","see","mistakes","real","remember"] },
+  general: { label:"General", desc:"Short cards and a picture, then questions that get harder.", outline:"", teach:"", questions:"",
+    cards:["predict","idea","see","real","remember"] },
+  language: { label:"Language", desc:"Hear new words, see them in a conversation, then recognise, build and say your own sentences.", cards:[] },
+};
+const planOf = c => PLANS[(c && c.kind) || "general"] || PLANS.general;
+
+/* ---------- language courses ---------- */
+const isLang = c => !!(c && c.kind === "language" && c.language);
+let VOICES = [];
+function loadVoices(){ try{ VOICES = speechSynthesis.getVoices() || []; }catch(e){ VOICES = []; } }
+try{ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }catch(e){}
+function voiceFor(code){
+  const c = String(code||"").toLowerCase(), base = c.split("-")[0];
+  return VOICES.find(v=>v.lang && v.lang.toLowerCase().replace("_","-")===c) || VOICES.find(v=>v.lang && v.lang.toLowerCase().startsWith(base));
+}
+function canSpeak(c){ try{ return isLang(c) && "speechSynthesis" in window && !!voiceFor(c.language.code); }catch(e){ return false; } }
+function speak(c, text, slow){
+  try{
+    if(!isLang(c)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.lang = c.language.code;
+    const v = voiceFor(c.language.code); if(v) u.voice = v;
+    u.rate = slow ? 0.6 : 0.9; speechSynthesis.speak(u);
+  }catch(e){}
+}
+const SPK = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const playBtn = (t, slow) => `<button type="button" class="play" data-say="${esc(t)}"${slow?' data-slow="1"':""} aria-label="${slow?"Play slowly":"Play"}">${SPK}${slow?"<span>Slow</span>":""}</button>`;
+document.addEventListener("click", e=>{
+  const b = e.target.closest && e.target.closest("[data-say]"); if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const c = (LS && LS.c) || S.cur; speak(c, b.dataset.say, !!b.dataset.slow);
+  L("audio_play", {course:c&&c.title, data:{text:b.dataset.say, slow:!!b.dataset.slow}});
+}, true);
+const showTR = (x, big) => `<div class="${big?"lbig":"lt"}">${esc(x.t)}</div>${x.r?`<div class="lr">${esc(x.r)}</div>`:""}`;
+function itemHtml(c, it){ return `<div class="litem">${canSpeak(c)?playBtn(it.t):'<span></span>'}<div style="min-width:0">${showTR(it)}<div class="lm">${esc(it.m)}</div></div></div>`; }
+function langNorm(s){ return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[1-5]/g,"").toLowerCase().replace(/[^\p{L}\p{N}]/gu,""); }
+function langMatch(guess, targets){
+  const g = langNorm(guess); if(!g) return false;
+  return targets.filter(Boolean).some(t=>{ const n=langNorm(t); if(!n) return false; if(g===n) return true; return n.length>4 && 1-lev(g,n)/Math.max(g.length,n.length) >= .85; });
+}
+function cleanItems(a){ return arrOf(a).filter(x=>x&&x.t&&x.m).slice(0,8).map(x=>({t:String(x.t).trim(), r:String(x.r||"").trim(), m:String(x.m).trim()})); }
+function knownItems(c, cons){
+  const ids = order(c), first = Math.min(...cons.map(k=>ids.indexOf(k.id)).filter(i=>i>=0));
+  return ids.slice(0, isFinite(first)?first:0).flatMap(id=>(c.concepts[id].items||[]).map(x=>`${x.t}${x.r?" ("+x.r+")":""} = ${x.m}`));
+}
+function langOutlinePrompt(o, examTxt){
+  return `You are an expert language teacher designing a practical course.
+WHAT THE LEARNER WANTS: ${o.topic||"(infer from the material)"}
+LEARNER: ${levelText(o.level)}
+GOAL OR CONTEXT: ${o.goal||"none given"}
+${o.focus?`FOCUS: ${o.focus}`:""}
+${o.notes?`SOURCE MATERIAL (stay faithful to it):\n"""${o.notes.slice(0,40000)}"""`:""}
+
+${examTxt ? examTxt+"\nFor this language exam, units follow the syllabus themes and skills, and each concept teaches vocabulary, phrases or sentence patterns the exam expects." : "Build 3 units of 4 concepts. Units are real-life situations or skills in a sensible order (for a beginner: greetings and introductions, numbers and prices, ordering food, and so on)."}
+Each concept is something the learner will be able to SAY or UNDERSTAND, named in English (e.g. "Say hello and goodbye"), and teaches 4-6 high-frequency, natural words or short phrases ("items"). Later concepts reuse earlier words where natural.
+Each item: "t" = the phrase in the language's normal script, "r" = romanisation (Hanyu Pinyin with tone marks for Chinese, Hepburn for Japanese, and so on; "" if the language uses the Latin alphabet), "m" = English meaning.
+"summary" = one sentence on what this lets the learner do. "note" = one short tip on pronunciation, a grammar pattern or culture, max 30 words, in plain English.
+Also suggest 5 "angles": other situations or skills to branch into later (2-5 words each).
+Accuracy matters: correct script, spelling and tones; phrasing a native speaker would actually use.
+Return ONLY JSON: {"language":{"name":"e.g. Mandarin Chinese","code":"BCP-47 code, e.g. zh-CN","roman":"name of the romanisation system, or \\"\\""},"title": course title (max 5 words),"angles":[""],"units":[{"title":"","concepts":[{"name":"","summary":"","note":"","items":[{"t":"","r":"","m":""}]}]}]}`;
+}
+function setLanguage(c, lg, topic){
+  lg = lg || {};
+  c.kind = "language";
+  c.language = { name:String(lg.name||topic||"Language"), code:/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(lg.code||"") ? lg.code : "en", roman:String(lg.roman||"") };
+}
+async function genLangBank(c, ids){
+  const cons = ids.map(id=>c.concepts[id]);
+  const known = knownItems(c, cons).slice(0,150);
+  const lang = c.language, zh = /^zh/.test(lang.code);
+  const prompt = `Write practice material for a ${lang.name} course called "${c.title}", for a learner who is a ${levelText(c.level)}.
+Words and phrases the learner already knows: ${known.join("; ")||"none yet"}.
+Use those plus each concept's own items, and only very common grammar words beyond them.
+Write material for ONLY these concepts:
+${cons.map((k,i)=>`${i+1}. ${k.name}: ${k.summary} Items: ${(k.items||[]).map(x=>`${x.t}${x.r?" ("+x.r+")":""} = ${x.m}`).join("; ")}`).join("\n")}
+
+For each concept:
+- "sentences": 3 short, natural sentences (3-8 words) using this concept's items. Each {"t": target script, "r": ${lang.roman||"romanisation, or \"\" for Latin-script languages"}, "m": English meaning, "tiles": the sentence split into 3-7 word tiles in the target script, whole words only, no punctuation}.
+- "dialogue": a realistic 2-4 line exchange using the items: [{"s":"A" or "B","t":"","r":"","m":""}].
+- "respond": 2 situations: {"situation": short English setup saying who you're talking to and what you want to say, "line": what they say to you {"t","r","m"}, "options": 3 possible replies [{"t","r","m"}], exactly one right and two plausible but wrong in meaning, "answer": index of the right reply}.
+- "translate": 2 short English sentences for the learner to say in ${lang.name}, each {"m": English, "t": target, "r": romanisation}, using only known words.
+Accuracy matters: correct script${zh?", characters and tone marks":" and spelling"}, and phrasing a native speaker would actually use.
+Return ONLY JSON: {"items":[{"name": concept name exactly as given, "sentences":[], "dialogue":[], "respond":[], "translate":[]}]}`;
+  const {data:out, writer} = await writerJson(prompt);
+  const items = (out&&out.items)||[];
+  const tx = x => x && x.t ? {t:String(x.t).trim(), r:String(x.r||"").trim(), m:String(x.m||"").trim()} : null;
+  cons.forEach((k,i)=>{
+    const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; if(!it) return;
+    const sentences = arrOf(it.sentences).map(s=>{ const b=tx(s); if(!b||!b.m) return null; b.tiles = strs(s.tiles).map(t=>t.trim()).filter(Boolean).slice(0,8); return b; }).filter(Boolean);
+    const dialogue = arrOf(it.dialogue).map(d=>{ const b=tx(d); if(b) b.s=String(d.s||""); return b; }).filter(Boolean).slice(0,6);
+    const respond = arrOf(it.respond).filter(r=>r&&r.line&&Array.isArray(r.options)).map(r=>({situation:String(r.situation||""), line:tx(r.line), options:r.options.map(tx).filter(Boolean).slice(0,3), answer:Math.max(0,parseInt(r.answer)||0)})).filter(r=>r.line&&r.options.length>=2&&r.answer<r.options.length);
+    const translate = arrOf(it.translate).map(tx).filter(x=>x&&x.m);
+    if(!sentences.length && !respond.length) return;
+    k.lang = {sentences, dialogue, respond, translate};
+    k.bank = {v:2, mcq:[], tf:[], cloze:[], recall:[], apply:[], connect:[], langOnly:true};
+    k.writer = writer;
+  });
+  saveCourse(c);
+}
+async function addLangBranch(c, o){
+  const ask = o.parent ? `Write a BRANCH going deeper into "${o.parent.name}": 4 concepts with more advanced or alternative ways to say these things.`
+    : o.angle ? `Write a BRANCH about this situation or skill: "${o.angle}". 4 concepts.` : `Write the NEXT unit: 4 new practical concepts that build on what has been taught.`;
+  const prompt = `You are extending a ${c.language.name} course called "${c.title}" for a learner who is a ${levelText(c.level)}.
+Concepts so far: ${order(c).map(id=>c.concepts[id].name).join("; ")}.
+Words taught so far: ${order(c).flatMap(id=>(c.concepts[id].items||[]).map(x=>x.t)).slice(0,150).join(", ")}.
+${ask} Each concept teaches 4-6 new, natural, high-frequency items and reuses earlier words where natural. Item: "t" target script, "r" ${c.language.roman||"romanisation"} ("" for Latin-script languages), "m" English meaning. Correct script, spelling and tones.
+Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": what the learner can say or understand (English, 2-5 words), "summary": one sentence, "note": one short tip, max 30 words, "items":[{"t":"","r":"","m":""}]}]}`;
+  const {data:out} = await writerJson(prompt);
+  return out;
+}
+
+/* language teaching cards */
+function renderLangIntro(k){
+  const c = LS.c, sp = canSpeak(c), d = k.lang || {};
+  const cards = ["words"]; if(d.dialogue && d.dialogue.length) cards.push("dialogue"); if(k.note) cards.push("tip");
+  const LBL = {words:"New words", dialogue:"Hear it in a conversation", tip:"Good to know"};
+  let idx = 0;
+  const show = ()=>{
+    window.scrollTo(0,0);
+    const kind = cards[idx], last = idx===cards.length-1;
+    L("intro_card",{course:c.title, concept:k.name, data:{card:kind, index:idx, of:cards.length, plan:"language"}});
+    const dots = `<div class="tdots">${cards.map((_,i)=>`<i class="${i===idx?"on":i<idx?"done":""}"></i>`).join("")}</div>`;
+    let body = "";
+    if(kind==="words") body = `<p class="muted">${esc(k.summary)}</p><div>${(k.items||[]).map(it=>itemHtml(c,it)).join("")}</div>${sp?`<p class="tiny muted">Tap the speaker to hear each one. Say it out loud after it.</p>`:`<p class="tiny muted">This browser has no ${esc(c.language.name)} voice installed, so audio is off.</p>`}`;
+    else if(kind==="dialogue") body = `<div class="dlg">${d.dialogue.map(l=>`<div class="dline ${l.s==="B"?"b":""}"><span class="spk">${esc(l.s||"")}</span><div style="min-width:0">${showTR(l)}<div class="lm dm" hidden>${esc(l.m)}</div></div>${sp?playBtn(l.t):""}</div>`).join("")}</div><button class="btn soft sm" id="dmBtn" type="button" style="align-self:flex-start">Show meanings</button>`;
+    else body = `<div class="hook"><span class="label">Tip</span><span>${esc(k.note)}</span></div>`;
+    main.innerHTML = head()+`<div class="card pop">${dots}<span class="label">${LBL[kind]}</span><div class="intro-name" style="font-size:22px">${esc(k.name)}</div>${body}</div>`;
+    wireQuit();
+    bar(`<div class="row" style="flex-wrap:nowrap">${idx?'<button class="btn ghost" id="tback">Back</button>':""}<button class="btn" id="tnext" style="flex:1">${last?"Got it, let's practise":"Continue"}</button></div>`);
+    $("tnext").onclick = ()=>{ if(last){ LS.i++; renderStep(); } else { idx++; show(); } };
+    const tb=$("tback"); if(tb) tb.onclick=()=>{ idx--; show(); };
+    const dm=$("dmBtn"); if(dm) dm.onclick=()=>{ main.querySelectorAll(".dm").forEach(x=>x.hidden=false); dm.remove(); };
+  };
+  show();
+}
+
+/* language practice */
+const LANGQ = new Set(["lhear","lsee","lpick","lbuild","ltype","llisten","lrespond","ltrans"]);
+const tilesOf = s => s.tiles && s.tiles.length>=2 ? s.tiles : String(s.t).split(/\s+/).filter(Boolean);
+function langType(k, L){
+  const c=LS.c, sp=canSpeak(c), d=k.lang||{}, r=Math.random();
+  const buildable = (d.sentences||[]).some(s=>tilesOf(s).length>=3);
+  if(L<=1) return sp && r<.5 ? "lhear" : "lsee";
+  if(L===2) return buildable && r<.55 ? "lbuild" : "lpick";
+  if(L===3) return sp && (d.sentences||[]).length && r<.4 ? "llisten" : "ltype";
+  if(L===4) return (d.respond||[]).length ? "lrespond" : buildable ? "lbuild" : "ltype";
+  return (d.translate||[]).length ? "ltrans" : "ltype";
+}
+function pickItem(k){
+  const items = k.items||[]; k.iseen = k.iseen||{};
+  const min = Math.min(...items.map(x=>k.iseen[x.t]||0));
+  const it = shuffle(items.filter(x=>(k.iseen[x.t]||0)===min))[0];
+  k.iseen[it.t] = (k.iseen[it.t]||0)+1; return it;
+}
+function langChoice(ch, promptHtml, opts, correctKey, o){
+  main.innerHTML = head()+`<div class="card pop">${ch}${promptHtml}<div class="opts">${opts.map((x,i)=>`<button class="opt" data-i="${i}">${x.html}</button>`).join("")}</div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{
+    const ok = opts[+btn.dataset.i].key===correctKey;
+    main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i].key===correctKey) x.classList.add("ok"); });
+    if(!ok) btn.classList.add("no");
+    if(o.after) o.after(ok);
+    answered(ok?"right":"wrong", {answer:o.answer, why:o.why||"", canGuess:ok});
+  });
+}
+function langTyped(ch, promptHtml, t, o){
+  main.innerHTML = head()+`<div class="card pop">${ch}${promptHtml}<div id="hintArea"></div>
+    <form id="tform" autocomplete="off"><input type="text" id="tin" placeholder="${esc(o.placeholder)}" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done"></form>
+    <button type="button" class="linkbtn" id="idk" style="align-self:flex-start">I don't know</button><div id="fb"></div></div>`;
+  bar(`<div class="row" style="flex-wrap:nowrap"><button class="btn ghost" id="hint">Hint</button><button class="btn" id="check" style="flex:1">Check</button></div>`);
+  wireQuit();
+  const inp=$("tin"); setTimeout(()=>inp.focus(),60);
+  let busy=false;
+  const lock = g => { const f=$("tform"); if(f) f.outerHTML = g ? `<div class="yours"><span class="label">You wrote</span><span>${esc(g)}</span></div>` : ""; const i=$("idk"); if(i) i.remove(); };
+  const answerText = `${t.t}${t.r?" ("+t.r+")":""}`;
+  $("hint").onclick=()=>{ LS.q.hint++; const src=t.r||t.t; $("hintArea").innerHTML=`<div class="fb info"><span class="label">Hint · first letters</span><span class="mask">${esc(src.split(/\s+/).map(w=>w[0]+"_".repeat(Math.max(0,[...w].length-1))).join("  "))}</span></div>`; $("hint").disabled=true; };
+  $("idk").onclick=()=>{ if(busy) return; busy=true; lock(""); if(o.after) o.after(); answered("wrong", {answer:answerText, why:o.why||""}); };
+  const submit = async ()=>{
+    const el=$("tin"); if(busy||!el) return; const g=el.value.trim(); if(!g){ el.focus(); return; }
+    busy=true; LS.q.typed=g; lock(g);
+    if(langMatch(g, [t.t, t.r])){ if(o.after) o.after(); return answered(LS.q.hint?"helped":"right", {answer:answerText, showAns:true}); }
+    if(!S.sample){ if(o.after) o.after(); return answered("wrong", {answer:answerText, guess:g}); }
+    bar(`<button class="btn block" disabled><span class="spinner"></span> Checking your answer…</button>`);
+    try{
+      const r = await aiCheck(o.question, answerText, [], g);
+      if(!LS || LS.q.k!==o.k) return;
+      if(o.after) o.after();
+      const v=r&&r.verdict;
+      if(v==="correct") answered(LS.q.hint?"helped":"right", {answer:answerText, showAns:true, note:r.note});
+      else if(v==="partial") answered("helped", {answer:answerText, partial:true, note:r.note});
+      else answered("wrong", {answer:answerText, guess:g, note:r&&r.note});
+    }catch(e){ if(LS) answered("wrong", {answer:answerText, guess:g}); }
+  };
+  $("tform").onsubmit=e=>{ e.preventDefault(); submit(); };
+  $("check").onclick=submit;
+}
+function renderLangQ(ch, k, type){
+  const c=LS.c, d=k.lang||{}, sp=canSpeak(c), lang=c.language.name;
+  if(!(k.items||[]).length && ["lhear","lsee","lpick","ltype"].includes(type)) type = (d.sentences||[]).some(x=>tilesOf(x).length>=3) ? "lbuild" : (d.respond||[]).length ? "lrespond" : "ltrans";
+  const all = order(c).flatMap(id=>c.concepts[id].items||[]);
+  const allSent = order(c).flatMap(id=>(c.concepts[id].lang&&c.concepts[id].lang.sentences)||[]);
+  const optHtml = x => `<span class="lopt">${esc(x.t)}</span>${x.r?`<br><span class="small muted">${esc(x.r)}</span>`:""}`;
+  const others = (it, key, pool) => shuffle([...new Map(pool.filter(x=>x[key]!==it[key]).map(x=>[x[key],x])).values()]).slice(0,3);
+  if(type==="lhear"||type==="lsee"){
+    const it=pickItem(k), opts=shuffle([it, ...others(it,"m",all)]).map(x=>({key:x.m, html:esc(x.m)}));
+    LS.q.text = `${it.t} = ?`;
+    const p = type==="lhear"
+      ? `<div class="prompt">What does this mean?</div><div class="row">${playBtn(it.t)}${playBtn(it.t,true)}<button class="linkbtn" id="rvb" type="button">Show the words</button></div><div id="rv" hidden>${showTR(it,true)}</div>`
+      : `<div class="prompt">What does this mean?</div>${showTR(it,true)}${sp?`<div class="row" style="justify-content:center">${playBtn(it.t)}</div>`:""}`;
+    langChoice(ch, p, opts, it.m, {answer:`${it.t}${it.r?" ("+it.r+")":""} = ${it.m}`, after:()=>{ const rv=$("rv"); if(rv) rv.hidden=false; if(sp) speak(c,it.t); }});
+    const rvb=$("rvb"); if(rvb) rvb.onclick=()=>{ $("rv").hidden=false; rvb.remove(); L("help",{course:c.title, concept:k.name, data:{kind:"show_words"}}); };
+    if(type==="lhear") setTimeout(()=>speak(c,it.t),350);
+    return;
+  }
+  if(type==="lpick"){
+    const it=pickItem(k), opts=shuffle([it, ...others(it,"t",all)]).map(x=>({key:x.t, html:optHtml(x)}));
+    LS.q.text = `How do you say "${it.m}"?`;
+    langChoice(ch, `<div class="prompt">How do you say “${esc(it.m)}”?</div>`, opts, it.t, {answer:`${it.t}${it.r?" ("+it.r+")":""}`, after:()=>{ if(sp) speak(c,it.t); }});
+    return;
+  }
+  if(type==="llisten"){
+    const s=shuffle(d.sentences)[0], opts=shuffle([s, ...others(s,"m",allSent)]).map(x=>({key:x.m, html:esc(x.m)}));
+    LS.q.text = `Listen: ${s.t}`;
+    langChoice(ch, `<div class="prompt">Listen. What did they say?</div><div class="row">${playBtn(s.t)}${playBtn(s.t,true)}</div><div id="rv" hidden>${showTR(s)}</div>`, opts, s.m, {answer:`${s.t}${s.r?" ("+s.r+")":""} = ${s.m}`, after:()=>{ $("rv").hidden=false; }});
+    setTimeout(()=>speak(c,s.t),350);
+    return;
+  }
+  if(type==="lrespond"){
+    const r=shuffle(d.respond)[0], right=r.options[r.answer];
+    const opts = shuffle(r.options).map(x=>({key:x.t, html:optHtml(x)}));
+    LS.q.text = `${r.situation} | They say: ${r.line.t}`;
+    const p = `<p class="small muted">${esc(r.situation)}</p><div class="lbubble"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><div style="min-width:0">${showTR(r.line)}</div>${sp?playBtn(r.line.t):""}</div><button class="linkbtn" id="lmB" type="button" style="align-self:flex-start">What did they say?</button><div class="lm" id="lmT" hidden>${esc(r.line.m)}</div></div><div class="prompt">What do you say?</div>`;
+    langChoice(ch, p, opts, right.t, {answer:`${right.t}${right.r?" ("+right.r+")":""} = ${right.m}`, why:`They said: “${r.line.m}”.`, after:()=>{ $("lmT").hidden=false; if(sp) speak(c,right.t); }});
+    if(sp) setTimeout(()=>speak(c,r.line.t),350);
+    const lb=$("lmB"); if(lb) lb.onclick=()=>{ $("lmT").hidden=false; lb.remove(); };
+    return;
+  }
+  if(type==="lbuild"){
+    const s=shuffle(d.sentences.filter(x=>tilesOf(x).length>=3))[0] || d.sentences[0];
+    const tiles=tilesOf(s), extra=shuffle(all.map(x=>x.t).filter(t=>!tiles.includes(t)&&t.length<=8)).slice(0, tiles.length>=5?1:2);
+    let pool = shuffle([...tiles, ...extra].map((t,i)=>({t,i})));
+    const placed = [];
+    LS.q.text = `Build: ${s.m}`;
+    const draw = ()=>{
+      $("built").innerHTML = placed.length ? placed.map((p,i)=>`<button type="button" class="tile placed" data-p="${i}">${esc(p.t)}</button>`).join("") : '<span class="small muted">Tap the words below in order</span>';
+      $("tpool").innerHTML = pool.filter(p=>!placed.includes(p)).map(p=>`<button type="button" class="tile" data-i="${p.i}">${esc(p.t)}</button>`).join("");
+      $("built").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ placed.splice(+b.dataset.p,1); draw(); });
+      $("tpool").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{ placed.push(pool.find(p=>p.i===+b.dataset.i)); draw(); });
+      $("bcheck").disabled = !placed.length;
+    };
+    main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">Say this in ${esc(lang)}:<br>“${esc(s.m)}”</div><div class="tiles" id="built"></div><div class="tiles pool" id="tpool"></div><div id="fb"></div></div>`;
+    bar(`<button class="btn block" id="bcheck" disabled>Check</button>`);
+    wireQuit(); draw();
+    $("bcheck").onclick=()=>{
+      const ok = langNorm(placed.map(p=>p.t).join("")) === langNorm(tiles.join(""));
+      $("tpool").innerHTML=""; $("built").querySelectorAll("button").forEach(b=>b.disabled=true);
+      if(sp) speak(c,s.t);
+      answered(ok?"right":"wrong", {answer:`${s.t}${s.r?" ("+s.r+")":""}`, showAns:true, why: ok?"":`Correct order: ${tiles.join(" · ")}`});
+    };
+    return;
+  }
+  if(type==="ltrans"){
+    const tr=shuffle(d.translate)[0];
+    LS.q.text = `Translate: ${tr.m}`;
+    langTyped(ch, `<div class="prompt">Say this in ${esc(lang)}:<br>“${esc(tr.m)}”</div>`, tr, {k, placeholder: c.language.roman?`Type in ${c.language.roman} or characters`:`Type in ${lang}`, question:`Translate into ${lang}: "${tr.m}". ${c.language.roman?c.language.roman+" without tone marks, or the native script, both count. ":""}Accept any natural, correct translation, not only the reference.`, after:()=>{ if(sp) speak(c,tr.t); }});
+    return;
+  }
+  // ltype
+  const it=pickItem(k);
+  LS.q.text = `Type: ${it.m}`;
+  langTyped(ch, `<div class="prompt">How do you say “${esc(it.m)}”?</div><p class="small muted">${c.language.roman?`Type it in ${esc(c.language.roman)}. Tone marks are optional.`:"Type it."}</p>`, it, {k, placeholder: c.language.roman?`Type in ${c.language.roman}`:"Type it", question:`Say "${it.m}" in ${lang}. ${c.language.roman?c.language.roman+" without tone marks, or the native script, both count.":""}`, after:()=>{ if(sp) speak(c,it.t); }});
+}
+
+/* ---------- exam mode ---------- */
+const EXAMS = [["psle","PSLE"],["olevel","O-Level"],["nalevel","N(A)-Level"],["ntlevel","N(T)-Level"],["alevel","A-Level"],["other","Other exam"]];
+const SG_EXAM_KEYS = new Set(["psle","olevel","nalevel","ntlevel","alevel"]);
+const PURPOSES = [["everyday","Everyday use"],["exam","An exam"],["understand","Understanding"]];
+const examLabel = k => (EXAMS.find(e=>e[0]===k)||[null,k])[1];
+const isExam = c => !!(c && c.exam);
+function daysTo(dateStr){ if(!dateStr) return null; const t=Date.parse(dateStr+"T09:00:00"); return isFinite(t) ? Math.ceil((t-Date.now())/DAY) : null; }
+function examOutlineText(o){
+  const e=o.exam, sy=e.syllabus;
+  if(sy) return `EXAM: ${sy.exam||e.label} ${sy.subject||o.topic} (syllabus ${sy.code||"?"}, ${sy.year||""}).
+OFFICIAL SYLLABUS (source: ${sy.source_url}). Topics in order:
+${(sy.topics||[]).map((t,i)=>`${i+1}. ${t.title}: ${(t.outcomes||[]).join("; ")}`).join("\n")}
+PAPERS: ${(sy.assessment||[]).map(p=>`${p.paper} (${p.duration||"?"}, ${p.marks||"?"} marks): ${p.format||""}`).join("; ")}
+Build the course to cover this syllabus in its order: 4-6 units following the syllabus's own topic groupings, 4 concepts each. Every concept maps to specific learning outcomes above, at the depth the exam requires. Don't add material outside the syllabus.`;
+  return `EXAM: ${e.label}${e.name?" ("+e.name+")":""}, ${o.topic}. No official syllabus was available, so follow the standard content and question style of this exam as closely as you can. Build 4-6 units of 4 concepts.`;
+}
+function examQuestionText(c){
+  const e=c.exam, sy=e.syllabus, cw=(sy&&sy.command_words||[]).join(", ");
+  return `EXAM STYLE: write questions the way ${e.label} ${e.subject} papers ask them${cw?`, using the exam's command words (${cw})`:""}${sy&&sy.assessment&&sy.assessment.length?`. Papers: ${sy.assessment.map(p=>`${p.paper}: ${p.format||""}`).join("; ")}`:""}. For every "apply" and "connect" question add "marks" (1-6, as the exam would award them). For "connect", "points" is the mark scheme with one point per mark.`;
+}
+function pacing(c){
+  const dl = daysTo(c.exam&&c.exam.date); if(dl==null) return null;
+  const remain = newCount(c), study = Math.max(1, dl-14);
+  return {days:dl, remain, perDay: Math.max(1, Math.ceil(remain/study))};
+}
+
+/* mock tests */
+async function startMock(){
+  const c=S.cur;
+  const started = order(c).filter(id=>c.concepts[id].rung>0);
+  const pool = started.length>=3 ? started : order(c).slice(0,6);
+  const pick = shuffle(pool).slice(0,10);
+  const missing = pick.filter(id=>needsBank(c.concepts[id]));
+  if(missing.length){
+    if(!S.sample){ toast("Mock tests need the server connection"); return; }
+    S.view="loading"; window.scrollTo(0,0); bar("");
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Setting your mock test</h3></div><p class="small muted">Writing exam-style questions. About 30 seconds.</p></div>`;
+    try{ await ensureBanks(c, missing); }
+    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't set the mock test</strong><span>${esc(aiErr(e))}</span></div><button class="btn ghost" id="back">Back</button></div>`; $("back").onclick=()=>go("course"); return; }
+  }
+  const steps = pick.filter(id=>c.concepts[id].bank).map(id=>({t:"q",cid:id}));
+  LS = {c, steps, i:0, touched:new Set(), count:{}, retry:{}, fresh:new Set(), snap:Object.fromEntries(pick.map(id=>[id,c.concepts[id].rung])), xp:0, right:0, total:0, pending:null, q:null,
+        mock:{end:Date.now()+steps.length*90000, marks:0, total:0, missed:[]}};
+  LS.mock.timer = setInterval(()=>{
+    if(!LS||!LS.mock){ return; }
+    const left = LS.mock.end-Date.now(), el=$("mockT");
+    if(el) el.textContent = left>0 ? `${Math.floor(left/60000)}:${String(Math.floor(left/1000)%60).padStart(2,"0")}` : "0:00";
+    if(left<=0){ toast("Time's up"); finishLesson(); }
+  }, 1000);
+  L("mock_start",{course:c.title, data:{questions:steps.length, minutes:Math.round(steps.length*1.5)}});
+  S.view="lesson"; renderStep();
+}
+
 /* ---------- views ---------- */
 function go(v){ S.view=v; bar(""); main.classList.remove("lesson"); window.scrollTo(0,0); render(); }
 function bar(html){ let b=$("abar"); if(!b){ b=document.createElement("div"); b.id="abar"; b.className="actionbar"; document.body.appendChild(b); } b.innerHTML=html?`<div class="abin">${html}</div>`:""; b.hidden=!html; }
@@ -808,6 +1199,15 @@ function renderHome(){
     <p class="muted">Type anything. Climb maps it into short lessons that start easy and get harder as you improve.</p>
     <input type="text" class="big" id="fTopic" placeholder="e.g. How interest rates work" value="${esc(d.topic)}">
     <div class="seg" role="group" aria-label="Your level">${LEVELS.map(([k,n])=>`<button type="button" data-l="${k}" class="${d.level===k?"on":""}">${n}</button>`).join("")}</div>
+    <span class="label">What's this for?</span>
+    <div class="seg" id="purposeSeg" role="group" aria-label="What's this for">${PURPOSES.map(([k2,n])=>`<button type="button" data-p="${k2}" class="${d.purpose===k2?"on":""}">${n}</button>`).join("")}</div>
+    <div class="exambox" id="examBox"${d.purpose==="exam"?"":" hidden"}>
+      <div class="chips" id="examChips">${EXAMS.map(([k2,n])=>`<button type="button" class="chip${d.exam===k2?" on":""}" data-e="${k2}">${n}</button>`).join("")}</div>
+      <input type="text" id="fExamName" placeholder="Which exam? e.g. IELTS, HSK 3"${d.exam==="other"?"":" hidden"} value="${esc(d.examName)}">
+      <label class="small muted" for="fExamDate">Exam date (optional, for pacing)</label>
+      <input type="date" id="fExamDate" value="${esc(d.examDate)}">
+      <p class="tiny muted">Type the subject above, e.g. "Chemistry" or "Higher Chinese". For PSLE, O, N and A-Levels, Climb finds the official SEAB syllabus and builds your course from it.</p>
+    </div>
     <details id="more"${d.notes||d.goal||d.images.length?" open":""}><summary>+ Add a goal, notes or photos</summary><div class="dbody">
       <input type="text" id="fGoal" placeholder="Goal (optional), e.g. Pass my A-level econs paper" value="${esc(d.goal)}">
       <textarea id="fNotes" placeholder="Paste notes, an article or a syllabus (optional)">${esc(d.notes)}</textarea>
@@ -825,8 +1225,11 @@ function renderHome(){
     return `<button class="course" data-id="${esc(c.id)}"><div style="min-width:0"><h3>${esc(c.title)}${c.example?'<span class="tag">Example</span>':""}</h3><p class="small muted">${order(c).length} concepts · ${due?`<span class="due">${due} to review</span>`:nw?`${nw} new to learn`:"All caught up"}</p></div>${ring(p,52)}</button>`; }).join("")}</div>`;
   const sync=()=>{ d.topic=$("fTopic").value; d.goal=$("fGoal").value; d.notes=$("fNotes").value; };
   ["fTopic","fGoal","fNotes"].forEach(id=>$(id).oninput=sync);
-  main.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{ d.level=b.dataset.l; main.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x===b)); });
-  main.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ $("fTopic").value=b.textContent; sync(); $("fTopic").focus(); });
+  main.querySelectorAll(".seg button[data-l]").forEach(b=>b.onclick=()=>{ d.level=b.dataset.l; main.querySelectorAll(".seg button[data-l]").forEach(x=>x.classList.toggle("on",x===b)); });
+  main.querySelectorAll("#purposeSeg button").forEach(b=>b.onclick=()=>{ d.purpose=b.dataset.p; main.querySelectorAll("#purposeSeg button").forEach(x=>x.classList.toggle("on",x===b)); $("examBox").hidden = d.purpose!=="exam"; });
+  main.querySelectorAll("#examChips .chip").forEach(b=>b.onclick=()=>{ d.exam=b.dataset.e; main.querySelectorAll("#examChips .chip").forEach(x=>x.classList.toggle("on",x===b)); $("fExamName").hidden = d.exam!=="other"; });
+  $("fExamName").oninput=()=>{ d.examName=$("fExamName").value; }; $("fExamDate").oninput=()=>{ d.examDate=$("fExamDate").value; };
+  main.querySelectorAll(".chips:not(#examChips) .chip").forEach(b=>b.onclick=()=>{ $("fTopic").value=b.textContent; sync(); $("fTopic").focus(); });
   $("fFile").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ $("fNotes").value=($("fNotes").value?$("fNotes").value+"\n\n":"")+String(r.result).slice(0,60000); if(!$("fTopic").value) $("fTopic").value=f.name.replace(/\.[^.]+$/,""); sync(); }; r.readAsText(f); e.target.value=""; };
   const imgs=$("fImgs"); if(imgs) imgs.onchange=e=>{ for(const f of e.target.files){ if(d.images.length<6) d.images.push(f); } thumbs(); e.target.value=""; };
   thumbs();
@@ -841,31 +1244,43 @@ async function onBuild(){
   const d=S.draft; d.topic=$("fTopic").value.trim(); d.goal=$("fGoal").value.trim(); d.notes=$("fNotes").value.trim();
   if(!d.topic && !d.notes && !d.images.length){ toast("Type a topic first"); $("fTopic").focus(); return; }
   S.view="building"; window.scrollTo(0,0);
-  let focus="", scoped=false;
+  let focus="", scoped=false, kind=null, syllabus=null;
+  const examMode = d.purpose==="exam";
+  if(examMode){ const en=$("fExamName"), ed=$("fExamDate"); if(en) d.examName=en.value.trim(); if(ed) d.examDate=ed.value; }
+  if(examMode && SG_EXAM_KEYS.has(d.exam) && d.topic && window.climbSyllabus){
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Finding the official syllabus</h3></div><p class="small muted">Searching SEAB for the ${esc(examLabel(d.exam))} ${esc(d.topic)} syllabus and reading it. This can take up to a minute the first time; after that it's instant.</p></div>`;
+    try{
+      const r = await window.climbSyllabus(d.exam, d.topic, d.examDate ? d.examDate.slice(0,4) : String(new Date().getFullYear()));
+      syllabus = r.syllabus;
+      L("syllabus_found",{data:{exam:d.exam, subject:d.topic, code:syllabus.code, year:syllabus.year, cached:!!r.cached, source:syllabus.source_url, topics:(syllabus.topics||[]).length}});
+    }catch(e){ L("syllabus_failed",{data:{exam:d.exam, subject:d.topic, error:String(e&&e.message)}}); }
+  }
   if(d.topic && !d.notes && !d.images.length){
-    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Looking at ${esc(d.topic)}</h3></div><p class="small muted">Checking whether it needs narrowing down…</p></div>`;
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Looking at ${esc(d.topic)}</h3></div><p class="small muted">Working out what kind of subject this is${examMode?"":" and whether it needs narrowing down"}…</p></div>`;
     try{
       const sc = await scopeTopic(d);
-      if(sc && sc.broad && Array.isArray(sc.options) && sc.options.length){
+      if(sc && KINDS.includes(sc.kind)) kind = sc.kind;
+      if(!examMode && sc && sc.broad && Array.isArray(sc.options) && sc.options.length){
         const pick = await chooseFocus(d, sc);
         if(pick===null){ go("home"); return; }
         focus=pick; scoped=true; L("focus_chosen",{data:{topic:d.topic, choice:pick||"broad overview", options:(sc.options||[]).map(o=>o.title)}});
       }
     }catch(e){}
   }
-  const steps=(a,b,extra)=>{ main.innerHTML=`<div class="card"><span class="label">Building your course</span><h2>${esc(d.topic||"Your notes")}</h2>${focus?`<p class="small muted">Focus: ${esc(focus)}</p>`:""}
+  const steps=(a,b,extra)=>{ main.innerHTML=`<div class="card"><span class="label">Building your course</span><h2>${esc(d.topic||"Your notes")}</h2>${focus?`<p class="small muted">Focus: ${esc(focus)}</p>`:""}${syllabus?`<p class="small muted">Using the official SEAB syllabus ${esc(syllabus.code||"")}${syllabus.year?" ("+esc(syllabus.year)+")":""}.</p>`:examMode&&SG_EXAM_KEYS.has(d.exam)?`<p class="small muted">Couldn't find the official syllabus, so building from what Claude knows about this exam.</p>`:""}${kind?`<p class="small muted">${esc((PLANS[kind]||PLANS.general).label)} lesson plan</p>`:""}
     <ul class="steps"><li>${a?'<span class="done"></span>':'<div class="spinner"></div>'}<span>Mapping the topic into concepts</span></li><li>${b?'<span class="done"></span>':a?'<div class="spinner"></div>':'<span class="dot"></span>'}<span>Writing your first lesson</span></li></ul>
     ${extra||'<p class="small muted">This takes about 20 to 40 seconds.</p>'}</div>`; };
   steps(false,false);
   try{
-    const c = await buildCourse({topic:d.topic, level:d.level, goal:d.goal, notes:d.notes, images:d.images, focus, scoped});
+    const c = await buildCourse({topic:d.topic, level:d.level, goal:d.goal, notes:d.notes, images:d.images, focus, scoped, kind, purpose:d.purpose,
+      exam: examMode ? {key:d.exam, label:examLabel(d.exam), name:d.examName, date:d.examDate, syllabus} : null});
     if(focus) c.focus_text=focus;
-    L("course_built",{course:c.title, data:{topic:d.topic, level:d.level, goal:d.goal, focus, hasNotes:!!d.notes, photos:d.images.length, writer:c.writer, units:c.units.map(u=>({title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}))}});
+    L("course_built",{course:c.title, data:{topic:d.topic, level:d.level, goal:d.goal, focus, kind:c.kind, purpose:c.purpose, exam:c.exam?{key:c.exam.key, date:c.exam.date, code:c.exam.syllabus&&c.exam.syllabus.code}:null, language:c.language||null, hasNotes:!!d.notes, photos:d.images.length, writer:c.writer, units:c.units.map(u=>({title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}))}});
     steps(true,false, `<div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(c.title)}</h3>${c.units.map((u,i)=>`<div><span class="label">Unit ${i+1}</span><p class="small"><b>${esc(u.title)}</b>: <span class="muted">${u.concepts.map(id=>esc(c.concepts[id].name)).join(" · ")}</span></p></div>`).join("")}</div>`);
     saveCourse(c);
     const first=buildLesson(c);
     await Promise.all([ensureBanks(c, first.all).catch(()=>{}), ensureTeach(c, first.fresh).catch(()=>{})]);
-    S.draft={topic:"",level:d.level,goal:"",notes:"",images:[]};
+    S.draft={topic:"",level:d.level,goal:"",notes:"",images:[],purpose:d.purpose,exam:d.exam,examName:"",examDate:""};
     S.cur=c; go("course"); prefetch(c);
   }catch(e){
     main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't build the course</strong>${(L("course_build_failed",{data:{topic:d.topic, level:d.level}}),"")}<span>${esc(aiErr(e))}</span></div><button class="btn block" id="back">Back</button></div>`;
@@ -899,7 +1314,13 @@ function renderCourse(){
     <button class="btn block" id="go">Start lesson</button>
     <p class="small muted" style="text-align:center">${fu?`Next up: your branch <b>${esc(fu.title)}</b> · `:""}${sub} · about 4 minutes</p>
   </div>
+  ${isExam(c)?(()=>{ const e=c.exam, sy=e.syllabus, pc=pacing(c);
+    return `<div class="card"><span class="label">Exam</span><h2>${esc(e.label)} ${esc(sy&&sy.subject||e.subject)}</h2>
+      ${sy?`<p class="small">Built from the official SEAB syllabus${sy.code?" "+esc(sy.code):""}${sy.year?" ("+esc(sy.year)+")":""}. <a href="${esc(sy.source_url)}" target="_blank" rel="noopener">Open the syllabus</a></p>${sy.assessment&&sy.assessment.length?`<p class="small muted">${sy.assessment.map(p=>esc(`${p.paper}${p.duration?" · "+p.duration:""}${p.marks?" · "+p.marks+" marks":""}`)).join("<br>")}</p>`:""}`:`<p class="small muted">No official syllabus was found, so this course follows the usual content of this exam. Add your syllabus or notes when building for a closer match.</p>`}
+      ${pc?(pc.days>0?`<p class="small"><b>${pc.days} days to go.</b> ${pc.remain} concepts left, so lessons now introduce about ${pc.perDay} a day, leaving two weeks for revision.</p>`:`<p class="small">Exam date has passed.</p>`):""}
+      <button class="btn soft block" id="mockBtn">Take a mock test · 10 questions · 15 min</button></div>`; })():""}
   <div class="card">
+    ${(()=>{ const pl=planOf(c); return `<span class="plan">${esc(pl.label)} lesson plan</span><p class="small muted">${esc(pl.desc)}</p>`; })()}
     <div class="row" style="justify-content:space-between"><h2>Your route</h2>${pips(5)}</div>
     <p class="small muted">Each concept climbs five levels: recognise, cue, recall, apply, then explain. Tap a concept to see its notes or go deeper.</p>
     ${c.units.map(u=>{ const br=!!(u.parent||u.angle); const lab=br?unitLabel(c,u):unitLabel(c,u,++n);
@@ -916,6 +1337,7 @@ function renderCourse(){
   ${c.example?"":`<div class="row"><button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`}`;
   $("back").onclick=()=>go("home");
   $("go").onclick=()=>startLesson();
+  const mb=$("mockBtn"); if(mb) mb.onclick=()=>startMock();
   main.querySelectorAll(".stop").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.id]));
   const card=$("branchCard");
   if(!S.sample) card.querySelectorAll("button,input").forEach(x=>x.disabled=true);
@@ -936,6 +1358,7 @@ function sheet(c, k){
   const bg=document.createElement("div"); bg.className="sheet-bg";
   bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(k.name)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(k.name)}</h2><button class="x" aria-label="Close">✕</button></div>
   ${met?`<div class="row" style="justify-content:space-between"><span class="small muted">Level ${k.rung} · ${LVN[k.rung]}</span>${pips(k.rung)}</div>
+  ${k.items&&k.items.length?`<div>${k.items.map(it=>itemHtml(c,it)).join("")}</div>${k.note?`<div class="hook"><span class="label">Good to know</span><span>${esc(k.note)}</span></div>`:""}`:""}
   ${k.teach&&k.teach.eli5?`<p class="eli5" style="font-size:18px">${gloss(k.teach.eli5, k.name)}</p>`:""}
   ${k.teach&&k.teach.visual?`<div id="sheetVis">${visualHtml(k.teach.visual)}</div>`:""}
   <p class="read">${esc(k.summary)}</p>
@@ -963,7 +1386,7 @@ async function startLesson(){
   const c=S.cur, plan=buildLesson(c);
   if(!plan.steps.length){ toast("Nothing to practise yet"); return; }
   const missing = S.sample ? plan.all.filter(id=>needsBank(c.concepts[id])) : plan.all.filter(id=>!c.concepts[id].bank);
-  const teachNeed = S.sample ? plan.fresh.filter(id=>needsTeach(c.concepts[id])) : [];
+  const teachNeed = S.sample && !isLang(c) ? plan.fresh.filter(id=>needsTeach(c.concepts[id])) : [];
   if(missing.length || teachNeed.length){
     if(!S.sample){ toast("Lessons need Claude access in this view"); return; }
     S.view="loading"; window.scrollTo(0,0);
@@ -977,13 +1400,14 @@ async function startLesson(){
   S.view="lesson"; renderStep(); prefetch(c);
 }
 function quitLesson(home){
+  if(LS && LS.mock && LS.mock.timer) clearInterval(LS.mock.timer);
   if(LS) L("lesson_quit",{course:LS.c.title, data:{at:LS.i, of:LS.steps.length, right:LS.right, total:LS.total}});
   if(LS){ if(LS.xp) addXp(LS.xp); saveCourse(LS.c); LS=null; }
   go(home?"home":"course");
 }
 function head(){
   const pct = Math.round(LS.i/Math.max(1,LS.steps.length)*100);
-  return `<div class="lessonhead"><button class="x" id="quit" aria-label="Leave lesson">✕</button><div class="bar"><i style="width:${pct}%"></i></div><span class="tiny muted num">${LS.right}/${LS.total}</span></div>`;
+  return `<div class="lessonhead"><button class="x" id="quit" aria-label="Leave lesson">✕</button><div class="bar"><i style="width:${pct}%"></i></div>${LS.mock?`<span class="timer" id="mockT">${Math.max(0,Math.floor((LS.mock.end-Date.now())/60000))}:${String(Math.max(0,Math.floor((LS.mock.end-Date.now())/1000))%60).padStart(2,"0")}</span>`:`<span class="tiny muted num">${LS.right}/${LS.total}</span>`}</div>`;
 }
 function chip(eff, stretch){
   return `<span class="lvl"><span class="ladder" aria-hidden="true">${[1,2,3,4,5].map(n=>`<i style="height:${4+n*2}px" class="${n<=eff?"on":""}"></i>`).join("")}</span>Level ${eff} · ${LVN[eff]}${stretch?" · Stretch":""}</span>`;
@@ -996,15 +1420,16 @@ function renderStep(){
   const k=LS.c.concepts[st.cid];
   if(!k||!k.bank){ LS.i++; return renderStep(); }
   normBank(k.bank);
-  if(st.t==="intro") return renderIntro(k);
-  const {L,stretch}=pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
-  const vq = ["label","order","sort"].includes(type);
+  if(st.t==="intro") return isLang(LS.c) ? renderLangIntro(k) : renderIntro(k);
+  const {L,stretch} = LS.mock ? {L:[3,4,4,5][Math.floor(Math.random()*4)], stretch:false} : pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
+  const vq = ["label","order","sort"].includes(type) || LANGQ.has(type);
   const x = vq ? {q:type} : pickVariant(k,type);
   if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); } else { k.lastVq=type; }
   LS.q={k, type, eff, x, text:vq?(k.name+" diagram"):qtext(x), stretch: stretch&&eff>k.rung+1, hint:0, undo:null, xp:0, done:false};
-  const ch=chip(eff, LS.q.stretch) + (k.writer?`<span class="tiny muted">Question by ${esc(k.writer)}</span>`:"");
+  const ch=chip(eff, LS.q.stretch) + (isExam(LS.c)&&x&&x.marks?`<span class="tiny muted">[${x.marks} mark${x.marks>1?"s":""}]</span>`:"") + (k.writer?`<span class="tiny muted">Question by ${esc(k.writer)}</span>`:"");
   bar("");
-  if(type==="label") renderLabelQ(ch, k);
+  if(LANGQ.has(type)) renderLangQ(ch, k, type);
+  else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
   else if(type==="sort") renderSortQ(ch, k);
   else if(type==="mcq") renderChoice(ch, x.q, x.a, x.d, "");
@@ -1015,8 +1440,9 @@ function renderStep(){
 }
 function renderIntro(k){
   const t = k.teach || null;
-  const cards=[]; if(t&&t.predict) cards.push("predict"); cards.push("idea"); if(t&&t.visual) cards.push("see"); cards.push("real"); cards.push("remember");
-  const LBL={predict:"Take a guess", idea:"The big idea", see:"See it", real:"The precise version", remember:"Remember this"};
+  const avail={predict:!!(t&&t.predict), idea:true, see:!!(t&&t.visual), worked:!!(t&&t.worked), mistakes:!!(t&&t.mistakes&&t.mistakes.length), real:true, remember:true};
+  const cards=planOf(LS.c).cards.filter(x=>avail[x]);
+  const LBL={predict:"Take a guess", idea:"The big idea", see:"See it", worked:"Worked example", mistakes:"Common mistakes", real:"The precise version", remember:"Remember this"};
   let idx=0, guessed=false;
   const show=()=>{
     window.scrollTo(0,0);
@@ -1027,6 +1453,8 @@ function renderIntro(k){
     if(kind==="predict"){ const p=t.predict; body=`<div class="prompt">${gloss(p.q)}</div><p class="small muted">Just guess. Guessing first helps it stick.</p><div class="opts">${p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="pfb"></div>`; }
     else if(kind==="idea") body=`${t&&t.builds?`<span class="buildchip">↳ Builds on ${esc(t.buildsOn||"what you've learned")}</span><p class="small muted">${gloss(t.builds)}</p>`:""}<p class="eli5">${gloss(t&&t.eli5||k.summary, k.name)}</p>${S.sample||(t&&t.simplest)?`<button class="linkbtn" id="simpler" type="button" style="align-self:flex-start">Explain it even simpler</button><div id="simpOut"></div>`:""}`;
     else if(kind==="see") body=visualHtml(t.visual);
+    else if(kind==="worked") body=`<div class="vans"><span class="label">Problem</span><span style="font-weight:600">${gloss(t.worked.problem)}</span></div><ol class="wsteps">${t.worked.steps.map((x,i)=>`<li${i?" hidden":""}>${gloss(x)}</li>`).join("")}</ol>${t.worked.steps.length>1?`<button class="btn soft sm" id="wNext" type="button" style="align-self:flex-start">Show next step</button>`:""}<div id="wAns" class="hook"${t.worked.steps.length>1?" hidden":""}><span class="label">Answer</span><span>${gloss(t.worked.answer)}</span></div>`;
+    else if(kind==="mistakes") body=`<ul class="kp">${t.mistakes.map(x=>`<li>${gloss(x)}</li>`).join("")}</ul>`;
     else if(kind==="real") body=`<p class="read">${gloss(k.summary, k.name)}</p>${k.points&&k.points.length?`<button class="btn soft sm" id="kpBtn" type="button" style="align-self:flex-start">Show ${k.points.length} key points</button><ul class="kp" id="kpList" hidden>${k.points.map(x=>`<li>${gloss(x, k.name)}</li>`).join("")}</ul>`:""}${k.example?`<div class="ex"><span class="label">Example</span><span>${gloss(k.example, k.name)}</span></div>`:""}<p class="tiny muted">Tap an underlined word for a plain definition.</p>`;
     else body=`<p class="eli5">${gloss(t&&t.takeaway||(k.points&&k.points[0])||k.summary, k.name)}</p>${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}`;
     main.innerHTML = head()+`<div class="card pop">${dots}<span class="label">${LBL[kind]}</span><div class="intro-name" style="font-size:22px">${esc(k.name)}</div>${body}</div>`;
@@ -1043,6 +1471,7 @@ function renderIntro(k){
       $("tnext").textContent="Continue";
     });
     if(kind==="see") wireVisual(main, t.visual);
+    const wn=$("wNext"); if(wn) wn.onclick=()=>{ const h=main.querySelector(".wsteps li[hidden]"); if(h) h.hidden=false; if(!main.querySelector(".wsteps li[hidden]")){ $("wAns").hidden=false; wn.remove(); } };
     const kb=$("kpBtn"); if(kb) kb.onclick=()=>{ $("kpList").hidden=false; kb.remove(); };
     const sp=$("simpler"); if(sp) sp.onclick=()=>{ sp.remove(); L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"intro_simpler", prewritten:!!(t&&t.simplest)}}); const box=$("simpOut"); box.className="deep"; box.innerHTML=`<span class="label">Even simpler</span><div class="read" style="font-size:17px"></div>`; if(t&&t.simplest) box.lastElementChild.innerHTML=gloss(t.simplest); else streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k)); };
   };
@@ -1213,10 +1642,13 @@ QUESTION: ${b.q}
 KEY POINTS a strong answer covers: ${b.points.join("; ")}
 LEARNER: ${levelText(LS.c.level)}
 LEARNER'S ANSWER: ${txt}
-Return ONLY JSON: {"score": 0-100, "pass": true if score >= 60, "good": one short sentence on what they got right, "missing": one short sentence on what was missing or wrong (empty string if nothing), "better": a strong answer in under 60 words}`, {modelTier:"default", cache:false});
+${isExam(LS.c)?`Mark it like a ${LS.c.exam.label} ${LS.c.exam.subject} examiner, out of ${b.marks||b.points.length||3} marks, one mark per mark-scheme point clearly made. Include "marks_awarded".`:""}
+Return ONLY JSON: {"score": 0-100, "pass": true if score >= 60, "marks_awarded": number, "good": one short sentence on what they got right, "missing": one short sentence on what was missing or wrong (empty string if nothing), "better": a strong answer in under 60 words}`, {modelTier:"default", cache:false});
       if(!LS) return;
       const pass=!!r.pass||(+r.score>=60);
-      answered(pass?"right":"wrong", {title: pass?`Strong answer · ${r.score}/100`:`Not there yet · ${r.score}/100`, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
+      const mTot = b.marks||b.points.length||3, mGot = Math.max(0, Math.min(mTot, parseInt(r.marks_awarded)||0));
+      if(LS.q) LS.q.marksAwarded = isExam(LS.c) ? mGot : null;
+      answered(pass?"right":"wrong", {title: isExam(LS.c) ? `${mGot}/${mTot} marks` : pass?`Strong answer · ${r.score}/100`:`Not there yet · ${r.score}/100`, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
     }catch(e){
       $("cin").disabled=false; $("cskip").hidden=false; toast(aiErr(e));
       bar(`<button class="btn block" id="cgo2">Try again</button>`); $("cgo2").onclick=doCheck;
@@ -1234,6 +1666,7 @@ function answered(out, o){
   const q=LS.q; if(q.done) return; q.done=true;
   const k=q.k, before=k.rung;
   q.undo = grade(LS.c, k, q.eff, out);
+  if(LS.mock){ const mk=(q.x&&q.x.marks)||(q.eff>=4?2:1); LS.mock.total+=mk; LS.mock.marks += q.marksAwarded!=null ? q.marksAwarded : out==="right"?mk : out==="helped"?Math.floor(mk/2) : 0; if(out!=="right") LS.mock.missed.push(k.name); }
   L("answer",{course:LS.c.title, concept:k.name, data:{type:q.type, level:q.eff, stretch:q.stretch, hints:q.hint, question:q.text, answer:o.answer||null, typed:q.typed||null, outcome:out, partial:!!o.partial, note:o.note||null, rungBefore:before, rungAfter:k.rung, writer:k.writer||null}});
   LS.total++; if(out==="right") LS.right++;
   q.xp = xpFor(out,q.eff); LS.xp += q.xp;
@@ -1280,7 +1713,7 @@ function regrade(out, msg){
 }
 function nextStep(){
   const p=LS.pending; LS.pending=null;
-  if(p){
+  if(p && !LS.mock){
     const k=LS.c.concepts[p.cid]; LS.count[p.cid]=(LS.count[p.cid]||0)+1;
     const at=Math.min(LS.steps.length, LS.i+3);
     const later=LS.steps.some((s,j)=>j>LS.i&&s.cid===p.cid&&s.t==="q");
@@ -1290,7 +1723,10 @@ function nextStep(){
   LS.i++; saveCourse(LS.c); renderStep();
 }
 function finishLesson(){
+  if(!LS) return;
   bar(""); main.classList.remove("lesson");
+  const mock = LS.mock; if(mock && mock.timer) clearInterval(mock.timer);
+  if(mock) L("mock_done",{course:LS.c.title, data:{marks:mock.marks, total:mock.total, answered:LS.total, of:LS.steps.length, missed:mock.missed}});
   const c=LS.c; c.lessons=(c.lessons||0)+1;
   L("lesson_done",{course:c.title, data:{right:LS.right, total:LS.total, xp:LS.xp, levels:Object.entries(LS.snap).map(([id,r])=>({concept:c.concepts[id]&&c.concepts[id].name, from:r, to:c.concepts[id]&&c.concepts[id].rung}))}});
   const bonus=15; addXp(LS.xp+bonus); saveCourse(c);
@@ -1301,8 +1737,10 @@ function finishLesson(){
   const pace = a==null ? "" : a>=.9 ? "You're finding this easy, so the next lesson brings more new concepts and harder questions." : a<.7 ? "This is a tough patch, so the next lesson slows down: fewer new concepts, more practice." : "Good pace. You're in the sweet spot where learning sticks best.";
   const xp=LS.xp+bonus, s=S.profile.streak;
   LS=null; S.view="done"; window.scrollTo(0,0);
-  main.innerHTML = `<div class="card pop"><span class="label">Lesson complete</span><h1>${pct>=85?"Strong climb":pct>=60?"Solid progress":"Good effort"}</h1>
-    <div class="stats"><div><b>${pct}%</b><span>correct</span></div><div><b>+${xp}</b><span>XP</span></div><div><b>${s}</b><span>day streak</span></div></div>
+  const mpct = mock && mock.total ? Math.round(mock.marks/mock.total*100) : 0;
+  main.innerHTML = `<div class="card pop"><span class="label">${mock?"Mock test complete":"Lesson complete"}</span><h1>${mock?`${mock.marks}/${mock.total} marks`:pct>=85?"Strong climb":pct>=60?"Solid progress":"Good effort"}</h1>
+    ${mock?`<p class="small">${mpct}% of marks. ${mock.missed.length?`Worth revising: ${esc([...new Set(mock.missed)].join(", "))}. These come back sooner in your lessons.`:"Nothing dropped. Keep your lessons going to stay sharp."}</p>`:""}
+    <div class="stats"><div><b>${mock?mpct:pct}%</b><span>${mock?"of marks":"correct"}</span></div><div><b>+${xp}</b><span>XP</span></div><div><b>${s}</b><span>day streak</span></div></div>
     ${pace?`<p class="small">${pace}</p>`:""}
     <span class="label">Levelled up</span>
     ${climbed.length?`<div class="climbed">${climbed.map(x=>`<div><span style="min-width:0"><b>${esc(x.k.name)}</b><br><span class="small muted">Level ${x.from} → ${x.k.rung} · ${LVN[x.k.rung]}</span></span>${pips(x.k.rung)}</div>`).join("")}</div>`:`<p class="small muted">No level-ups this time. Missed concepts come back sooner, which is exactly how they stick.</p>`}

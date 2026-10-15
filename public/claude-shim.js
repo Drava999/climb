@@ -76,4 +76,16 @@
   sample.limits = async () => ({ images: true });
 
   window.claude = { use: async (name) => (name === "sample" ? sample : null) };
+
+  // Official syllabus lookup (SEAB, Singapore). Cached on the server after the first lookup.
+  window.climbSyllabus = async (exam, subject, year) => {
+    const r = await fetch("/api/syllabus", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-climb-device": DEVICE },
+      body: JSON.stringify({ exam, subject, year }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(d.message || "Syllabus lookup failed"); e.code = d.code || "error"; throw e; }
+    return d;
+  };
 })();
