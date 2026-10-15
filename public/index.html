@@ -1,0 +1,1331 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Learn any topic through short, visual lessons that get harder as you improve.">
+<meta name="theme-color" content="#2A55E5">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head><body>
+<title>Climb</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: single phone-first column. A course is a climbing route: units stacked, each concept a hold on a vertical line, five levels per concept. Lessons take over the column. */
+:root{
+  --bg:#F3F5F2; --surface:#FFFFFF; --raise:#E9EEEA; --ink:#15201A; --muted:#5A6960; --line:#D3DCD5;
+  --accent:#2A55E5; --accent-soft:#E2E9FD; --accent-ink:#FFFFFF;
+  --good:#1D8757; --good-soft:#DCF0E4; --bad:#C4423A; --bad-soft:#F8E1DE;
+  --hook-bg:#FFF2D2; --hook-ink:#674300; --scrim:rgba(12,18,14,.45);
+  --ui:"Schibsted Grotesk",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --read:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1512; --surface:#17201B; --raise:#202B25; --ink:#E7EEEA; --muted:#97A59C; --line:#2B3831;
+  --accent:#7E9DFF; --accent-soft:#1E2848; --accent-ink:#0B1020;
+  --good:#4CC98D; --good-soft:#173527; --bad:#F0766D; --bad-soft:#3B1F1D;
+  --hook-bg:#33290F; --hook-ink:#F2D58E; --scrim:rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1512; --surface:#17201B; --raise:#202B25; --ink:#E7EEEA; --muted:#97A59C; --line:#2B3831;
+  --accent:#7E9DFF; --accent-soft:#1E2848; --accent-ink:#0B1020;
+  --good:#4CC98D; --good-soft:#173527; --bad:#F0766D; --bad-soft:#3B1F1D;
+  --hook-bg:#33290F; --hook-ink:#F2D58E; --scrim:rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--ui);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:4px 48px}
+.app{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+main{display:flex;flex-direction:column;gap:16px}
+h1{font:800 30px/1.1 var(--ui);letter-spacing:-.025em;margin:0;text-wrap:balance}
+h2{font:800 22px/1.2 var(--ui);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h3{font:700 17px/1.3 var(--ui);margin:0;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:14px} .tiny{font-size:12px}
+.label{font:700 12px/1.3 var(--ui);text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;gap:8px;align-items:center;border:0;background:none;padding:0;color:var(--ink);font:800 21px var(--ui);letter-spacing:-.03em;cursor:pointer}
+.pills{display:flex;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font:700 13px var(--ui)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.btn{border:0;border-radius:12px;padding:13px 18px;font:700 16px var(--ui);background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.soft{background:var(--raise);color:var(--ink)}
+.btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
+.btn.block{width:100%}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{min-width:0}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--raise);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;width:100%}
+textarea{min-height:110px;resize:vertical}
+input.big{font-size:18px;padding:14px 16px;background:var(--surface)}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:var(--raise);padding:4px;border-radius:12px}
+.seg button{border:0;background:none;padding:9px 4px;border-radius:9px;font:700 14px var(--ui);color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px var(--line)}
+details{display:flex;flex-direction:column;gap:10px}
+details summary{cursor:pointer;font:700 14px var(--ui);color:var(--accent);list-style:none}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{margin-bottom:10px}
+.dbody{display:flex;flex-direction:column;gap:10px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.thumbs img{width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font:600 14px/1.2 var(--ui)}
+.chip:hover{border-color:var(--accent)}
+.course{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 14px;text-align:left;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);width:100%}
+.course:hover{border-color:var(--accent)}
+.tag{display:inline-block;vertical-align:middle;font:700 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;background:var(--hook-bg);color:var(--hook-ink);margin-left:6px}
+.due{color:var(--accent);font-weight:700}
+.ring{flex:none}
+.unit{display:flex;flex-direction:column}
+.unit .label{margin-top:4px}
+.unit h3{margin:2px 0 6px}
+.stop{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 0;background:none;border:0;text-align:left;width:100%;position:relative}
+.stop::before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:var(--line)}
+.unit .stop:first-of-type::before{top:50%}
+.unit .stop:last-child::before{bottom:50%}
+.unit .stop:only-of-type::before{display:none}
+.unit.branch{margin-left:10px;padding-left:12px;border-left:2px dashed var(--accent)}
+.unit.branch .label{color:var(--accent)}
+.kp{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.kp li{padding-left:2px}
+.node{width:16px;height:16px;border-radius:50%;border:3px solid var(--line);background:var(--surface);justify-self:center;position:relative;z-index:1}
+.stop.started .node{border-color:var(--accent)}
+.stop.due .node{border-color:var(--accent);background:var(--accent)}
+.stop.mastered .node{background:var(--good);border-color:var(--good)}
+.stop b{display:block;font-weight:700;line-height:1.3}
+.stop .st{font-size:13px;color:var(--muted)}
+.stop.due .st{color:var(--accent);font-weight:700}
+.pips{display:flex;gap:3px}
+.pips i{width:10px;height:6px;border-radius:3px;background:var(--line)}
+.pips i.on{background:var(--accent)}
+.mastered .pips i.on{background:var(--good)}
+.bar{height:8px;border-radius:99px;background:var(--raise);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s}
+.lessonhead{display:flex;align-items:center;gap:12px}
+.lessonhead .bar{flex:1}
+.x{border:0;background:none;font-size:20px;padding:4px 6px;color:var(--muted);line-height:1}
+.lvl{display:inline-flex;align-items:center;gap:8px;font:700 12px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:5px 10px;border-radius:999px;align-self:flex-start}
+.ladder{display:inline-flex;gap:2px;align-items:flex-end;height:14px}
+.ladder i{width:3px;background:currentColor;opacity:.28;border-radius:1px}
+.ladder i.on{opacity:1}
+.prompt{font:700 21px/1.35 var(--ui);letter-spacing:-.01em;text-wrap:pretty}
+.gap{color:var(--accent);letter-spacing:.05em}
+.read{font-family:var(--read);font-size:17px;line-height:1.6}
+.intro-name{font:800 28px/1.15 var(--ui);letter-spacing:-.025em}
+.ex{border-left:3px solid var(--line);padding-left:12px;display:flex;flex-direction:column;gap:2px}
+.hook{background:var(--hook-bg);color:var(--hook-ink);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.hook .label{color:var(--hook-ink)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;padding:14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font:500 16px/1.35 var(--ui)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{border-color:var(--good);background:var(--good-soft)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft)}
+.tfrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mask{font-family:var(--mono);font-size:19px;letter-spacing:.12em;color:var(--accent);word-break:break-word}
+.fb{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--good-soft)} .fb.no{background:var(--bad-soft)} .fb.info{background:var(--raise)}
+.fb strong{font:800 17px var(--ui)}
+.up{font:700 13px var(--ui);color:var(--good)}
+.linkbtn{background:none;border:0;padding:4px;color:var(--muted);font:600 14px var(--ui);text-decoration:underline;text-underline-offset:3px;align-self:center}
+.spinner{width:18px;height:18px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.steps{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.steps li{display:flex;gap:10px;align-items:center}
+.steps .dot{width:18px;height:18px;border-radius:50%;border:3px solid var(--line);flex:none}
+.steps .done{width:18px;height:18px;border-radius:50%;background:var(--good);flex:none}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center}
+.stats div{background:var(--raise);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column}
+.stats b{font:600 22px var(--mono)}
+.stats span{font-size:12px;color:var(--muted)}
+.climbed{display:flex;flex-direction:column;gap:8px}
+.climbed div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:var(--raise);border-radius:10px}
+.sheet-bg{position:fixed;inset:0;background:var(--scrim);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow:auto}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;z-index:40;max-width:calc(100% - 32px);text-align:center}
+.pop{animation:pop .3s ease}
+@keyframes pop{0%{transform:translateY(6px);opacity:.6}100%{transform:none;opacity:1}}
+main.lesson{padding-bottom:100px}
+.actionbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bg);border-top:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.abin{max-width:560px;margin:0 auto}
+.verdict{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:14px;scroll-margin-bottom:110px}
+.vhead{display:flex;align-items:center;gap:10px;font:800 18px var(--ui)}
+.vicon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--ui);color:var(--surface);flex:none}
+.verdict.ok .vhead{color:var(--good)} .verdict.ok .vicon{background:var(--good)}
+.verdict.no .vhead{color:var(--bad)} .verdict.no .vicon{background:var(--bad)}
+.verdict.part .vhead{color:var(--hook-ink)} .verdict.part .vicon{background:var(--hook-ink)}
+.vans{background:var(--raise);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-weight:700}
+.vlinks{display:flex;flex-wrap:wrap;gap:4px 16px}
+.vlinks .linkbtn{align-self:auto;padding:4px 0}
+.yours{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1.5px dashed var(--line);border-radius:12px}
+.deep{background:var(--raise);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.tdots{display:flex;gap:6px;justify-content:center}
+.tdots i{width:7px;height:7px;border-radius:4px;background:var(--line);transition:width .2s}
+.tdots i.done{background:var(--accent);opacity:.45}
+.tdots i.on{background:var(--accent);width:20px}
+.eli5{font:600 21px/1.45 var(--ui);letter-spacing:-.005em;text-wrap:pretty}
+.buildchip{display:inline-flex;gap:6px;align-items:center;font:700 13px var(--ui);color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;align-self:flex-start}
+.vis{display:flex;flex-direction:column;gap:12px}
+.vflow{display:flex;flex-direction:column;gap:2px}
+.vnode{display:flex;gap:10px;align-items:center;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);text-align:left;font:700 15px/1.3 var(--ui);width:100%}
+.vnode .n{width:24px;height:24px;border-radius:50%;background:var(--raise);display:grid;place-items:center;font:600 12px var(--mono);flex:none}
+.vnode.on{border-color:var(--accent);background:var(--accent-soft)}
+.vnode.on .n{background:var(--accent);color:var(--accent-ink)}
+.vnode.hid{border-style:dashed;border-color:var(--accent);color:var(--accent)}
+.varrow{text-align:center;color:var(--muted);line-height:1;font-size:15px}
+.vnote{background:var(--raise);border-radius:12px;padding:12px 14px;min-height:48px;font-size:15px}
+.vcycle{width:100%;max-width:320px;height:auto;align-self:center}
+.cn{cursor:pointer;outline:none}
+.cn circle{fill:var(--surface);stroke:var(--line);stroke-width:2.5}
+.cn text{fill:var(--ink);font:700 12px var(--ui)}
+.cn.on circle{fill:var(--accent-soft);stroke:var(--accent)}
+.cn.hid circle{stroke:var(--accent);stroke-dasharray:5 4}
+.cn.hid text{fill:var(--accent);font-size:18px}
+.cn:focus-visible circle{stroke:var(--accent);stroke-width:4}
+.vcmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.vcol{border:1.5px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.vcol b{font:800 15px var(--ui);color:var(--accent)}
+.vcol span{font-size:14px;line-height:1.35}
+.vscale .track{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--accent-soft),var(--accent));margin:20px 14px 8px}
+.vscale .mk{position:absolute;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:var(--surface);border:2.5px solid var(--accent);font:600 12px var(--mono);display:grid;place-items:center;padding:0;color:var(--ink)}
+.vscale .mk.on{background:var(--accent);color:var(--accent-ink)}
+.vscale .ends{display:flex;justify-content:space-between;gap:10px;font:700 12px var(--ui);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.vlegend{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.vparts{display:flex;flex-direction:column;align-items:center}
+.vparts .hub{padding:10px 18px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font:800 15px var(--ui);text-align:center}
+.vparts .stem{width:2px;height:14px;background:var(--line)}
+.vparts .spokes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;border-top:2px solid var(--line);padding-top:12px;width:100%}
+.vstat{text-align:center;display:flex;flex-direction:column;gap:4px;padding:8px}
+.vstat b{font:600 44px/1.1 var(--mono);color:var(--accent)}
+.slots{display:flex;flex-direction:column;gap:6px}
+.slot{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--accent);border-radius:12px;background:var(--accent-soft);text-align:left;font:600 15px/1.3 var(--ui)}
+.slot.empty{border-style:dashed;background:none;color:var(--muted);font-weight:500}
+.slot.ok{border-color:var(--good);background:var(--good-soft)}
+.slot.no{border-color:var(--bad);background:var(--bad-soft)}
+.slot .n{font:600 12px var(--mono);flex:none}
+.srow{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px}
+.srow.ok{border-color:var(--good);background:var(--good-soft)}
+.srow.no{border-color:var(--bad);background:var(--bad-soft)}
+.srow .seg{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+.term{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-decoration:underline dotted var(--accent);text-decoration-thickness:2px;text-underline-offset:4px;cursor:help;display:inline}
+.term:hover{color:var(--accent)}
+.vcap{margin-top:-6px}
+.vcurve{width:100%;max-width:420px;height:auto;align-self:center}
+.vcurve .ax{stroke:var(--line);stroke-width:2}
+.vcurve .cl{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round}
+.vcurve .carea{fill:var(--accent-soft)}
+.vcurve .axl{fill:var(--muted);font:600 11px var(--ui)}
+.cm{cursor:pointer;outline:none}
+.cm circle{fill:var(--surface);stroke:var(--accent);stroke-width:2.5}
+.cm text{fill:var(--ink);font:700 11px var(--mono)}
+.cm.on circle{fill:var(--accent)} .cm.on text{fill:var(--accent-ink)}
+.cm:focus-visible circle{stroke-width:4}
+.vbars{display:flex;flex-direction:column;gap:6px}
+.vbar{display:grid;grid-template-columns:minmax(0,8em) minmax(0,1fr) auto;gap:10px;align-items:center;background:none;border:1.5px solid transparent;border-radius:10px;padding:6px 8px;text-align:left;font:600 14px/1.25 var(--ui)}
+.vbar .bt{height:14px;background:var(--raise);border-radius:7px;overflow:hidden}
+.vbar .bt i{display:block;height:100%;background:var(--accent);border-radius:7px}
+.vbar .bv{font:600 13px var(--mono)}
+.vbar.on{border-color:var(--accent);background:var(--accent-soft)}
+@media (prefers-reduced-motion:reduce){.pop,.spinner,.bar>i{animation:none;transition:none}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <button class="brand" id="homeBtn" aria-label="Home">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="16" width="6" height="9" rx="2" fill="var(--accent)" opacity=".45"/><rect x="10" y="9" width="6" height="16" rx="2" fill="var(--accent)" opacity=".7"/><rect x="19" y="1" width="6" height="24" rx="2" fill="var(--accent)"/></svg>
+      Climb
+    </button>
+    <div class="pills">
+      <span class="pill" title="Day streak">🔥 <span class="num" id="streak">0</span></span>
+      <span class="pill" title="Total XP">XP <span class="num" id="xp">0</span></span>
+    </div>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script src="/claude-shim.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const main = $("main");
+const DAY = 864e5;
+const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
+const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5};
+const LEVELS = [["new","New to it"],["some","Know a bit"],["exam","Exam prep"]];
+const SUGGEST = ["How the stock market works","Spanish for travel","Photosynthesis","Python basics","The Cold War","How vaccines work","Music theory","Supply and demand","Probability","Japanese hiragana","Climate change","First aid","Negotiation","Machine learning basics","The human heart","How shipping and trade work","Ancient Rome","Cognitive biases"];
+
+const S = { db:null, uid:null, sample:null, imagesOk:false, store:"local", courses:{}, profile:{xp:0,streak:0,lastDay:""}, view:"home", cur:null, draft:{topic:"",level:"new",goal:"",notes:"",images:[]} };
+let LS = null; // live lesson
+
+/* ---------- helpers ---------- */
+function esc(s){ return String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function uidGen(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); }
+function norm(s){ return String(s||"").toLowerCase().normalize("NFKD").replace(/[^a-z0-9 ]/g," ").replace(/\b(the|a|an)\b/g," ").replace(/\s+/g," ").trim(); }
+function lev(a,b){ const m=a.length,n=b.length; if(!m) return n; if(!n) return m; let p=Array.from({length:n+1},(_,i)=>i); for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; } return p[n]; }
+function similar(guess, targets){
+  const g = norm(guess); if(!g) return false;
+  return targets.filter(Boolean).some(t=>{ const n=norm(t); if(!n) return false;
+    if(g===n) return true;
+    if(n.length<=40 && 1-lev(g,n)/Math.max(g.length,n.length) >= .8) return true;
+    if(n.length>40){ const keys=n.split(" ").filter(w=>w.length>4); const hit=keys.filter(w=>g.includes(w)).length; return keys.length && hit/keys.length>=.6; }
+    return false; });
+}
+function toast(t){ const d=document.createElement("div"); d.className="toast pop"; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(), 2200); }
+const today = () => new Date().toLocaleDateString("en-CA");
+function ring(p, size){ const r=size/2-5, c=2*Math.PI*r, m=size/2; return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-label="${p}% climbed"><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 ${m} ${m})"/><text x="${m}" y="${m+4}" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" font-weight="600" fill="var(--ink)">${p}%</text></svg>`; }
+function pips(r){ return `<span class="pips" aria-label="Level ${r} of 5">${[1,2,3,4,5].map(n=>`<i class="${n<=r?"on":""}"></i>`).join("")}</span>`; }
+function aiErr(e){ return e&&e.code==="not_granted"?"Claude access was declined, so this can't be generated.":e&&e.code==="rate_limited"?"Too many requests just now. Wait a minute and try again.":"Something went wrong: "+((e&&e.message)||"unknown error")+". Try again."; }
+function ago(ms){ const h=ms/36e5; if(h<1) return "within the hour"; if(h<24) return `in ${Math.round(h)} hour${Math.round(h)===1?"":"s"}`; const d=Math.round(h/24); return `in ${d} day${d===1?"":"s"}`; }
+
+/* ---------- storage ---------- */
+function lsGet(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+const base = () => S.db.doc("data/users/"+S.uid+"/climb");
+const timers = {};
+function saveCourse(c){
+  c.updated = Date.now(); S.courses[c.id] = c;
+  clearTimeout(timers[c.id]);
+  timers[c.id] = setTimeout(async ()=>{
+    const body = JSON.parse(JSON.stringify(c));
+    if(S.store==="db"){ try{ await base().collection("courses").doc(c.id).set(body); }catch(e){ toast(e&&e.code==="quota_exceeded"?"Storage is full, progress not saved":"Couldn't save progress"); } }
+    else { const all=lsGet("climb_courses")||{}; all[c.id]=body; lsSet("climb_courses", all); }
+  }, 500);
+}
+async function deleteCourse(id){
+  delete S.courses[id];
+  if(S.store==="db"){ try{ await base().collection("courses").doc(id).delete(); }catch(e){} }
+  else { const all=lsGet("climb_courses")||{}; delete all[id]; lsSet("climb_courses", all); }
+}
+let profTimer;
+function saveProfile(){
+  renderHeader(); clearTimeout(profTimer);
+  profTimer = setTimeout(async ()=>{ if(S.store==="db"){ try{ await base().set({...S.profile}); }catch(e){} } else lsSet("climb_profile", S.profile); }, 500);
+}
+function addXp(n){
+  const P=S.profile; P.xp += n; const t=today();
+  if(P.lastDay!==t){ const y=new Date(Date.now()-DAY).toLocaleDateString("en-CA"); P.streak = P.lastDay===y ? P.streak+1 : 1; P.lastDay=t; }
+  saveProfile();
+}
+function renderHeader(){
+  const P=S.profile, y=new Date(Date.now()-DAY).toLocaleDateString("en-CA");
+  $("streak").textContent = (P.lastDay===today()||P.lastDay===y) ? P.streak : 0;
+  $("xp").textContent = P.xp;
+}
+
+/* ---------- course model ---------- */
+function newConcept(id,o){ return {id, name:String(o.name||""), summary:String(o.summary||""), points:Array.isArray(o.points)?o.points.filter(Boolean).map(String).slice(0,4):[], example:String(o.example||""), hook:String(o.hook||""), rung:0, s:0, due:0, seen:0, right:0, bank:null}; }
+const order = c => c.units.flatMap(u=>u.concepts).filter(id=>c.concepts[id]);
+function progress(c){ const ids=order(c); if(!ids.length) return 0; return Math.round(ids.reduce((s,id)=>s+c.concepts[id].rung,0)/(ids.length*5)*100); }
+function accuracy(c){ const a=c.acc||[]; return a.length>=4 ? a.reduce((s,x)=>s+x,0)/a.length : null; }
+function dueCount(c){ const now=Date.now(); return order(c).filter(id=>{const k=c.concepts[id]; return k.rung>0&&k.due<=now;}).length; }
+function newCount(c){ return order(c).filter(id=>c.concepts[id].rung===0).length; }
+function levelText(l){ return ({new:"complete beginner who has never studied this", some:"knows a little and wants real understanding", exam:"revising for an exam, wants depth and precision"})[l] || "general learner"; }
+
+/* ---------- example course ---------- */
+const EX = [
+ ["Retrieval practice","Pulling information out of your memory, for example by answering a question, strengthens it far more than reading it again.","Covering your notes, writing down everything you remember about a topic, then checking what you missed.","Memory is a path through long grass: each time you walk it (recall), it gets clearer. Re-reading is just looking at the map.",
+  ["Which study method uses retrieval practice?","Answering questions from memory before checking the notes",["Re-reading the chapter twice","Highlighting the key sentences","Copying notes out neatly"]],
+  [["Testing yourself strengthens memory more than re-reading the same material.",true],["Retrieval practice only helps if you get every answer right.",false]],
+  ["Pulling facts out of memory instead of re-reading is called ___ practice.","retrieval"],
+  ["What is it called when you strengthen a memory by actively recalling it?","Retrieval practice",["retrieval","active recall","testing effect"]],
+  ["Mia has a biology test in a week and one free hour tonight. Which plan uses retrieval practice best?","Answer practice questions first, then check the notes for what she got wrong",["Re-read the whole chapter slowly and carefully","Make a colourful summary poster of the chapter","Watch the lecture video again at normal speed"],"Answering first forces recall, and checking afterwards fixes the gaps."],
+  ["Why does retrieval practice beat re-reading? Use the forgetting curve in your answer.",["Recalling strengthens the memory itself","Re-reading builds familiarity, not the ability to recall","Each successful recall slows future forgetting"]]],
+ ["The forgetting curve","Without review, new information fades fast: much of it within a day, then more slowly. Hermann Ebbinghaus mapped this in the 1880s.","You learn 20 new words on Monday. By Tuesday you might recall only about half unless you review them.","Picture a ski slope: a steep drop straight after learning, then a long gentle run-out.",
+  ["What does the forgetting curve show?","Memory drops quickly at first after learning, then more slowly",["Memory improves the longer you leave it","We forget everything after exactly one week","Older memories are always weaker than new ones"]],
+  [["The forgetting curve was first mapped by Hermann Ebbinghaus.",true],["Most forgetting happens slowly and evenly across a month.",false]],
+  ["Memory drops steeply soon after learning, a pattern called the forgetting ___.","curve"],
+  ["Who first mapped the forgetting curve?","Hermann Ebbinghaus",["Ebbinghaus"]],
+  ["You learned a set of formulas this morning. When does a first review save the most?","Later today or tomorrow, before most of it fades",["In a month, once it has settled","Never, it will stick on its own","Only the night before the exam"],"The steepest forgetting is in the first day, so an early review rescues the most."],
+  ["How does each review change the forgetting curve over time?",["A review brings the memory back near the top","After each review the curve falls more slowly","So the next review can come later"]]],
+ ["Spaced repetition","Reviewing at increasing intervals, each time just before you'd forget, builds long-lasting memory with less total study time.","Review a new fact after 1 day, then 3 days, then a week, then two weeks. Climb schedules this for you.","Like watering a new plant: often at first, less often as the roots grow.",
+  ["What does spaced repetition mean?","Reviewing at gradually longer intervals over time",["Studying one topic for hours in a single session","Repeating a fact ten times in a row","Reviewing everything every day at the same time"]],
+  [["In spaced repetition, the gap between reviews usually gets longer.",true],["Cramming the night before is a form of spaced repetition.",false]],
+  ["Reviewing at growing intervals is called ___ repetition.","spaced"],
+  ["What technique schedules reviews at increasing intervals?","Spaced repetition",["spacing","spaced practice","distributed practice"]],
+  ["Two students each study for 3 hours in total. Who remembers more a month later?","The one who studied 30 minutes on six different days",["The one who studied 3 hours the night before","Both remember the same amount","The one who studied 3 hours non-stop on day one"],"Spreading the same time out beats massing it together. This is the spacing effect."],
+  ["Explain how spaced repetition uses the forgetting curve to save study time.",["Review just before you would forget","Each review slows future forgetting","So intervals grow and fewer reviews are needed"]]],
+ ["Interleaving","Mixing different topics or problem types in one session, instead of practising one type in a block, trains you to pick the right method.","A maths set that mixes area, volume and angle problems instead of 20 area problems in a row.","Blocked practice is a song on repeat. Interleaving is shuffle mode: harder, but you learn the whole album.",
+  ["What is interleaving?","Mixing different topics or problem types within one study session",["Finishing one topic completely before starting the next","Taking a break after every question","Studying with a partner who quizzes you"]],
+  [["Interleaving often feels harder than blocked practice while you do it.",true],["Interleaving means mastering one topic fully before moving on.",false]],
+  ["Mixing several problem types in one session is called ___.","interleaving"],
+  ["What is it called when you mix different problem types in one practice session?","Interleaving",["interleaved practice","mixed practice"]],
+  ["A tennis coach wants players ready for real matches. Which drill uses interleaving?","Forehands, backhands and volleys fed in random order",["100 forehands, then 100 backhands","Only serves for a whole week","Watching videos of professional matches"],"Random mixing makes players choose the right shot, just as a match does."],
+  ["Interleaving feels harder but works better. Explain why, using the idea of desirable difficulty.",["Mixing forces you to choose the method each time","That extra effort strengthens learning","Feeling slower in practice is not the same as learning less"]]],
+ ["Desirable difficulty","Some struggle while learning, like recalling instead of re-reading, feels harder in the moment but makes knowledge last much longer.","Trying to answer a question before the lesson, even wrongly, makes the real answer stick better afterwards.","Muscles grow when the weight is heavy enough to strain, but not so heavy you drop it.",
+  ["What is a desirable difficulty?","A challenge that feels harder while learning but improves long-term memory",["A topic too hard for anyone to learn","Studying while exhausted to build stamina","Choosing the hardest textbook available"]],
+  [["If studying feels easy, it is always the most effective method.",false],["Struggling to recall an answer can strengthen the memory.",true]],
+  ["A challenge that slows learning down but makes it stick is a desirable ___.","difficulty"],
+  ["What do psychologists call a struggle during learning that improves long-term memory?","Desirable difficulty",["desirable difficulties","productive struggle"]],
+  ["A learner gets 99% of practice questions right every session. What would help them learn more?","Make the questions harder until they get roughly 80 to 85% right",["Keep it at 99% so they stay motivated","Make every question nearly impossible","Replace the questions with notes to read"],"Too easy means too little effort. Aim for challenge you can mostly meet."],
+  ["Pick two techniques from this course and explain how each one creates a desirable difficulty.",["Retrieval: recalling is harder than re-reading","Spacing or interleaving: waiting or mixing makes recall effortful","That effort is what strengthens memory"]]],
+];
+const EXP = [
+ ["Recalling takes effort, and that effort is what strengthens the memory","Feeling familiar with your notes is not the same as being able to recall them","Getting an answer wrong, then seeing the right one, still helps"],
+ ["The steepest drop comes in the first day or so","Meaningful material fades more slowly than random facts","Each review makes the next drop gentler"],
+ ["The best moment to review is just before you would forget","Intervals grow as the memory gets stronger","The same total time spread out beats one long session"],
+ ["Mixing forces you to choose the right method, not just repeat one","It feels slower and harder while you practise","It helps most with topics similar enough to confuse"],
+ ["Effort during learning is a sign it is working, not failing","Too much difficulty backfires: you need to succeed most of the time","Easy-feeling methods like re-reading create an illusion of mastery"],
+];
+const DEFAULT_ANGLES = ["Real-world applications","History and origins","Common mistakes and myths","How experts think about it","Debates and open questions"];
+function makeExample(){
+  const c={id:"example-memory", title:"How memory works", topic:"How memory works", level:"new", goal:"Example course: the science behind how Climb teaches", example:true, created:0, acc:[], lessons:0, units:[{id:"u1", title:"Learning that sticks", concepts:[]}], concepts:{}, angles:["Study techniques in practice","Sleep and memory","Myths about learning","How the brain stores memories"]};
+  EX.forEach((e,i)=>{ const id="m"+i; c.units[0].concepts.push(id);
+    const k = newConcept(id,{name:e[0],summary:e[1],points:EXP[i],example:e[2],hook:e[3]});
+    k.bank = {mcq:{q:e[4][0],a:e[4][1],d:e[4][2]}, tf:e[5].map(x=>({s:x[0],t:x[1]})), cloze:{s:e[6][0],a:e[6][1]}, recall:{q:e[7][0],a:e[7][1],accept:e[7][2]}, apply:{q:e[8][0],a:e[8][1],d:e[8][2],why:e[8][3]}, connect:{q:e[9][0],points:e[9][1]}};
+    c.concepts[id]=k; });
+  return c;
+}
+
+/* ---------- generation ---------- */
+function addUnits(c, units){
+  (units||[]).forEach(u=>{ if(!u) return; const ids=[];
+    (u.concepts||[]).forEach(k=>{ if(!k||!k.name) return; const id=uidGen(); c.concepts[id]=newConcept(id,k); ids.push(id); });
+    if(ids.length) c.units.push({id:uidGen(), title:String(u.title||"Unit "+(c.units.length+1)), concepts:ids}); });
+}
+const MODELS = [
+  {id:"claude-fable-5-1", n:"Claude Fable 5.1", d:"Newest and most capable", tier:"complex", cost:"about US$1.25"},
+  {id:"claude-opus-5-5", n:"Claude Opus 5.5", d:"Very strong, about half the price", tier:"complex", cost:"about US$0.50"},
+  {id:"claude-sonnet-5-5", n:"Claude Sonnet 5.5", d:"Balanced quality and cost", tier:"default", cost:"about US$0.25"},
+  {id:"claude-haiku-5-5", n:"Claude Haiku 5.5", d:"Fastest and cheapest", tier:"quick", cost:"about US$0.01"},
+];
+const curModel = () => MODELS.find(m=>m.id===S.profile.model) || MODELS[0];
+function writerLabel(model, tier){ const m=MODELS.find(x=>x.id===model); return m ? m.n : `Claude (${tier||"standard"} model, fallback)`; }
+function parseJson(t){ const s=String(t||""); const a=s.indexOf("{"), b=s.lastIndexOf("}"); if(a<0||b<=a) throw new Error("no json"); return JSON.parse(s.slice(a,b+1)); }
+async function writerJson(prompt, extra){
+  const m = curModel();
+  const r = await S.sample(prompt+"\nReply with the JSON only, no other text.", {...(extra||{}), model:m.id, modelTier:m.tier});
+  try{ return {data:parseJson(r.text), writer:writerLabel(r.modelApplied, r.modelTierApplied)}; }
+  catch(e){ const data = await S.sample.json(prompt, {...(extra||{}), modelTier:m.tier}); return {data, writer:writerLabel(null, m.tier)}; }
+}
+function modelSheet(){
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  const cur=curModel();
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="Course writer"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>Who writes your courses</h2><button class="x" aria-label="Close">✕</button></div>
+    <p class="small muted">This model writes course outlines, questions and branches. Answer checking always uses the fast model. Costs are what one 12-concept course would cost on your own website through the Claude API.</p>
+    <div class="opts">${MODELS.map((m,i)=>`<button class="opt${m.id===cur.id?" ok":""}" data-i="${i}"><b>${esc(m.n)}</b><br><span class="small muted">${esc(m.d)} · ${esc(m.cost)} per course</span></button>`).join("")}</div></div>`;
+  const close=()=>bg.remove();
+  bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
+  bg.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.profile.model=MODELS[+b.dataset.i].id; saveProfile(); close(); toast(`New courses and questions: ${MODELS[+b.dataset.i].n}`); render(); });
+  document.body.appendChild(bg);
+}
+const JARGON = `PLAIN-LANGUAGE RULE: the learner knows everyday words, plus the course concepts that come BEFORE the one being written about. Any other technical term (including later concepts) must be avoided or explained in plain words right where it appears, e.g. "freight rate (the price to hire a ship)". Never write vague shorthand like "freight cash".`;
+const CONTEXT = `SELF-CONTAINED RULE: every question, guess and scenario must state all the facts needed to answer it, including the reason behind any assumption. Example: not "Selling 11 cups means every cup costs 90p", but "To sell an 11th cup, she has to drop her price to 90p, and since everyone pays the same price, all 11 customers now pay 90p." Someone who sees only that one question must be able to follow it. Never rely on unstated textbook assumptions. Every "why" explains the cause step by step, using the numbers when there are numbers.`;
+const ANALOGY = `ONE ANALOGY PER CONCEPT: choose a single, high-quality analogy that mirrors how the concept actually works (its cause and effect, not just its surface), that people anywhere would recognise, and that isn't childish. Use that same analogy in "eli5", "simplest" and "hook", and introduce no other analogy anywhere. If no analogy fits well, use one concrete real-world example instead. Quality over quantity.`;
+function qualityRules(level){ return `QUALITY RULES:
+- Every concept must be specific and testable: a named mechanism, rule, term of art, process, document, number or case that people in the field actually use.
+- NEVER use meta or filler concepts such as "What X covers", "Introduction to X", "Overview of X", "Why X matters", "Key terms" or a general history, unless that is literally the topic.
+- Skip what an ordinary educated adult already knows.${level==="some"||level==="exam"?" This learner already knows the basics: start at real substance.":""}
+- Prefer depth over breadth: cover one area properly rather than skimming a whole field.
+- Introduce vocabulary in order: a technical term may only appear in a concept's summary or points if an earlier concept introduced it, or if it is explained in brackets right there.${level==="new"?" This learner is new: the first concepts should establish the core vocabulary through concrete ideas, so later concepts can build on it.":""}`; }
+async function scopeTopic(d){
+  return S.sample.json(`A learner wants to learn: "${d.topic}".
+Learner: ${levelText(d.level)}. Goal: ${d.goal||"none given"}.
+Decide whether this is too broad to teach properly in a 12-concept course. If it is, suggest 5 specific focus areas a serious learner might choose between. Each must be a real sub-area with substance, never "introduction", "overview" or "basics". Order them by how useful they are for this learner's goal. If the topic is already specific enough, set "broad" to false.
+Return ONLY JSON: {"broad": true or false, "question": a short question asking which part they want, "options": [{"title": 2-6 words, "desc": what they'd learn, max 14 words}]}`, {modelTier:"quick"});
+}
+function chooseFocus(d, sc){
+  return new Promise(res=>{
+    const opts=(sc.options||[]).filter(o=>o&&o.title).slice(0,6);
+    main.innerHTML=`<div class="card pop"><span class="label">Narrow it down</span><h2>${esc(sc.question||`Which part of ${d.topic} do you want to learn?`)}</h2>
+      <p class="small muted">A focused course goes much deeper than one that skims the whole field.</p>
+      <div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}"><b>${esc(o.title)}</b><br><span class="small muted">${esc(o.desc||"")}</span></button>`).join("")}</div>
+      <form class="row" id="focusForm" autocomplete="off"><input type="text" id="focusIn" placeholder="Or type your own focus" style="flex:1 1 200px"><button class="btn sm" type="submit">Use this</button></form>
+      <div class="row" style="justify-content:space-between"><button class="linkbtn" id="fBack" type="button">← Back</button><button class="linkbtn" id="fAll" type="button">Give me a broad overview instead</button></div></div>`;
+    main.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ const o=opts[+b.dataset.i]; res(o.title+(o.desc?" ("+o.desc+")":"")); });
+    $("focusForm").onsubmit=e=>{ e.preventDefault(); const v=$("focusIn").value.trim(); if(v) res(v); else $("focusIn").focus(); };
+    $("fAll").onclick=()=>res("");
+    $("fBack").onclick=()=>res(null);
+  });
+}
+async function buildCourse(o){
+  const prompt = `You are an expert teacher designing a short course that takes a learner from the basics to solid, usable understanding.
+TOPIC: ${o.topic||"(infer it from the material)"}
+LEARNER: ${levelText(o.level)}
+GOAL OR CONTEXT: ${o.goal||"none given"}
+${o.focus?`FOCUS: ${o.focus}. The whole course must be about this part of the topic specifically, going properly deep.`:o.scoped?"The learner chose a broad overview. Still make every concept specific and substantial.":""}
+${o.notes?`SOURCE MATERIAL (base the course on this and stay faithful to it):\n"""${o.notes.slice(0,40000)}"""`:""}
+${o.images.length?"Photos of notes are attached; use them as source material.":""}
+
+Break it into 3 units of 4 concepts (12 concepts). Order them so each concept builds on the ones before it: core ideas first, then how it works, then application and nuance. Each concept is ONE learnable idea, not a chapter. Be accurate.
+${qualityRules(o.level)}
+Also suggest 5 "angles": other sides of this topic the learner could branch into later (2-5 words each), such as its history, real-world uses, the maths or science underneath, common myths, debates, or careers.
+Return ONLY JSON: {"title": course title (max 5 words), "angles": ["",...], "units":[{"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": plain-language explanation, max 45 words, defining any jargon, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": one concrete example, max 30 words, "hook": a memory aid such as a mnemonic, acronym, vivid image or analogy, max 25 words}]}]}`;
+  const {data:out, writer} = await writerJson(prompt, o.images.length && S.imagesOk ? {images:o.images} : {});
+  const c = {id:uidGen(), writer, title:String((out&&out.title)||o.topic||"New course"), topic:o.topic, level:o.level, goal:o.goal, notes:(o.notes||"").slice(0,8000), created:Date.now(), acc:[], lessons:0, units:[], concepts:{}, angles:(out&&Array.isArray(out.angles)?out.angles:[]).filter(Boolean).map(String).slice(0,6)};
+  addUnits(c, out&&out.units);
+  if(!order(c).length) throw {message:"The course outline came back empty"};
+  return c;
+}
+const BANK_KEYS = ["mcq","tf","cloze","recall","apply","connect"];
+const arrOf = x => Array.isArray(x) ? x : (x ? [x] : []);
+const strs = x => Array.isArray(x) ? x.filter(v=>v!=null&&v!=="").map(String) : [];
+const CLEAN = {
+  mcq: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3)} : null,
+  tf: x=>x&&x.s ? {s:String(x.s), t:x.t===true||x.t==="true"} : null,
+  cloze: x=>x&&x.s&&String(x.s).includes("___")&&x.a ? {s:String(x.s), a:String(x.a)} : null,
+  recall: x=>x&&x.q&&x.a ? {q:String(x.q), a:String(x.a), accept:strs(x.accept)} : null,
+  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||"")} : null,
+  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points)} : null,
+};
+function cleanBank(it){
+  if(!it) return null;
+  const b={}; BANK_KEYS.forEach(k=>b[k]=arrOf(it[k]).map(CLEAN[k]).filter(Boolean));
+  return b.mcq.length ? b : null;
+}
+function normBank(b){ if(b) BANK_KEYS.forEach(k=>{ if(!Array.isArray(b[k])) b[k]=arrOf(b[k]); }); return b; }
+const qtext = x => x.q || x.s || "";
+function qkey(type,x){ return type+":"+norm(qtext(x)).slice(0,48); }
+function mergeBank(b, add){
+  normBank(b);
+  BANK_KEYS.forEach(k=>{ const seen=new Set(b[k].map(x=>norm(qtext(x)))); add[k].forEach(x=>{ if(!seen.has(norm(qtext(x)))){ b[k].push(x); seen.add(norm(qtext(x))); } }); if(b[k].length>12) b[k]=b[k].slice(-12); });
+}
+function conceptLine(k){ return `${k.name}: ${k.summary}${k.points&&k.points.length?" Key points: "+k.points.join("; ")+".":""}`; }
+const QSPEC = `For each concept write questions at five levels of difficulty. Every question must test a DIFFERENT angle of the concept: how or why it works, a real example or case, a common misconception, an edge case or limit, a comparison with a related concept, cause and effect, or numbers. Don't just restate the summary.
+- "mcq" (level 1, recognise): 2 questions, each with "q", correct "a", and 3 plausible wrong answers "d" of similar length and style.
+- "tf" (level 1): 3 statements, a mix of true and subtly false.
+- "cloze" (level 2, cued recall): 2 sentences "s" with a key word or short phrase replaced by ___, and the missing text "a" (1-3 words).
+- "recall" (level 3, produce from memory): 3 direct questions "q", each with ONE clear correct answer "a" (a term, name, number or short phrase, 1-6 words) and "accept": 1-3 other wordings that also count. Never ask the learner to "name" or "list" examples when several answers would be valid.
+- "apply" (level 4): 3 NEW realistic scenarios or small problems "q" that require using the concept in different situations. Each has correct "a", 3 plausible wrong answers "d", and "why" (1 sentence).
+- "connect" (level 5): 2 open questions "q" asking the learner to explain why or how, predict what happens if something changes, or link the concept to another named concept in this course; "points": 2-3 key points a strong answer covers.
+Write in plain, friendly language a beginner understands: short sentences, questions under 25 words, scenarios under 45 words. ${JARGON}
+${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":""}], "connect":[{"q":"","points":[]}]}]}`;
+async function genBank(c, ids, refresh){
+  const cons = ids.map(id=>c.concepts[id]);
+  const asked = refresh ? cons.map(k=>{ normBank(k.bank); return BANK_KEYS.flatMap(t=>k.bank[t].map(qtext)); }).flat() : [];
+  const prompt = `Write practice questions for a learner studying "${c.title}" (${levelText(c.level)}${c.goal?"; goal: "+c.goal:""}).
+All course concepts: ${order(c).map(id=>c.concepts[id].name).join("; ")}
+${c.notes?`Stay faithful to this source material:\n"""${c.notes}"""\n`:""}
+Write questions for ONLY these concepts:
+${cons.map((k,i)=>`${i+1}. ${conceptLine(k)}`).join("\n")}
+${refresh?`\nThe learner has already practised these questions. Write NEW ones that go deeper and harder, covering angles and details these don't:\n- ${asked.slice(0,40).join("\n- ")}\n`:""}
+${QSPEC}`;
+  const {data:out, writer} = await writerJson(prompt);
+  const items = (out&&out.items)||[];
+  cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const b=cleanBank(it); if(!b) return; if(refresh && k.bank) mergeBank(k.bank,b); else { b.v=2; k.bank=b; k.used={}; k.last=null; } k.writer=writer; });
+  saveCourse(c);
+}
+const needsBank = k => k && (!k.bank || (k.bank.v!==2 && k.rung===0 && !k.seen));
+const inflight = {};
+async function ensureBanks(c, ids){
+  const need = ids.filter(id=>needsBank(c.concepts[id]) && !inflight[id]);
+  for(let i=0;i<need.length;i+=3){
+    const ch = need.slice(i,i+3);
+    const p = genBank(c, ch).finally(()=>ch.forEach(id=>delete inflight[id]));
+    ch.forEach(id=>inflight[id]=p);
+  }
+  await Promise.all([...new Set(ids.map(id=>inflight[id]).filter(Boolean))]);
+  if(ids.some(id=>c.concepts[id] && !c.concepts[id].bank)) throw {message:"Some questions couldn't be prepared"};
+}
+function cleanVisual(v){
+  const out = cleanVisual0(v);
+  if(out) out.caption = String((v&&v.caption)||"").trim().slice(0,200);
+  return out;
+}
+function cleanVisual0(v){
+  if(!v||!v.type) return null;
+  if(v.type==="curve"){
+    const T = x => String(x==null?"":x).trim();
+    const points = arrOf(v.points).map(p=>Array.isArray(p)?[+p[0],+p[1]]:p&&typeof p==="object"?[+p.x,+p.y]:null).filter(p=>p&&isFinite(p[0])&&isFinite(p[1])).map(p=>[Math.max(0,Math.min(100,p[0])),Math.max(0,Math.min(100,p[1]))]).sort((a,b)=>a[0]-b[0]);
+    const marks = arrOf(v.marks).filter(m=>m&&m.label).map(m=>({label:T(m.label).slice(0,48), note:T(m.note).slice(0,180), x:Math.max(0,Math.min(100,+m.x||0)), area:m.area===true||m.area==="true"})).slice(0,4);
+    return points.length>=3 && marks.length>=1 ? {type:"curve", title:T(v.title), x:T(v.x).slice(0,40), y:T(v.y).slice(0,40), points, marks} : null;
+  }
+  if(v.type==="bars"){
+    const T = x => String(x==null?"":x).trim();
+    const items = arrOf(v.items).filter(x=>x&&x.label&&isFinite(+x.value)).map(x=>({label:T(x.label).slice(0,48), value:+x.value, note:T(x.note).slice(0,180)})).slice(0,6);
+    return items.length>=2 ? {type:"bars", title:T(v.title), unit:T(v.unit).slice(0,12), items} : null;
+  }
+  const T = x => String(x==null?"":x).trim();
+  const st = a => arrOf(a).filter(x=>x&&x.label).map(x=>({label:T(x.label).slice(0,48), note:T(x.note).slice(0,180)})).slice(0,5);
+  if(v.type==="flow"||v.type==="cycle"){ const steps=st(v.steps); return steps.length>=2 ? {type:v.type, title:T(v.title), steps} : null; }
+  if(v.type==="compare"){ const columns=arrOf(v.columns).filter(c=>c&&c.label).map(c=>({label:T(c.label), items:strs(c.items).slice(0,4)})).filter(c=>c.items.length).slice(0,3); return columns.length>=2 ? {type:"compare", title:T(v.title), columns} : null; }
+  if(v.type==="scale"){ const items=arrOf(v.items).filter(x=>x&&x.label).map(x=>({label:T(x.label).slice(0,40), note:T(x.note).slice(0,160), pos:Math.max(0,Math.min(100,+x.pos||0))})).slice(0,5); return items.length>=2 ? {type:"scale", title:T(v.title), left:T(v.left), right:T(v.right), items} : null; }
+  if(v.type==="parts"){ const parts=st(v.parts); return parts.length>=2&&v.center ? {type:"parts", title:T(v.title), center:T(v.center), parts} : null; }
+  if(v.type==="stat") return v.value ? {type:"stat", title:T(v.title), value:T(v.value), label:T(v.label), note:T(v.note)} : null;
+  return null;
+}
+function cleanTeach(it){
+  if(!it) return null;
+  const p=it.predict, opts=p?strs(p.options).slice(0,3):[];
+  const predict = p&&p.q&&opts.length>=2 ? {q:String(p.q), options:opts, answer:Math.min(opts.length-1,Math.max(0,parseInt(p.answer)||0)), why:String(p.why||"")} : null;
+  return {anchor:String(it.anchor||""), eli5:String(it.eli5||""), simplest:String(it.simplest||""), hook:String(it.hook||""), builds:String(it.builds||""), buildsOn:String(it.builds_on||""), visual:cleanVisual(it.visual), predict, takeaway:String(it.takeaway||"")};
+}
+async function genTeach(c, ids){
+  const cons = ids.map(id=>c.concepts[id]);
+  const prompt = `You are a brilliant teacher turning concepts into short, interactive, visual mini-lessons for a learner who is a ${levelText(c.level)}. Course: "${c.title}".
+All course concepts, in order: ${order(c).map(id=>c.concepts[id].name).join("; ")}
+Make mini-lessons for ONLY these concepts:
+${cons.map((k,i)=>`${i+1}. ${conceptLine(k)}`).join("\n")}
+
+For each concept return:
+- "predict": a question asked BEFORE any explanation, so the learner guesses how it works. It must be answerable with common sense by someone who has NEVER studied this topic, using only everyday words and no technical terms at all (describe the situation instead). {"q": max 20 words, "options": [3 short options], "answer": index of the right option, "why": max 25 words, everyday words}.
+- "anchor": the single analogy or concrete example you chose, in max 6 words (e.g. "a crowded bus stop").
+- "eli5": explain it to a curious 12-year-old using the anchor. Max 35 words. No jargon.
+- "builds_on": the name of the earlier course concept this most builds on, exactly as listed, or "" if none.
+- "builds": if builds_on is set, one sentence (max 20 words) linking them, e.g. "You saw X. This is what happens next…"; otherwise "".
+- "visual": ONE simple picture that makes the idea click for a beginner. Pick the type that truly fits the idea:
+  "curve" (how something rises or falls over time, or as something else changes: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
+  "bars" (comparing amounts: 2-6 bars with real or illustrative values),
+  "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
+  Every label must be plain words a beginner understands, e.g. "Highest point", not "Cmax". If a technical name matters, put it in the note: "Highest point (called Cmax)". Labels max 4 words. Notes max 18 words, saying what that part means in everyday terms.
+  Every visual has "caption": one plain sentence telling the learner what the picture shows.
+  Shapes: {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
+- "simplest": the same idea for a 7-year-old, max 25 words, using the SAME anchor in even simpler words.
+- "hook": a memory hook, max 20 words, built on the SAME anchor (no new analogy).
+- "takeaway": the one thing to remember, max 15 words.
+- "terms": 2-4 technical words or phrases used in this concept's lesson, each with a plain definition a 12-year-old understands: [{"term":"","def": max 15 words}].
+${ANALOGY}
+${JARGON}
+${CONTEXT}
+Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "predict":{}, "anchor":"", "eli5":"", "simplest":"", "hook":"", "builds_on":"", "builds":"", "visual":{}, "takeaway":"", "terms":[]}]}`;
+  const {data:out} = await writerJson(prompt);
+  const items = (out&&out.items)||[];
+  cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const t=cleanTeach(it); if(t){ t.v=4; k.teach=t; addTerms(c, it&&it.terms); } else k.teachTried=true; });
+  saveCourse(c);
+}
+const hookOf = k => (k.teach && k.teach.hook) || k.hook || "";
+const needsTeach = k => k && !k.teachTried && (!k.teach || (k.teach.v!==4 && k.rung===0 && !k.seen));
+function addTerms(c, terms){
+  c.glossary = c.glossary || {};
+  arrOf(terms).forEach(t=>{ if(t&&t.term&&t.def){ const term=String(t.term).trim().slice(0,40); if(term.length>=3) c.glossary[term.toLowerCase()]={term, def:String(t.def).slice(0,160)}; } });
+}
+function glossMap(c){
+  const g={};
+  if(!c) return g;
+  order(c).forEach(id=>{ const k=c.concepts[id]; if(k.name&&k.name.length>=3&&k.name.length<=40) g[k.name.toLowerCase()]={term:k.name, def:(k.teach&&k.teach.eli5)||shortWhy(k)}; });
+  Object.values(c.glossary||{}).forEach(x=>{ g[x.term.toLowerCase()]=x; });
+  return g;
+}
+function gloss(text, skip){
+  const safe=esc(text), c=(LS&&LS.c)||S.cur; if(!c||!text) return safe;
+  const map=glossMap(c); if(skip) delete map[String(skip).toLowerCase()];
+  const keys=Object.keys(map).sort((a,b)=>b.length-a.length); if(!keys.length) return safe;
+  const byEsc={}; keys.forEach(k=>byEsc[esc(k)]=k);
+  const re=new RegExp("(^|[^A-Za-z0-9])((?:"+Object.keys(byEsc).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")(?:e?s)?)(?=$|[^A-Za-z0-9])","gi");
+  const used=new Set();
+  return safe.replace(re,(m,pre,word)=>{ const w=word.toLowerCase(), key=byEsc[w]||byEsc[w.replace(/s$/,"")]||byEsc[w.replace(/es$/,"")]; if(!key||used.has(key)) return m; used.add(key); return `${pre}<button type="button" class="term" data-t="${encodeURIComponent(key)}">${word}</button>`; });
+}
+function termSheet(key){
+  const c=(LS&&LS.c)||S.cur, x=glossMap(c)[key]; if(!x) return;
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(x.term)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(x.term)}</h2><button class="x" aria-label="Close">✕</button></div><p class="eli5" style="font-size:18px">${esc(x.def)}</p>${S.sample?`<button class="linkbtn" id="tmore" type="button" style="align-self:flex-start">Explain with an example</button><div id="tout"></div>`:""}</div>`;
+  const close=()=>bg.remove();
+  bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
+  document.body.appendChild(bg);
+  const tm=bg.querySelector("#tmore"); if(tm) tm.onclick=()=>{ tm.remove(); const box=bg.querySelector("#tout"); box.className="deep"; box.innerHTML=`<div class="read" style="font-size:16px"></div>`; streamInto(box.firstElementChild, `In a course called "${c.title}", explain the term "${x.term}" to a curious 12-year-old in under 60 words, with one concrete everyday example. Plain definition: ${x.def}. No preamble.`); };
+}
+document.addEventListener("click", e=>{ const t=e.target.closest&&e.target.closest(".term"); if(!t) return; e.preventDefault(); e.stopPropagation(); termSheet(decodeURIComponent(t.dataset.t)); }, true);
+const inflightT = {};
+async function ensureTeach(c, ids){
+  const need = ids.filter(id=>needsTeach(c.concepts[id]) && !inflightT[id]);
+  for(let i=0;i<need.length;i+=3){
+    const ch = need.slice(i,i+3);
+    const p = genTeach(c, ch).catch(()=>ch.forEach(id=>{ if(c.concepts[id]) c.concepts[id].teachTried=true; })).finally(()=>ch.forEach(id=>delete inflightT[id]));
+    ch.forEach(id=>inflightT[id]=p);
+  }
+  await Promise.all([...new Set(ids.map(id=>inflightT[id]).filter(Boolean))]);
+}
+function wrapLabel(str){
+  const lines=[""]; String(str).split(/\s+/).forEach(w=>{ const l=lines[lines.length-1]; if(l && (l+" "+w).length>11) lines.push(w); else lines[lines.length-1]=(l?l+" ":"")+w; });
+  if(lines.length>2){ lines.length=2; lines[1]=lines[1].slice(0,10)+"…"; }
+  return lines;
+}
+function cycleSvg(steps, hide){
+  const n=steps.length, cx=160, cy=150, R=104, r=42;
+  const ang=i=>-Math.PI/2+i*2*Math.PI/n, P=a=>[cx+R*Math.cos(a), cy+R*Math.sin(a)], d=(r+7)/R;
+  let arcs="";
+  for(let i=0;i<n;i++){ const [x1,y1]=P(ang(i)+d), [x2,y2]=P(ang(i+1)-d); arcs+=`<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} A${R} ${R} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" style="fill:none;stroke:var(--muted);stroke-width:2" marker-end="url(#cyArrow)"/>`; }
+  const nodes=steps.map((st,i)=>{ const [x,y]=P(ang(i)); const lines=i===hide?["?"]:wrapLabel(st.label); const ty=y-(lines.length-1)*7+4;
+    return `<g class="cn${i===hide?" hid":""}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden step":st.label)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>${lines.map((l,j)=>`<text x="${x.toFixed(1)}" y="${(ty+j*14).toFixed(1)}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`; }).join("");
+  return `<svg class="vcycle" viewBox="0 0 320 300" role="img" aria-label="Cycle diagram"><defs><marker id="cyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>${arcs}${nodes}</svg>`;
+}
+const visItems = v => v.steps || v.parts || v.marks || v.items || [];
+function curveSvg(v, hide){
+  const X0=46, X1=306, Y0=16, Y1=168, W=X1-X0, H=Y1-Y0, px=x=>X0+W*x/100, py=y=>Y1-H*y/100;
+  const pts=v.points.map(([x,y])=>[px(x),py(y)]);
+  let d=`M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for(let i=0;i<pts.length-1;i++){ const p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+    const c1=[p1[0]+(p2[0]-p0[0])/6, Math.min(Y1,Math.max(Y0,p1[1]+(p2[1]-p0[1])/6))], c2=[p2[0]-(p3[0]-p1[0])/6, Math.min(Y1,Math.max(Y0,p2[1]-(p3[1]-p1[1])/6))];
+    d+=` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`; }
+  const area=`${d} L${pts[pts.length-1][0].toFixed(1)} ${Y1} L${pts[0][0].toFixed(1)} ${Y1} Z`;
+  const P=v.points, yAt=x=>{ for(let i=0;i<P.length-1;i++){ if(x>=P[i][0]&&x<=P[i+1][0]){ const t=(x-P[i][0])/((P[i+1][0]-P[i][0])||1); return P[i][1]+t*(P[i+1][1]-P[i][1]); } } return x<P[0][0]?P[0][1]:P[P.length-1][1]; };
+  const marks=v.marks.map((m,i)=>{ const cx=px(m.x), cy=Math.max(Y0+2,py(yAt(m.x))); return `<g class="cm" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden point":m.label)}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="11"/><text x="${cx.toFixed(1)}" y="${(cy+4).toFixed(1)}" text-anchor="middle">${i===hide?"?":i+1}</text></g>`; }).join("");
+  const ym=(Y0+Y1)/2;
+  return `<svg class="vcurve" viewBox="0 0 320 206" role="img" aria-label="${esc(v.title||"Graph")}"><path class="carea" d="${area}" style="display:none"/><line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" class="ax"/><line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" class="ax"/><path d="${d}" class="cl"/>${marks}<text x="${(X0+X1)/2}" y="196" text-anchor="middle" class="axl">${esc(v.x||"")} →</text><text x="18" y="${ym}" text-anchor="middle" class="axl" transform="rotate(-90 18 ${ym})">${esc(v.y||"")} →</text></svg>`;
+}
+function visualHtml(v, o){
+  o=o||{}; const hide=o.hide;
+  let body="";
+  if(v.type==="flow") body=`<div class="vflow">${v.steps.map((st,i)=>`${i?'<div class="varrow" aria-hidden="true">↓</div>':""}<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i+1}</span><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div>`;
+  else if(v.type==="cycle") body=cycleSvg(v.steps, hide);
+  else if(v.type==="parts") body=`<div class="vparts"><div class="hub">${esc(v.center)}</div><div class="stem"></div><div class="spokes">${v.parts.map((st,i)=>`<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div></div>`;
+  else if(v.type==="compare") body=`<div class="vcmp">${v.columns.map(c=>`<div class="vcol"><b>${esc(c.label)}</b>${c.items.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`).join("")}</div>`;
+  else if(v.type==="scale"){ const its=v.items.map((x,i)=>({...x,i})).sort((a,b)=>a.pos-b.pos);
+    body=`<div class="vscale"><div class="track">${its.map((x,j)=>`<button type="button" class="mk" data-i="${x.i}" style="left:${x.pos}%" aria-label="${esc(x.label)}">${j+1}</button>`).join("")}</div><div class="ends"><span>${esc(v.left)}</span><span>${esc(v.right)}</span></div><div class="vlegend">${its.map((x,j)=>`<button type="button" class="vnode" data-i="${x.i}"><span class="n">${j+1}</span><span>${esc(x.label)}</span></button>`).join("")}</div></div>`; }
+  else if(v.type==="curve") body=curveSvg(v, hide)+`<div class="vlegend">${v.marks.map((m,i)=>`<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i===hide?"?":i+1}</span><span>${i===hide?"?":esc(m.label)}</span></button>`).join("")}</div>`;
+  else if(v.type==="bars"){ const max=Math.max(...v.items.map(x=>Math.abs(x.value)))||1; body=`<div class="vbars">${v.items.map((x,i)=>`<button type="button" class="vbar" data-i="${i}"><span>${esc(x.label)}</span><span class="bt"><i style="width:${Math.max(2,Math.abs(x.value)/max*100)}%"></i></span><span class="bv">${esc(String(+x.value.toFixed(2)))}${esc(v.unit||"")}</span></button>`).join("")}</div>`; }
+  else if(v.type==="stat") body=`<div class="vstat"><b>${esc(v.value)}</b><span class="small">${esc(v.label)}</span>${v.note?`<span class="small muted">${esc(v.note)}</span>`:""}</div>`;
+  const tappable = ["flow","cycle","parts","scale","curve","bars"].includes(v.type) && hide==null && !o.still;
+  return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}${body}${tappable?`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap each part to see what it does.")}</div>`:""}</div>`;
+}
+function wireVisual(root, v){
+  const items=visItems(v), noteEl=root.querySelector(".vnote"); if(!noteEl) return;
+  const sel=i=>{ root.querySelectorAll("[data-i]").forEach(el=>el.classList.toggle("on", +el.dataset.i===i)); root.querySelectorAll(".carea").forEach(a=>a.style.display=items[i]&&items[i].area?"":"none"); const it=items[i]; if(it) noteEl.innerHTML=`<b>${esc(it.label)}</b>${it.note?" · "+gloss(it.note):""}`; };
+  root.querySelectorAll("[data-i]").forEach(el=>{ el.onclick=()=>sel(+el.dataset.i); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sel(+el.dataset.i); } }; });
+}
+function streamInto(el, prompt){
+  const ctl=new AbortController(); let got=false;
+  el.innerHTML='<span class="row" style="gap:8px"><span class="spinner"></span><span class="muted">Writing…</span></span>';
+  const timer=setTimeout(()=>{ if(!got){ ctl.abort(); } }, 20000);
+  S.sample(prompt, {modelTier:"quick", signal:ctl.signal, onText:({text})=>{ if(text&&text!=="Thinking..."){ got=true; el.textContent=text; } }})
+    .then(r=>{ got=true; if(r&&r.text) el.textContent=r.text; })
+    .catch(e=>{ el.innerHTML=`<span class="muted">${esc(e&&e.name==="AbortError"?"That took too long.":aiErr(e))}</span> <button class="linkbtn" type="button">Try again</button>`; el.querySelector("button").onclick=()=>streamInto(el, prompt); })
+    .finally(()=>clearTimeout(timer));
+}
+function simplerPrompt(c, k, q){
+  const a = k.teach && k.teach.anchor;
+  return `Explain "${k.name}" from a course called "${c?c.title:""}" to a curious 10-year-old in under 70 words.${a?` Use this analogy and no other: ${a}.`:" Use at most one everyday analogy."}${q?` They just answered this question: ${q}`:""}
+Accurate summary of the concept: ${k.summary}
+Explain the cause step by step. No preamble, no headings.`;
+}
+
+function prefetch(c){
+  if(!S.sample) return;
+  const ids = [...new Set([...buildLesson(c).all, ...order(c)])].filter(id=>needsBank(c.concepts[id]) && !inflight[id]).slice(0,3);
+  if(ids.length) ensureBanks(c, ids).catch(()=>{});
+  const tids = order(c).filter(id=>{ const k=c.concepts[id]; return k.rung===0 && needsTeach(k) && !inflightT[id]; }).slice(0,3);
+  if(tids.length) ensureTeach(c, tids).catch(()=>{});
+}
+const refreshing = new Set();
+function maybeRefresh(c, k, type){
+  if(!S.sample || refreshing.has(k.id) || !k.bank) return;
+  const used = k.used||{}, list = k.bank[type]||[];
+  if(list.length && list.every(x=>(used[qkey(type,x)]||0)>=1)){
+    refreshing.add(k.id);
+    genBank(c, [k.id], true).catch(()=>{}).finally(()=>refreshing.delete(k.id));
+  }
+}
+function pickVariant(k, type){
+  const list = k.bank[type]; k.used = k.used||{};
+  let cands = list.filter(x=>qkey(type,x)!==k.last); if(!cands.length) cands = list;
+  const min = Math.min(...cands.map(x=>k.used[qkey(type,x)]||0));
+  return shuffle(cands.filter(x=>(k.used[qkey(type,x)]||0)===min))[0];
+}
+function markUsed(k, type, x){ const key=qkey(type,x); k.used[key]=(k.used[key]||0)+1; k.last=key; }
+async function addBranch(c, o){
+  let ask;
+  if(o.parent) ask = `Write a BRANCH that goes deeper into the concept "${o.parent.name}" (${o.parent.summary}). Break it into 4 more advanced sub-concepts: how it works in detail, special cases and limits, real applications, and subtleties an expert would know.`;
+  else if(o.angle) ask = `Write a BRANCH that explores this side of the topic: "${o.angle}". 4 concepts that cover it properly and build on what the learner already knows.`;
+  else ask = `Write the NEXT unit on the main route: 4 new concepts that build on these and go deeper or wider.`;
+  const prompt = `You are extending a course called "${c.title}" for a learner who is a ${levelText(c.level)}${c.goal?" (goal: "+c.goal+")":""}.
+Concepts already in the course: ${order(c).map(id=>c.concepts[id].name).join("; ")}.
+${ask} Don't repeat existing concepts. Be accurate.
+${qualityRules(c.level)}
+Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": max 45 words, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": max 30 words, "hook": memory aid, max 25 words}]}`;
+  const {data:out} = await writerJson(prompt);
+  const before = c.units.length; addUnits(c, [out]);
+  if(c.units.length===before) throw {message:"No new concepts came back"};
+  const u = c.units.pop();
+  if(o.parent){ u.parent=o.parent.id; const pi=c.units.findIndex(x=>x.concepts.includes(o.parent.id)); c.units.splice(pi+1, 0, u); }
+  else { if(o.angle){ u.angle=o.angle; c.angles=(c.angles||[]).filter(a=>a!==o.angle); } c.units.push(u); }
+  if(o.parent||o.angle) c.focus=u.id;
+  saveCourse(c); return u;
+}
+
+/* ---------- lesson engine ---------- */
+function buildLesson(c){
+  const now=Date.now(), cons=order(c).map(id=>c.concepts[id]), a=accuracy(c);
+  const nNew = a==null ? 3 : a<.7 ? 1 : a>=.9 ? 4 : 3;
+  const due = cons.filter(k=>k.rung>0 && k.due<=now).sort((x,y)=>x.due-y.due).slice(0,5);
+  const fu = c.focus && c.units.find(u=>u.id===c.focus);
+  const pool = cons.filter(k=>k.rung===0);
+  const ordered = fu ? [...pool.filter(k=>fu.concepts.includes(k.id)), ...pool.filter(k=>!fu.concepts.includes(k.id))] : pool;
+  const fresh = ordered.slice(0, due.length>=4 ? Math.min(nNew,2) : nNew);
+  let rev = due, extra=false;
+  if(!rev.length && !fresh.length){ rev = cons.slice().sort((x,y)=>x.rung-y.rung||x.due-y.due).slice(0,6); extra=true; }
+  const steps=[], r=[...rev];
+  fresh.forEach(k=>{ steps.push({t:"intro",cid:k.id}); steps.push({t:"q",cid:k.id}); if(r.length) steps.push({t:"q",cid:r.shift().id}); });
+  r.forEach(k=>steps.push({t:"q",cid:k.id}));
+  return {steps, fresh:fresh.map(k=>k.id), reviews:rev.length, extra, all:[...new Set([...fresh,...rev].map(k=>k.id))]};
+}
+function pickLevel(c,k){
+  let L=Math.min(5,k.rung+1), stretch=false; const a=accuracy(c);
+  if(a!=null && a>=.9 && k.rung>=1 && L<5 && Math.random()<.4){ L++; stretch=true; }
+  return {L, stretch};
+}
+function visualType(k,L){
+  const v=k.teach&&k.teach.visual; if(!v) return null;
+  if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
+  if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
+  return null;
+}
+function typeFor(k,L){
+  const vt=visualType(k,L);
+  if(vt && k.lastVq!==vt && Math.random()<.45) return vt;
+  const b=normBank(k.bank);
+  if(L>=5 && b.connect.length && S.sample) return "connect";
+  if(L>=4 && b.apply.length) return "apply";
+  if(L>=3 && b.recall.length) return "recall";
+  if(L>=2 && b.cloze.length) return "cloze";
+  if(L>=2 && b.recall.length) return "recall";
+  if(b.tf.length && k.seen>0 && Math.random()<.4) return "tf";
+  return "mcq";
+}
+function grade(c,k,L,out){
+  const snap={rung:k.rung,s:k.s,due:k.due,seen:k.seen,right:k.right}, accCopy=(c.acc||[]).slice(), was=LS.touched.has(k.id);
+  LS.touched.add(k.id); k.seen++;
+  if(out==="right"){ k.right++; k.rung=Math.max(k.rung,L); }
+  else if(out==="helped"){ k.rung=Math.max(k.rung,L-1); }
+  else if(out==="wrong" && L<=k.rung+1){ k.rung=Math.max(0,k.rung-1); }
+  if(out==="wrong") k.s=Math.max(.2,(k.s||.5)*.35);
+  else if(!was) k.s = out==="right" ? (k.s?Math.min(120,k.s*2.5):1) : out==="helped" ? (k.s?k.s*1.3:.5) : (k.s||.5);
+  k.due = Date.now()+k.s*DAY;
+  c.acc = accCopy.concat(out==="right"?1:out==="wrong"?0:.5).slice(-12);
+  return ()=>{ Object.assign(k,snap); c.acc=accCopy; if(!was) LS.touched.delete(k.id); };
+}
+
+/* ---------- views ---------- */
+function go(v){ S.view=v; bar(""); main.classList.remove("lesson"); window.scrollTo(0,0); render(); }
+function bar(html){ let b=$("abar"); if(!b){ b=document.createElement("div"); b.id="abar"; b.className="actionbar"; document.body.appendChild(b); } b.innerHTML=html?`<div class="abin">${html}</div>`:""; b.hidden=!html; }
+function render(){ ({home:renderHome, course:renderCourse})[S.view]?.(); }
+$("homeBtn").onclick = ()=>{ if(LS) quitLesson(true); else go("home"); };
+
+function renderHome(){
+  const d=S.draft;
+  const list = Object.values(S.courses).sort((a,b)=>(b.updated||0)-(a.updated||0));
+  if(!list.some(c=>c.id==="example-memory")) list.push(makeExample());
+  const sugg = shuffle(SUGGEST).slice(0,6);
+  main.innerHTML = `
+  <div class="card">
+    <h1>What do you want to learn?</h1>
+    <p class="muted">Type anything. Climb maps it into short lessons that start easy and get harder as you improve.</p>
+    <input type="text" class="big" id="fTopic" placeholder="e.g. How interest rates work" value="${esc(d.topic)}">
+    <div class="seg" role="group" aria-label="Your level">${LEVELS.map(([k,n])=>`<button type="button" data-l="${k}" class="${d.level===k?"on":""}">${n}</button>`).join("")}</div>
+    <details id="more"${d.notes||d.goal||d.images.length?" open":""}><summary>+ Add a goal, notes or photos</summary><div class="dbody">
+      <input type="text" id="fGoal" placeholder="Goal (optional), e.g. Pass my A-level econs paper" value="${esc(d.goal)}">
+      <textarea id="fNotes" placeholder="Paste notes, an article or a syllabus (optional)">${esc(d.notes)}</textarea>
+      <div class="row"><label class="btn soft sm" for="fFile">Upload .txt or .md</label><input type="file" id="fFile" accept=".txt,.md,.csv,text/plain,text/markdown" hidden>
+      ${S.imagesOk?`<label class="btn soft sm" for="fImgs">Add photos of notes</label><input type="file" id="fImgs" accept="image/*" multiple hidden>`:""}</div>
+      <div class="thumbs" id="thumbs"></div></div></details>
+    <button class="btn block" id="build"${S.sample?"":" disabled"}>Build my course</button>
+    <div class="row" style="justify-content:space-between"><span class="small muted">Written by</span><button class="chip" id="modelBtn" type="button">${esc(curModel().n)} ▾</button></div>
+    ${S.sample?"":`<p class="small muted">Building courses needs Claude access, which isn't available in this view. You can still try the example course.</p>`}
+    <div class="chips">${sugg.map(s=>`<button class="chip" type="button">${esc(s)}</button>`).join("")}</div>
+  </div>
+  <span class="label">Your courses</span>
+  <div style="display:flex;flex-direction:column;gap:10px">${list.map(c=>{ const due=dueCount(c), nw=newCount(c), p=progress(c);
+    return `<button class="course" data-id="${esc(c.id)}"><div style="min-width:0"><h3>${esc(c.title)}${c.example?'<span class="tag">Example</span>':""}</h3><p class="small muted">${order(c).length} concepts · ${due?`<span class="due">${due} to review</span>`:nw?`${nw} new to learn`:"All caught up"}</p></div>${ring(p,52)}</button>`; }).join("")}</div>`;
+  const sync=()=>{ d.topic=$("fTopic").value; d.goal=$("fGoal").value; d.notes=$("fNotes").value; };
+  ["fTopic","fGoal","fNotes"].forEach(id=>$(id).oninput=sync);
+  main.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{ d.level=b.dataset.l; main.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x===b)); });
+  main.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ $("fTopic").value=b.textContent; sync(); $("fTopic").focus(); });
+  $("fFile").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ $("fNotes").value=($("fNotes").value?$("fNotes").value+"\n\n":"")+String(r.result).slice(0,60000); if(!$("fTopic").value) $("fTopic").value=f.name.replace(/\.[^.]+$/,""); sync(); }; r.readAsText(f); e.target.value=""; };
+  const imgs=$("fImgs"); if(imgs) imgs.onchange=e=>{ for(const f of e.target.files){ if(d.images.length<6) d.images.push(f); } thumbs(); e.target.value=""; };
+  thumbs();
+  $("build").onclick=onBuild;
+  $("modelBtn").onclick=modelSheet;
+  $("fTopic").onkeydown=e=>{ if(e.key==="Enter"&&S.sample) onBuild(); };
+  main.querySelectorAll(".course").forEach(b=>b.onclick=()=>{ const id=b.dataset.id; S.cur = S.courses[id] || makeExample(); go("course"); });
+}
+function thumbs(){ const t=$("thumbs"); if(!t) return; t.innerHTML=""; S.draft.images.forEach((f,i)=>{ const img=document.createElement("img"); img.src=URL.createObjectURL(f); img.alt="Photo "+(i+1)+", tap to remove"; img.onclick=()=>{ S.draft.images.splice(i,1); thumbs(); }; t.appendChild(img); }); }
+
+async function onBuild(){
+  const d=S.draft; d.topic=$("fTopic").value.trim(); d.goal=$("fGoal").value.trim(); d.notes=$("fNotes").value.trim();
+  if(!d.topic && !d.notes && !d.images.length){ toast("Type a topic first"); $("fTopic").focus(); return; }
+  S.view="building"; window.scrollTo(0,0);
+  let focus="", scoped=false;
+  if(d.topic && !d.notes && !d.images.length){
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Looking at ${esc(d.topic)}</h3></div><p class="small muted">Checking whether it needs narrowing down…</p></div>`;
+    try{
+      const sc = await scopeTopic(d);
+      if(sc && sc.broad && Array.isArray(sc.options) && sc.options.length){
+        const pick = await chooseFocus(d, sc);
+        if(pick===null){ go("home"); return; }
+        focus=pick; scoped=true;
+      }
+    }catch(e){}
+  }
+  const steps=(a,b,extra)=>{ main.innerHTML=`<div class="card"><span class="label">Building your course</span><h2>${esc(d.topic||"Your notes")}</h2>${focus?`<p class="small muted">Focus: ${esc(focus)}</p>`:""}
+    <ul class="steps"><li>${a?'<span class="done"></span>':'<div class="spinner"></div>'}<span>Mapping the topic into concepts</span></li><li>${b?'<span class="done"></span>':a?'<div class="spinner"></div>':'<span class="dot"></span>'}<span>Writing your first lesson</span></li></ul>
+    ${extra||'<p class="small muted">This takes about 20 to 40 seconds.</p>'}</div>`; };
+  steps(false,false);
+  try{
+    const c = await buildCourse({topic:d.topic, level:d.level, goal:d.goal, notes:d.notes, images:d.images, focus, scoped});
+    if(focus) c.focus_text=focus;
+    steps(true,false, `<div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(c.title)}</h3>${c.units.map((u,i)=>`<div><span class="label">Unit ${i+1}</span><p class="small"><b>${esc(u.title)}</b>: <span class="muted">${u.concepts.map(id=>esc(c.concepts[id].name)).join(" · ")}</span></p></div>`).join("")}</div>`);
+    saveCourse(c);
+    const first=buildLesson(c);
+    await Promise.all([ensureBanks(c, first.all).catch(()=>{}), ensureTeach(c, first.fresh).catch(()=>{})]);
+    S.draft={topic:"",level:d.level,goal:"",notes:"",images:[]};
+    S.cur=c; go("course"); prefetch(c);
+  }catch(e){
+    main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't build the course</strong><span>${esc(aiErr(e))}</span></div><button class="btn block" id="back">Back</button></div>`;
+    $("back").onclick=()=>go("home");
+  }
+}
+
+function stopHtml(k){
+  const now=Date.now();
+  const cls = k.rung>=5 ? "mastered" : k.rung>0 && k.due<=now ? "due started" : k.rung>0||k.seen>0 ? "started" : "";
+  const st = k.rung>=5 ? "Mastered" : k.rung>0 && k.due<=now ? "Due for review" : k.rung>0 ? `Level ${k.rung} · ${LVN[k.rung]}` : k.seen>0 ? "Met it, keep going" : "Not started";
+  return `<button class="stop ${cls}" data-id="${esc(k.id)}"><span class="node"></span><span style="min-width:0"><b>${esc(k.name)}</b><span class="st">${st}</span></span>${pips(k.rung)}</button>`;
+}
+function unitLabel(c,u,n){
+  if(u.parent){ const p=c.concepts[u.parent]; return `Branch · deeper into ${esc(p?p.name:"a concept")}`; }
+  if(u.angle) return `Branch · ${esc(u.angle)}`;
+  return `Unit ${n}`;
+}
+function renderCourse(){
+  const c=S.cur; if(!c){ go("home"); return; }
+  const p=progress(c), plan=buildLesson(c), nf=plan.fresh.length, nr=plan.extra?0:plan.reviews;
+  const sub = plan.extra ? "Extra practice on your weakest concepts" : [nr?`${nr} to review`:"", nf?`${nf} new concept${nf>1?"s":""}`:""].filter(Boolean).join(" · ");
+  const fu = c.focus && c.units.find(u=>u.id===c.focus && u.concepts.some(id=>c.concepts[id]&&c.concepts[id].rung===0));
+  const angles = (c.angles&&c.angles.length ? c.angles : DEFAULT_ANGLES).slice(0,6);
+  let n=0;
+  main.innerHTML = `
+  <div class="row"><button class="btn ghost sm" id="back">← Courses</button></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between;flex-wrap:nowrap;align-items:flex-start">
+      <div style="min-width:0;display:flex;flex-direction:column;gap:4px"><span class="label">${c.example?"Example course":"Course"}</span><h1 style="font-size:26px">${esc(c.title)}</h1><p class="small muted">${esc(c.goal||"")}</p>${c.writer?`<p class="tiny muted">Written by ${esc(c.writer)}</p>`:""}</div>${ring(p,64)}</div>
+    <button class="btn block" id="go">Start lesson</button>
+    <p class="small muted" style="text-align:center">${fu?`Next up: your branch <b>${esc(fu.title)}</b> · `:""}${sub} · about 4 minutes</p>
+  </div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h2>Your route</h2>${pips(5)}</div>
+    <p class="small muted">Each concept climbs five levels: recognise, cue, recall, apply, then explain. Tap a concept to see its notes or go deeper.</p>
+    ${c.units.map(u=>{ const br=!!(u.parent||u.angle); const lab=br?unitLabel(c,u):unitLabel(c,u,++n);
+      return `<div class="unit${br?" branch":""}"><span class="label">${lab}</span><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`; }).join("")}
+  </div>
+  <div class="card" id="branchCard">
+    <h2>Branch out</h2>
+    <p class="small muted">Explore another side of this topic. A new branch jumps to the front of your next lesson.</p>
+    <div class="chips">${angles.map((a,i)=>`<button class="chip" data-i="${i}">${esc(a)}</button>`).join("")}</div>
+    <form class="row" id="angleForm" autocomplete="off"><input type="text" id="angleIn" placeholder="Or your own, e.g. the maths behind it" style="flex:1 1 200px"><button class="btn sm" type="submit">Build branch</button></form>
+    <button class="btn soft block" id="nextUnit">Continue the main route</button>
+    ${S.sample?"":`<p class="small muted">Branching needs Claude access in this view.</p>`}
+  </div>
+  ${c.example?"":`<div class="row"><button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`}`;
+  $("back").onclick=()=>go("home");
+  $("go").onclick=()=>startLesson();
+  main.querySelectorAll(".stop").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.id]));
+  const card=$("branchCard");
+  if(!S.sample) card.querySelectorAll("button,input").forEach(x=>x.disabled=true);
+  const run = async (o, label)=>{
+    card.querySelectorAll("button,input").forEach(x=>x.disabled=true);
+    card.insertAdjacentHTML("beforeend", `<div class="fb info"><div class="row"><div class="spinner"></div><span>${esc(label)}</span></div></div>`);
+    try{ await addBranch(c, o); toast(o.angle?"Branch added. Your next lesson starts it.":"New unit added"); }catch(e){ toast(aiErr(e)); }
+    renderCourse(); prefetch(c);
+  };
+  card.querySelectorAll(".chip").forEach(b=>b.onclick=()=>run({angle:angles[+b.dataset.i]}, `Building a branch on ${angles[+b.dataset.i]}…`));
+  $("angleForm").onsubmit=e=>{ e.preventDefault(); const v=$("angleIn").value.trim(); if(!v){ $("angleIn").focus(); return; } run({angle:v}, `Building a branch on ${v}…`); };
+  $("nextUnit").onclick=()=>run({}, "Writing the next unit…");
+  const del=$("del"); if(del) del.onclick=()=>{ $("confirm").innerHTML=`<div class="fb no"><strong>Delete "${esc(c.title)}" and all its progress?</strong><div class="row"><button class="btn sm" id="yes">Delete</button><button class="btn ghost sm" id="no">Cancel</button></div></div>`; $("yes").onclick=async()=>{ await deleteCourse(c.id); S.cur=null; go("home"); toast("Course deleted"); }; $("no").onclick=()=>$("confirm").innerHTML=""; };
+}
+function sheet(c, k){
+  const met = k.seen>0 || k.rung>0;
+  const kids = c.units.filter(u=>u.parent===k.id);
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(k.name)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(k.name)}</h2><button class="x" aria-label="Close">✕</button></div>
+  ${met?`<div class="row" style="justify-content:space-between"><span class="small muted">Level ${k.rung} · ${LVN[k.rung]}</span>${pips(k.rung)}</div>
+  ${k.teach&&k.teach.eli5?`<p class="eli5" style="font-size:18px">${gloss(k.teach.eli5, k.name)}</p>`:""}
+  ${k.teach&&k.teach.visual?`<div id="sheetVis">${visualHtml(k.teach.visual)}</div>`:""}
+  <p class="read">${esc(k.summary)}</p>
+  ${k.points&&k.points.length?`<ul class="kp">${k.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>`:""}
+  ${k.example?`<div class="ex"><span class="label">Example</span><span>${esc(k.example)}</span></div>`:""}${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}`
+  :`<p class="muted">You'll meet this one in a lesson soon. Learning it there first, then being tested, makes it stick better than reading ahead.</p>`}
+  ${kids.length?`<p class="small muted">Already branched: ${kids.map(u=>esc(u.title)).join(", ")}</p>`:""}
+  <button class="btn soft block" id="deepBtn"${S.sample?"":" disabled"}>Go deeper into ${esc(k.name)}</button>
+  <p class="tiny muted" style="text-align:center">Adds a branch of 4 more advanced concepts after this one.</p></div>`;
+  const close=()=>bg.remove();
+  bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
+  document.body.appendChild(bg);
+  const sv=bg.querySelector("#sheetVis"); if(sv) wireVisual(sv, k.teach.visual);
+  const db=bg.querySelector("#deepBtn");
+  db.onclick=async()=>{
+    db.disabled=true; db.innerHTML='<span class="spinner"></span> Building a deeper branch…';
+    try{ await addBranch(c, {parent:k}); close(); toast("Branch added. Your next lesson starts it."); renderCourse(); prefetch(c); }
+    catch(e){ toast(aiErr(e)); db.disabled=false; db.textContent="Go deeper into "+k.name; }
+  };
+}
+
+/* ---------- lesson flow ---------- */
+async function startLesson(){
+  bar(""); main.classList.remove("lesson");
+  const c=S.cur, plan=buildLesson(c);
+  if(!plan.steps.length){ toast("Nothing to practise yet"); return; }
+  const missing = S.sample ? plan.all.filter(id=>needsBank(c.concepts[id])) : plan.all.filter(id=>!c.concepts[id].bank);
+  const teachNeed = S.sample ? plan.fresh.filter(id=>needsTeach(c.concepts[id])) : [];
+  if(missing.length || teachNeed.length){
+    if(!S.sample){ toast("Lessons need Claude access in this view"); return; }
+    S.view="loading"; window.scrollTo(0,0);
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Preparing your lesson</h3></div><p class="small muted">Writing ${teachNeed.length?"mini-lessons, diagrams and ":""}questions. About 20 to 40 seconds.</p></div>`;
+    try{ await Promise.all([ensureBanks(c, missing), ensureTeach(c, teachNeed).catch(()=>{})]); }
+    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't prepare the lesson</strong><span>${esc(aiErr(e))}</span></div><div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="back">Back</button></div></div>`; $("retry").onclick=startLesson; $("back").onclick=()=>go("course"); return; }
+  }
+  if(c.example) saveCourse(c);
+  LS = {c, steps:plan.steps, i:0, touched:new Set(), count:{}, retry:{}, fresh:new Set(plan.fresh), snap:Object.fromEntries(plan.all.map(id=>[id,c.concepts[id].rung])), xp:0, right:0, total:0, pending:null, q:null};
+  S.view="lesson"; renderStep(); prefetch(c);
+}
+function quitLesson(home){
+  if(LS){ if(LS.xp) addXp(LS.xp); saveCourse(LS.c); LS=null; }
+  go(home?"home":"course");
+}
+function head(){
+  const pct = Math.round(LS.i/Math.max(1,LS.steps.length)*100);
+  return `<div class="lessonhead"><button class="x" id="quit" aria-label="Leave lesson">✕</button><div class="bar"><i style="width:${pct}%"></i></div><span class="tiny muted num">${LS.right}/${LS.total}</span></div>`;
+}
+function chip(eff, stretch){
+  return `<span class="lvl"><span class="ladder" aria-hidden="true">${[1,2,3,4,5].map(n=>`<i style="height:${4+n*2}px" class="${n<=eff?"on":""}"></i>`).join("")}</span>Level ${eff} · ${LVN[eff]}${stretch?" · Stretch":""}</span>`;
+}
+function wireQuit(){ $("quit").onclick=()=>quitLesson(false); }
+function shortWhy(k){ return String(k.summary||"").split(/(?<=[.!?])\s+/)[0]; }
+function renderStep(){
+  window.scrollTo(0,0); main.classList.add("lesson");
+  const st=LS.steps[LS.i]; if(!st) return finishLesson();
+  const k=LS.c.concepts[st.cid];
+  if(!k||!k.bank){ LS.i++; return renderStep(); }
+  normBank(k.bank);
+  if(st.t==="intro") return renderIntro(k);
+  const {L,stretch}=pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
+  const vq = ["label","order","sort"].includes(type);
+  const x = vq ? {q:type} : pickVariant(k,type);
+  if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); } else { k.lastVq=type; }
+  LS.q={k, type, eff, x, text:vq?(k.name+" diagram"):qtext(x), stretch: stretch&&eff>k.rung+1, hint:0, undo:null, xp:0, done:false};
+  const ch=chip(eff, LS.q.stretch) + (k.writer?`<span class="tiny muted">Question by ${esc(k.writer)}</span>`:"");
+  bar("");
+  if(type==="label") renderLabelQ(ch, k);
+  else if(type==="order") renderOrderQ(ch, k);
+  else if(type==="sort") renderSortQ(ch, k);
+  else if(type==="mcq") renderChoice(ch, x.q, x.a, x.d, "");
+  else if(type==="apply") renderChoice(ch, x.q, x.a, x.d, x.why);
+  else if(type==="tf") renderTf(ch, k, x);
+  else if(type==="connect") renderConnect(ch, k, x);
+  else renderTyped(ch, k, type, x);
+}
+function renderIntro(k){
+  const t = k.teach || null;
+  const cards=[]; if(t&&t.predict) cards.push("predict"); cards.push("idea"); if(t&&t.visual) cards.push("see"); cards.push("real"); cards.push("remember");
+  const LBL={predict:"Take a guess", idea:"The big idea", see:"See it", real:"The precise version", remember:"Remember this"};
+  let idx=0, guessed=false;
+  const show=()=>{
+    window.scrollTo(0,0);
+    const kind=cards[idx], last=idx===cards.length-1;
+    const dots=`<div class="tdots" aria-label="Card ${idx+1} of ${cards.length}">${cards.map((_,i)=>`<i class="${i===idx?"on":i<idx?"done":""}"></i>`).join("")}</div>`;
+    let body="";
+    if(kind==="predict"){ const p=t.predict; body=`<div class="prompt">${gloss(p.q)}</div><p class="small muted">Just guess. Guessing first helps it stick.</p><div class="opts">${p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="pfb"></div>`; }
+    else if(kind==="idea") body=`${t&&t.builds?`<span class="buildchip">↳ Builds on ${esc(t.buildsOn||"what you've learned")}</span><p class="small muted">${gloss(t.builds)}</p>`:""}<p class="eli5">${gloss(t&&t.eli5||k.summary, k.name)}</p>${S.sample||(t&&t.simplest)?`<button class="linkbtn" id="simpler" type="button" style="align-self:flex-start">Explain it even simpler</button><div id="simpOut"></div>`:""}`;
+    else if(kind==="see") body=visualHtml(t.visual);
+    else if(kind==="real") body=`<p class="read">${gloss(k.summary, k.name)}</p>${k.points&&k.points.length?`<button class="btn soft sm" id="kpBtn" type="button" style="align-self:flex-start">Show ${k.points.length} key points</button><ul class="kp" id="kpList" hidden>${k.points.map(x=>`<li>${gloss(x, k.name)}</li>`).join("")}</ul>`:""}${k.example?`<div class="ex"><span class="label">Example</span><span>${gloss(k.example, k.name)}</span></div>`:""}<p class="tiny muted">Tap an underlined word for a plain definition.</p>`;
+    else body=`<p class="eli5">${gloss(t&&t.takeaway||(k.points&&k.points[0])||k.summary, k.name)}</p>${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}`;
+    main.innerHTML = head()+`<div class="card pop">${dots}<span class="label">${LBL[kind]}</span><div class="intro-name" style="font-size:22px">${esc(k.name)}</div>${body}</div>`;
+    wireQuit();
+    bar(`<div class="row" style="flex-wrap:nowrap">${idx?'<button class="btn ghost" id="tback">Back</button>':""}<button class="btn" id="tnext" style="flex:1">${last?"Got it, test me":kind==="predict"&&!guessed?"Skip":"Continue"}</button></div>`);
+    $("tnext").onclick=()=>{ if(last){ LS.i++; renderStep(); } else { idx++; show(); } };
+    const tb=$("tback"); if(tb) tb.onclick=()=>{ idx--; show(); };
+    if(kind==="predict") main.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const p=t.predict, ok=+b.dataset.i===p.answer; guessed=true;
+      main.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; if(+x.dataset.i===p.answer) x.classList.add("ok"); });
+      if(!ok) b.classList.add("no");
+      $("pfb").innerHTML=`<div class="verdict ${ok?"ok":"part"} pop"><div class="vhead"><span class="vicon">${ok?"✓":"~"}</span><span>${ok?"Good instinct":"Good guess, here's the twist"}</span></div>${p.why?`<p class="small">${gloss(p.why)}</p>`:""}</div>`;
+      $("tnext").textContent="Continue";
+    });
+    if(kind==="see") wireVisual(main, t.visual);
+    const kb=$("kpBtn"); if(kb) kb.onclick=()=>{ $("kpList").hidden=false; kb.remove(); };
+    const sp=$("simpler"); if(sp) sp.onclick=()=>{ sp.remove(); const box=$("simpOut"); box.className="deep"; box.innerHTML=`<span class="label">Even simpler</span><div class="read" style="font-size:17px"></div>`; if(t&&t.simplest) box.lastElementChild.innerHTML=gloss(t.simplest); else streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k)); };
+  };
+  show();
+}
+function labelPool(k, v, ans){
+  let pool = order(LS.c).filter(id=>id!==k.id).flatMap(id=>{ const t=LS.c.concepts[id].teach; return t&&t.visual ? visItems(t.visual).map(x=>x.label) : []; });
+  pool = [...new Set(pool)].filter(x=>norm(x)!==norm(ans));
+  if(pool.length<3) pool = pool.concat(visItems(v).map(x=>x.label).filter(x=>norm(x)!==norm(ans)));
+  return [...new Set(pool)];
+}
+function renderLabelQ(ch, k){
+  const v=k.teach.visual, items=visItems(v);
+  const cands=items.map((_,i)=>i).filter(i=>items[i].note&&items[i].note.length>8);
+  const t=cands[Math.floor(Math.random()*cands.length)], ans=items[t].label;
+  let note=items[t].note;
+  ans.split(/\s+/).filter(w=>w.length>3).forEach(w=>{ note=note.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"); });
+  const opts=shuffle([ans, ...shuffle(items.map(x=>x.label).filter(l=>l!==ans)).slice(0,3)]);
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">Which part of this picture does this describe?</div><div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div><div id="vbox">${visualHtml(v,{still:true})}</div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{
+    const ok=opts[+btn.dataset.i]===ans;
+    main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); });
+    if(!ok) btn.classList.add("no");
+    $("vbox").innerHTML=visualHtml(v,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), v);
+    const el=$("vbox").querySelector(`[data-i="${t}"]`); if(el) el.dispatchEvent(new Event("click"));
+    answered(ok?"right":"wrong", {answer:ans, why:items[t].note, canGuess:ok, noAnsBox:true});
+  });
+}
+function renderOrderQ(ch, k){
+  const v=k.teach.visual, isScale=v.type==="scale", isBars=v.type==="bars";
+  const correct = isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
+  let pool = shuffle(correct); let guard=0; while(pool.join("|")===correct.join("|") && guard++<5) pool=shuffle(correct);
+  const picked=[];
+  const prompt = isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
+  const draw=()=>{
+    $("slots").innerHTML = correct.map((_,i)=>picked[i]!=null ? `<button type="button" class="slot" data-p="${i}"><span class="n">${i+1}</span><span>${esc(picked[i])}</span></button>` : `<div class="slot empty"><span class="n">${i+1}</span><span>Tap a card below</span></div>`).join("");
+    $("pool").innerHTML = pool.map((x,i)=>picked.includes(x)?"":`<button type="button" class="chip" data-i="${i}">${esc(x)}</button>`).join("");
+    $("slots").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{ picked.splice(+b.dataset.p,1); draw(); });
+    $("pool").querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{ picked.push(pool[+b.dataset.i]); draw(); });
+    $("ocheck").disabled = picked.length<correct.length;
+  };
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(prompt)}</div><div class="slots" id="slots"></div><div class="chips" id="pool"></div><div id="fb"></div></div>`;
+  bar(`<button class="btn block" id="ocheck" disabled>Check order</button>`);
+  wireQuit(); draw();
+  $("ocheck").onclick=()=>{
+    const n=correct.length; let ok=picked.join("|")===correct.join("|");
+    if(!ok && v.type==="cycle"){ for(let r=1;r<n;r++){ if(correct.map((_,i)=>correct[(i+r)%n]).join("|")===picked.join("|")) ok=true; } }
+    const right = picked.filter((x,i)=>x===correct[i]).length;
+    $("slots").innerHTML = picked.map((x,i)=>`<div class="slot ${ok||x===correct[i]?"ok":"no"}"><span class="n">${i+1}</span><span>${esc(x)}</span></div>`).join("");
+    $("pool").innerHTML="";
+    answered(ok?"right":right>=n-1&&n>=4?"helped":"wrong", {partial:true, noAnsBox:true, why: ok?"":"", extra: ok?"":`<div class="vans"><span class="label">Correct order</span><span style="font-weight:600">${correct.map((x,i)=>`${i+1}. ${esc(x)}`).join("<br>")}</span></div>`});
+  };
+}
+function renderSortQ(ch, k){
+  const v=k.teach.visual, cols=v.columns;
+  const all = shuffle(cols.flatMap((c,ci)=>c.items.map(x=>({x, ci})))).slice(0,6);
+  const pick = all.map(()=>null);
+  const draw=()=>{
+    $("srows").innerHTML = all.map((it,i)=>`<div class="srow" id="sr${i}"><span>${esc(it.x)}</span><div class="seg">${cols.map((c,ci)=>`<button type="button" data-r="${i}" data-c="${ci}" class="${pick[i]===ci?"on":""}">${esc(c.label)}</button>`).join("")}</div></div>`).join("");
+    $("srows").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ pick[+b.dataset.r]=+b.dataset.c; draw(); });
+    $("scheck").disabled = pick.some(p=>p==null);
+  };
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: which group does each one belong to?</div><div id="srows" style="display:flex;flex-direction:column;gap:8px"></div><div id="fb"></div></div>`;
+  bar(`<button class="btn block" id="scheck" disabled>Check</button>`);
+  wireQuit(); draw();
+  $("scheck").onclick=()=>{
+    let right=0;
+    all.forEach((it,i)=>{ const ok=pick[i]===it.ci; if(ok) right++; const row=$("sr"+i); row.className="srow "+(ok?"ok":"no"); row.querySelectorAll("button").forEach(b=>b.disabled=true); if(!ok) row.insertAdjacentHTML("beforeend",`<span class="small">Belongs in <b>${esc(cols[it.ci].label)}</b></span>`); });
+    const out = right===all.length ? "right" : right>=Math.ceil(all.length*2/3) ? "helped" : "wrong";
+    answered(out, {partial:true, noAnsBox:true, title: out==="right"?"All sorted":`${right} of ${all.length} right`});
+  };
+}
+function renderChoice(ch, prompt, a, d, why){
+  const opts = shuffle([a, ...d]);
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${gloss(prompt)}</div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{
+    const ok = opts[+btn.dataset.i]===a;
+    main.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===a) x.classList.add("ok"); });
+    if(!ok) btn.classList.add("no");
+    answered(ok?"right":"wrong", {answer:a, why, canGuess:ok, noAnsBox:true});
+  });
+}
+function renderTf(ch, k, t){
+  main.innerHTML = head()+`<div class="card pop">${ch}<span class="label">True or false?</span><div class="prompt">${gloss(t.s)}</div><div class="tfrow"><button class="opt" data-v="1" style="text-align:center;font-weight:700">True</button><button class="opt" data-v="0" style="text-align:center;font-weight:700">False</button></div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".tfrow .opt").forEach(btn=>btn.onclick=()=>{
+    const ok = (btn.dataset.v==="1")===t.t;
+    main.querySelectorAll(".tfrow .opt").forEach(x=>{ x.disabled=true; if((x.dataset.v==="1")===t.t) x.classList.add("ok"); });
+    if(!ok) btn.classList.add("no");
+    answered(ok?"right":"wrong", {why:shortWhy(k), canGuess:ok, noAnsBox:true});
+  });
+}
+async function aiCheck(question, ref, accept, guess){
+  return S.sample.json(`Judge whether a learner's short answer is correct. Be fair: accept synonyms, different wording, spelling slips, and any answer that is factually valid for the question even if it differs from the reference. Use "partial" when it's on the right track but incomplete or imprecise.
+QUESTION: ${question}
+REFERENCE ANSWER: ${ref}${accept.length?` (also acceptable: ${accept.join("; ")})`:""}
+LEARNER ANSWER: ${guess}
+Return ONLY JSON: {"verdict": "correct" or "partial" or "wrong", "note": one short sentence to the learner explaining the judgement}`, {modelTier:"quick", cache:false});
+}
+function renderTyped(ch, k, type, x){
+  const cloze = type==="cloze", ans = x.a;
+  const accept = cloze ? [] : (x.accept||[]), targets = [ans, ...accept];
+  const promptHtml = cloze ? gloss(x.s, k.name).replace("___",'<span class="gap">_____</span>') : gloss(x.q, k.name);
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${promptHtml}</div><div id="hintArea"></div>
+    <form id="tform" autocomplete="off"><input type="text" id="tin" placeholder="Type it from memory" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done"></form>
+    <button type="button" class="linkbtn" id="idk" style="align-self:flex-start">I don't know</button><div id="fb"></div></div>`;
+  bar(`<div class="row" style="flex-wrap:nowrap"><button class="btn ghost" id="hint">Hint</button><button class="btn" id="check" style="flex:1">Check</button></div>`);
+  wireQuit();
+  const inp=$("tin"); setTimeout(()=>inp.focus(),60);
+  let busy=false;
+  const lock = g => { const f=$("tform"); if(f) f.outerHTML = g ? `<div class="yours"><span class="label">You wrote</span><span>${esc(g)}</span></div>` : ""; const i=$("idk"); if(i) i.remove(); };
+  $("hint").onclick=()=>{
+    LS.q.hint++;
+    if(LS.q.hint===1){
+      const mask = ans.split(/\s+/).map(w=>w[0]+"_".repeat(Math.max(0,w.length-1))).join("  ");
+      $("hintArea").innerHTML=`<div class="fb info"><span class="label">Hint · first letters</span><span class="mask">${esc(mask)}</span></div>`;
+      $("hint").textContent="Options";
+    } else {
+      let pool = order(LS.c).filter(id=>id!==k.id).flatMap(id=>{ const b=LS.c.concepts[id].bank; return b ? arrOf(b[type]).map(v=>v.a) : []; }).filter(Boolean);
+      pool = [...new Set(pool)].filter(v=>norm(v)!==norm(ans));
+      if(pool.length<2) pool = pool.concat(k.bank.mcq[0].d);
+      const opts = shuffle([ans, ...shuffle(pool).slice(0,3)]);
+      lock(""); bar("");
+      $("hintArea").innerHTML=`<span class="label">Pick one</span><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+      $("hintArea").querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{
+        const ok = opts[+btn.dataset.i]===ans;
+        $("hintArea").querySelectorAll(".opt").forEach(o=>{ o.disabled=true; if(opts[+o.dataset.i]===ans) o.classList.add("ok"); });
+        if(!ok) btn.classList.add("no");
+        answered(ok?"helped":"wrong", {answer:ans, why:shortWhy(k), noAnsBox:true});
+      });
+    }
+  };
+  $("idk").onclick=()=>{ if(busy) return; busy=true; lock(""); answered("wrong", {answer:ans, why:shortWhy(k)}); };
+  const submit = async ()=>{
+    const el=$("tin"); if(busy||!el) return; const g=el.value.trim(); if(!g){ el.focus(); return; }
+    busy=true; lock(g); $("hintArea").innerHTML="";
+    if(similar(g,targets)) return answered(LS.q.hint?"helped":"right", {answer:ans, showAns:norm(g)!==norm(ans)});
+    if(!S.sample) return answered("wrong", {answer:ans, guess:g, why:shortWhy(k)});
+    bar(`<button class="btn block" disabled><span class="spinner"></span> Checking your answer…</button>`);
+    try{
+      const r = await aiCheck(cloze ? x.s : x.q, ans, accept, g);
+      if(!LS || LS.q.x!==x) return;
+      const v = r && r.verdict;
+      if(v==="correct") answered(LS.q.hint?"helped":"right", {answer:ans, showAns:true, note:r.note});
+      else if(v==="partial") answered("helped", {answer:ans, partial:true, note:r.note});
+      else answered("wrong", {answer:ans, guess:g, note:r&&r.note, why:shortWhy(k)});
+    }catch(e){ if(LS && LS.q.x===x) answered("wrong", {answer:ans, guess:g, why:shortWhy(k)}); }
+  };
+  $("tform").onsubmit=e=>{ e.preventDefault(); submit(); };
+  $("check").onclick=submit;
+}
+function renderConnect(ch, k, b){
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${gloss(b.q)}</div><p class="small muted">Answer in your own words. Two or three sentences is plenty.</p>
+    <textarea id="cin" placeholder="Explain it…"></textarea><button class="linkbtn" id="cskip" type="button" style="align-self:flex-start">Skip this one</button><div id="fb"></div></div>`;
+  bar(`<button class="btn block" id="cgo">Check my answer</button>`);
+  wireQuit();
+  $("cskip").onclick=()=>{ LS.i++; renderStep(); };
+  const doCheck=async()=>{
+    const txt=$("cin").value.trim(); if(txt.length<15){ toast("Write a little more first"); return; }
+    $("cin").disabled=true; $("cskip").hidden=true;
+    bar(`<button class="btn block" disabled><span class="spinner"></span> Marking your answer…</button>`);
+    try{
+      const r = await S.sample.json(`Mark a learner's open answer fairly but rigorously.
+CONCEPT: ${k.name}: ${k.summary}
+QUESTION: ${b.q}
+KEY POINTS a strong answer covers: ${b.points.join("; ")}
+LEARNER: ${levelText(LS.c.level)}
+LEARNER'S ANSWER: ${txt}
+Return ONLY JSON: {"score": 0-100, "pass": true if score >= 60, "good": one short sentence on what they got right, "missing": one short sentence on what was missing or wrong (empty string if nothing), "better": a strong answer in under 60 words}`, {modelTier:"default", cache:false});
+      if(!LS) return;
+      const pass=!!r.pass||(+r.score>=60);
+      answered(pass?"right":"wrong", {title: pass?`Strong answer · ${r.score}/100`:`Not there yet · ${r.score}/100`, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
+    }catch(e){
+      $("cin").disabled=false; $("cskip").hidden=false; toast(aiErr(e));
+      bar(`<button class="btn block" id="cgo2">Try again</button>`); $("cgo2").onclick=doCheck;
+    }
+  };
+  $("cgo").onclick=doCheck;
+}
+function xpFor(out, eff){ return out==="right" ? (eff>=5?20:eff>=4?15:10) : out==="helped" ? 5 : out==="lucky" ? 3 : 0; }
+function verdictHead(out, o, q){
+  const kind = out==="right" ? "ok" : out==="wrong" ? "no" : "part";
+  const title = o.title || (out==="right" ? (q.stretch?"Correct, level skipped":"Correct") : out==="helped" ? (o.partial?"Partly right":"Right, with help") : out==="lucky" ? "Noted as a guess" : "Not quite");
+  return {kind, html:`<div class="vhead"><span class="vicon">${{ok:"✓",no:"✕",part:"~"}[kind]}</span><span>${esc(title)}</span></div>`};
+}
+function answered(out, o){
+  const q=LS.q; if(q.done) return; q.done=true;
+  const k=q.k, before=k.rung;
+  q.undo = grade(LS.c, k, q.eff, out);
+  LS.total++; if(out==="right") LS.right++;
+  q.xp = xpFor(out,q.eff); LS.xp += q.xp;
+  LS.pending = {cid:k.id, out};
+  const vh = verdictHead(out,o,q);
+  const up = k.rung>before ? `<span class="up">↑ ${esc(k.name)} reached level ${k.rung} · ${LVN[k.rung]}</span>` : "";
+  const ansBox = !o.noAnsBox && o.answer && (out!=="right" || o.showAns) ? `<div class="vans"><span class="label">Answer</span><span>${esc(o.answer)}</span></div>` : "";
+  const why = o.note || o.why || "";
+  $("fb").innerHTML = `<div class="verdict ${vh.kind} pop" id="verdict"><div id="vh">${vh.html}</div>${ansBox}${why?`<p class="small">${gloss(why)}</p>`:""}${o.extra||""}${up}
+    ${out==="wrong"&&hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}
+    <div class="vlinks">${out!=="right"&&k.teach&&k.teach.visual&&!["label","order","sort"].includes(q.type)?`<button class="linkbtn" id="pic" type="button">Show me the picture</button>`:""}${S.sample?`<button class="linkbtn" id="simpler" type="button">Explain simpler</button><button class="linkbtn" id="deeper" type="button">Explain in more depth</button>`:""}${o.canGuess?`<button class="linkbtn" id="guess" type="button">I guessed</button>`:""}${out==="wrong"&&o.guess?`<button class="linkbtn" id="mine" type="button">I was right</button>`:""}</div>
+    <div id="deepOut"></div></div>`;
+  const last = LS.i+1>=LS.steps.length && out!=="wrong" && !(LS.fresh.has(k.id)&&(LS.count[k.id]||0)<1);
+  bar(`<button class="btn block" id="next">${last?"Finish lesson":"Continue"}</button>`);
+  $("next").onclick=nextStep;
+  try{ $("verdict").scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(e){}
+  const g=$("guess"); if(g) g.onclick=()=>regrade("lucky","It'll come back sooner so you can lock it in.");
+  const m=$("mine"); if(m) m.onclick=()=>regrade("right","Counted as correct.");
+  const pic=$("pic"); if(pic) pic.onclick=()=>{ pic.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=visualHtml(k.teach.visual,{hint:"Tap each part to review it."}); wireVisual(box, k.teach.visual); };
+  const smp=$("simpler"); if(smp) smp.onclick=()=>{ smp.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=`<span class="label">Simpler</span><div class="read" style="font-size:16px"></div>`; streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k, q.text)); };
+  const dp=$("deeper"); if(dp) dp.onclick=async()=>{
+    dp.remove(); const box=$("deepOut"); box.className="deep";
+    box.innerHTML=`<span class="label">Going deeper</span><div class="read" id="deepTxt" style="font-size:16px">Thinking…</div>`;
+    const t=$("deepTxt");
+    try{ await S.sample(`A learner studying "${LS?LS.c.title:""}" just answered a question about "${k.name}".
+QUESTION: ${q.text}
+${o.answer?"CORRECT ANSWER: "+o.answer:""}
+CONCEPT: ${k.summary}
+Explain this more deeply in under 130 words of plain language: why it's true, how it works underneath, and one non-obvious detail or real-world case that goes beyond the basics. No headings, no preamble.`, {modelTier:"default", onText:({text})=>{ t.textContent=text; }}); }
+    catch(e){ t.textContent=aiErr(e); }
+  };
+}
+function regrade(out, msg){
+  const q=LS.q; q.undo();
+  if(LS.pending.out==="right") LS.right--; LS.xp-=q.xp;
+  q.undo = grade(LS.c, q.k, q.eff, out);
+  if(out==="right") LS.right++;
+  q.xp = xpFor(out,q.eff); LS.xp+=q.xp; LS.pending.out=out;
+  const v=$("verdict"), vh=verdictHead(out,{},q);
+  v.className="verdict "+vh.kind; $("vh").innerHTML=vh.html + `<p class="small">${esc(msg)}</p>`;
+  ["guess","mine"].forEach(id=>{ const x=$(id); if(x) x.remove(); });
+}
+function nextStep(){
+  const p=LS.pending; LS.pending=null;
+  if(p){
+    const k=LS.c.concepts[p.cid]; LS.count[p.cid]=(LS.count[p.cid]||0)+1;
+    const at=Math.min(LS.steps.length, LS.i+3);
+    const later=LS.steps.some((s,j)=>j>LS.i&&s.cid===p.cid&&s.t==="q");
+    if((p.out==="wrong"||p.out==="lucky") && (LS.retry[p.cid]||0)<2 && !later){ LS.retry[p.cid]=(LS.retry[p.cid]||0)+1; LS.steps.splice(at,0,{t:"q",cid:p.cid}); }
+    else if((p.out==="right"||p.out==="helped") && LS.fresh.has(p.cid) && LS.count[p.cid]<2 && k.rung<5 && !later){ LS.steps.splice(at,0,{t:"q",cid:p.cid}); }
+  }
+  LS.i++; saveCourse(LS.c); renderStep();
+}
+function finishLesson(){
+  bar(""); main.classList.remove("lesson");
+  const c=LS.c; c.lessons=(c.lessons||0)+1;
+  const bonus=15; addXp(LS.xp+bonus); saveCourse(c);
+  const climbed = Object.entries(LS.snap).map(([id,r])=>({k:c.concepts[id], from:r})).filter(x=>x.k&&x.k.rung>x.from);
+  const pct = LS.total ? Math.round(LS.right/LS.total*100) : 0;
+  const now=Date.now(), nextDue=order(c).map(id=>c.concepts[id]).filter(k=>k.rung>0&&k.due>now).map(k=>k.due).sort((a,b)=>a-b)[0];
+  const nw=newCount(c), a=accuracy(c);
+  const pace = a==null ? "" : a>=.9 ? "You're finding this easy, so the next lesson brings more new concepts and harder questions." : a<.7 ? "This is a tough patch, so the next lesson slows down: fewer new concepts, more practice." : "Good pace. You're in the sweet spot where learning sticks best.";
+  const xp=LS.xp+bonus, s=S.profile.streak;
+  LS=null; S.view="done"; window.scrollTo(0,0);
+  main.innerHTML = `<div class="card pop"><span class="label">Lesson complete</span><h1>${pct>=85?"Strong climb":pct>=60?"Solid progress":"Good effort"}</h1>
+    <div class="stats"><div><b>${pct}%</b><span>correct</span></div><div><b>+${xp}</b><span>XP</span></div><div><b>${s}</b><span>day streak</span></div></div>
+    ${pace?`<p class="small">${pace}</p>`:""}
+    <span class="label">Levelled up</span>
+    ${climbed.length?`<div class="climbed">${climbed.map(x=>`<div><span style="min-width:0"><b>${esc(x.k.name)}</b><br><span class="small muted">Level ${x.from} → ${x.k.rung} · ${LVN[x.k.rung]}</span></span>${pips(x.k.rung)}</div>`).join("")}</div>`:`<p class="small muted">No level-ups this time. Missed concepts come back sooner, which is exactly how they stick.</p>`}
+    <p class="small muted">${nw?`${nw} new concept${nw>1?"s":""} waiting. `:""}${nextDue?`Next review due ${ago(nextDue-now)}.`:""}</p>
+    <div class="row"><button class="btn" id="again" style="flex:1">Next lesson</button><button class="btn ghost" id="toCourse" style="flex:1">Course map</button></div></div>`;
+  $("again").onclick=()=>startLesson(); $("toCourse").onclick=()=>go("course");
+}
+
+/* ---------- boot ---------- */
+async function boot(){
+  const p=lsGet("climb_profile"); if(p) S.profile={...S.profile,...p};
+  const local=lsGet("climb_courses"); if(local) S.courses=local;
+  renderHeader(); render();
+  const c=window.claude;
+  if(!c||!c.use) return;
+  const [db,user,sample]=await Promise.all([c.use("db"),c.use("user"),c.use("sample")]);
+  S.sample=sample;
+  if(sample){ try{ const l=await sample.limits(); S.imagesOk=!!(l&&l.images); }catch(e){} }
+  const id = user ? await user.id() : null;
+  if(db && id){
+    S.db=db; S.uid=id;
+    try{
+      const [ps,qs]=await Promise.all([base().get(), base().collection("courses").get()]);
+      S.store="db";
+      if(ps.exists) S.profile={...S.profile,...ps.data()};
+      const remote={}; qs.docs.forEach(d=>{ remote[d.id]=JSON.parse(JSON.stringify(d.data())); });
+      const localOnly=Object.values(S.courses).filter(x=>!remote[x.id]);
+      S.courses=remote; localOnly.forEach(saveCourse);
+      if(S.cur && S.courses[S.cur.id] && !LS) S.cur=S.courses[S.cur.id];
+    }catch(e){}
+  }
+  renderHeader();
+  if(S.view==="home"||S.view==="course") render();
+}
+boot();
+})();
+</script>
+
+</body></html>

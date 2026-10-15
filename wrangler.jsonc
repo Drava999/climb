@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "climb",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-13",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  // Per-visitor limit on Claude requests: 20 per minute per IP address (per Cloudflare location).
+  "ratelimits": [
+    {
+      "name": "RL_BURST",
+      "namespace_id": "4201",
+      "simple": { "limit": 20, "period": 60 }
+    }
+  ],
+  "observability": { "enabled": true }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "climb",
+  "private": true,
+  "description": "Climb: learn any topic through short, visual, adaptive lessons. Powered by Claude.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.36.0"
+  }
+}
