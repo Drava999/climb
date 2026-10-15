@@ -76,7 +76,7 @@ async function handleLog(request, env, ctx) {
 }
 
 // ---------- official syllabus lookup (Singapore exams) ----------
-const SG_EXAMS = { psle: "PSLE", olevel: "GCE O-Level", nalevel: "GCE N(A)-Level", ntlevel: "GCE N(T)-Level", alevel: "GCE A-Level" };
+const SG_EXAMS = { psle: "PSLE", sec: "SEC (Singapore-Cambridge Secondary Education Certificate)", olevel: "GCE O-Level", nalevel: "GCE N(A)-Level", ntlevel: "GCE N(T)-Level", alevel: "GCE A-Level" };
 const SYL_DOMAINS = ["seab.gov.sg", "www.seab.gov.sg", "isomer-user-content.by.gov.sg", "moe.gov.sg", "www.moe.gov.sg"];
 const SYL_TTL_DAYS = 60;
 
@@ -126,7 +126,7 @@ async function handleSyllabus(request, env, ctx) {
   const prompt = `Find the official ${exam} syllabus for "${subject}" for examinations in ${year}, published by SEAB (Singapore Examinations and Assessment Board).
 Steps:
 1. Search seab.gov.sg for the ${exam} syllabuses page for ${year} (school candidates).
-2. Open that page and find this subject's syllabus. Choose the standard version (not private-candidate, not a different language medium) unless the subject name asks for a variant. If the ${year} page isn't available, use the most recent year and say so in "notes".
+2. Open that page and find this subject's syllabus. Choose the standard version (not private-candidate, not a different language medium) unless the subject name asks for a variant.${b.exam === "sec" ? " SEC subjects are offered at G1, G2 and G3 levels: use G3 unless the subject name says G1 or G2." : ""} If the ${year} page isn't available, use the most recent year and say so in "notes".
 3. Fetch the syllabus PDF and read it carefully.
 Then return ONLY JSON:
 {"found": true, "exam": "${exam}", "subject": "official subject title", "code": "syllabus code", "year": "year it applies to", "source_url": "the PDF URL", "page_url": "the listing page URL",

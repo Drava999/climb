@@ -6,7 +6,8 @@ Learn any topic through short, visual lessons that start easy and get harder as 
 
 - `public/index.html` is the whole app: course building, interactive teaching cards, diagrams, the 5-level question ladder, spacing and branching.
 - `public/claude-shim.js` connects the app to this site's own server. Progress is saved in the visitor's browser for now (accounts come in version 2).
-- `src/worker.js` is the server (a Cloudflare Worker). It serves the app and relays requests to the Claude API at `/api/sample`. The API key never reaches the browser.
+- `src/worker.js` is the server (a Cloudflare Worker). It serves the app and relays requests to the Claude API at `/api/sample`. The API key never reaches the browser. `/api/syllabus` looks up official SEAB syllabuses for subjects that aren't ready-made (cached in D1).
+- `public/syllabi.json` holds ready-made, checked summaries of 28 official syllabuses (PSLE, SEC G3 2027, A-Level 2027), each linking to its official PDF. Refreshed twice a year.
 - Protection: only this site's pages may call the API, each visitor is limited to 20 Claude requests per minute, prompts and replies are size-capped, and only Climb's four allowed models can be used. The real ceiling on cost is the spending limit you set in the Claude Console.
 
 ## Set up (one time)

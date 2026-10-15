@@ -491,7 +491,7 @@ Return ONLY JSON: {"title": course title (max 5 words), "angles": ["",...], "uni
   c.kind = KINDS.includes(o.kind) ? o.kind : "general"; c.purpose = o.purpose || "understand";
   if(c.kind==="language") setLanguage(c, out&&out.language, o.topic);
   if(o.exam){ const sy=o.exam.syllabus; c.exam = {key:o.exam.key, label:o.exam.label, name:o.exam.name||"", date:o.exam.date||"", subject:o.topic,
-    syllabus: sy ? {exam:sy.exam, subject:sy.subject, code:sy.code, year:sy.year, source_url:sy.source_url, page_url:sy.page_url, assessment:sy.assessment||[], command_words:sy.command_words||[], notes:sy.notes||""} : null}; }
+    syllabus: sy ? {exam:sy.exam, subject:sy.subject, code:sy.code, year:sy.year, source_url:sy.source_url, page_url:sy.page_url, checked:sy.checked||null, assessment:sy.assessment||[], command_words:sy.command_words||[], notes:sy.notes||""} : null}; }
   if(!order(c).length) throw {message:"The course outline came back empty"};
   return c;
 }
@@ -1130,8 +1130,15 @@ function renderLangQ(ch, k, type){
 }
 
 /* ---------- exam mode ---------- */
-const EXAMS = [["psle","PSLE"],["olevel","O-Level"],["nalevel","N(A)-Level"],["ntlevel","N(T)-Level"],["alevel","A-Level"],["other","Other exam"]];
-const SG_EXAM_KEYS = new Set(["psle","olevel","nalevel","ntlevel","alevel"]);
+const EXAMS = [["psle","PSLE"],["sec","SEC (from 2027)"],["olevel","O-Level"],["nalevel","N(A)-Level"],["ntlevel","N(T)-Level"],["alevel","A-Level"],["other","Other exam"]];
+const SG_EXAM_KEYS = new Set(["psle","sec","olevel","nalevel","ntlevel","alevel"]);
+/* Ready-made official syllabuses (public/syllabi.json): checked summaries of SEAB documents, used instantly instead of a live lookup. */
+let READY=null;
+async function loadReady(){ if(READY) return READY; try{ const r=await fetch("/syllabi.json",{cache:"no-cache"}); READY = r.ok ? await r.json() : {items:[]}; }catch(e){ READY={items:[]}; } return READY; }
+const normSubj = t => String(t||"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g," ").trim();
+function findReady(exam, topic){ if(!READY) return null; const n=normSubj(topic); if(!n) return null;
+  return READY.items.find(x=>x.exam===exam && (normSubj(x.name)===n || x.aliases.some(a=>normSubj(a)===n))) || null; }
+function readyFor(exam){ return READY ? READY.items.filter(x=>x.exam===exam) : []; }
 const PURPOSES = [["everyday","Everyday use"],["exam","An exam"],["understand","Understanding"]];
 const examLabel = k => (EXAMS.find(e=>e[0]===k)||[null,k])[1];
 const isExam = c => !!(c && c.exam);
@@ -1147,7 +1154,7 @@ Build the course to cover this syllabus in its order: 4-6 units following the sy
 }
 function examQuestionText(c){
   const e=c.exam, sy=e.syllabus, cw=(sy&&sy.command_words||[]).join(", ");
-  return `EXAM STYLE: write questions the way ${e.label} ${e.subject} papers ask them${cw?`, using the exam's command words (${cw})`:""}${sy&&sy.assessment&&sy.assessment.length?`. Papers: ${sy.assessment.map(p=>`${p.paper}: ${p.format||""}`).join("; ")}`:""}. For every "apply" and "connect" question add "marks" (1-6, as the exam would award them). For "connect", "points" is the mark scheme with one point per mark.`;
+  return `EXAM STYLE: write questions the way ${e.label} ${(sy&&sy.subject)||e.subject||c.topic} papers ask them${cw?`, using the exam's command words (${cw})`:""}${sy&&sy.assessment&&sy.assessment.length?`. Papers: ${sy.assessment.map(p=>`${p.paper}: ${p.format||""}`).join("; ")}`:""}. For every "apply" and "connect" question add "marks" (1-6, as the exam would award them). For "connect", "points" is the mark scheme with one point per mark.`;
 }
 function pacing(c){
   const dl = daysTo(c.exam&&c.exam.date); if(dl==null) return null;
@@ -1206,7 +1213,8 @@ function renderHome(){
       <input type="text" id="fExamName" placeholder="Which exam? e.g. IELTS, HSK 3"${d.exam==="other"?"":" hidden"} value="${esc(d.examName)}">
       <label class="small muted" for="fExamDate">Exam date (optional, for pacing)</label>
       <input type="date" id="fExamDate" value="${esc(d.examDate)}">
-      <p class="tiny muted">Type the subject above, e.g. "Chemistry" or "Higher Chinese". For PSLE, O, N and A-Levels, Climb finds the official SEAB syllabus and builds your course from it.</p>
+      <div id="readyBox"></div>
+      <p class="tiny muted" id="examHint"></p>
     </div>
     <details id="more"${d.notes||d.goal||d.images.length?" open":""}><summary>+ Add a goal, notes or photos</summary><div class="dbody">
       <input type="text" id="fGoal" placeholder="Goal (optional), e.g. Pass my A-level econs paper" value="${esc(d.goal)}">
@@ -1218,7 +1226,7 @@ function renderHome(){
     <div class="row" style="justify-content:space-between"><span class="small muted">Written by</span><button class="chip" id="modelBtn" type="button">${esc(curModel().n)} ▾</button></div>
     ${S.sample?"":`<p class="small muted">Building courses needs Claude access, which isn't available in this view. You can still try the example course.</p>`}
     <p class="tiny muted">Climb anonymously records what you do and what it generates, to improve its lessons.</p>
-    <div class="chips">${sugg.map(s=>`<button class="chip" type="button">${esc(s)}</button>`).join("")}</div>
+    <div class="chips sugg">${sugg.map(s=>`<button class="chip" type="button">${esc(s)}</button>`).join("")}</div>
   </div>
   <span class="label">Your courses</span>
   <div style="display:flex;flex-direction:column;gap:10px">${list.map(c=>{ const due=dueCount(c), nw=newCount(c), p=progress(c);
@@ -1227,9 +1235,18 @@ function renderHome(){
   ["fTopic","fGoal","fNotes"].forEach(id=>$(id).oninput=sync);
   main.querySelectorAll(".seg button[data-l]").forEach(b=>b.onclick=()=>{ d.level=b.dataset.l; main.querySelectorAll(".seg button[data-l]").forEach(x=>x.classList.toggle("on",x===b)); });
   main.querySelectorAll("#purposeSeg button").forEach(b=>b.onclick=()=>{ d.purpose=b.dataset.p; main.querySelectorAll("#purposeSeg button").forEach(x=>x.classList.toggle("on",x===b)); $("examBox").hidden = d.purpose!=="exam"; });
-  main.querySelectorAll("#examChips .chip").forEach(b=>b.onclick=()=>{ d.exam=b.dataset.e; main.querySelectorAll("#examChips .chip").forEach(x=>x.classList.toggle("on",x===b)); $("fExamName").hidden = d.exam!=="other"; });
+  main.querySelectorAll("#examChips .chip").forEach(b=>b.onclick=()=>{ d.exam=b.dataset.e; main.querySelectorAll("#examChips .chip").forEach(x=>x.classList.toggle("on",x===b)); $("fExamName").hidden = d.exam!=="other"; drawReady(); });
   $("fExamName").oninput=()=>{ d.examName=$("fExamName").value; }; $("fExamDate").oninput=()=>{ d.examDate=$("fExamDate").value; };
-  main.querySelectorAll(".chips:not(#examChips) .chip").forEach(b=>b.onclick=()=>{ $("fTopic").value=b.textContent; sync(); $("fTopic").focus(); });
+  main.querySelectorAll(".chips.sugg .chip").forEach(b=>b.onclick=()=>{ $("fTopic").value=b.textContent; sync(); $("fTopic").focus(); });
+  const drawReady=()=>{ const box=$("readyBox"), hint=$("examHint"); if(!box) return;
+    const items=readyFor(d.exam);
+    box.innerHTML = items.length ? `<span class="label">Official syllabus ready · tap a subject</span><div class="chips" id="readyChips">${items.map(x=>`<button type="button" class="chip${normSubj(d.topic)===normSubj(x.name)?" on":""}" data-r="${esc(x.id)}">${esc(x.name)}</button>`).join("")}</div>` : "";
+    box.querySelectorAll("#readyChips .chip").forEach(b=>b.onclick=()=>{ const x=READY.items.find(i=>i.id===b.dataset.r); $("fTopic").value=x.name; sync(); box.querySelectorAll(".chip").forEach(y=>y.classList.toggle("on",y===b)); });
+    hint.textContent = d.exam==="olevel"||d.exam==="nalevel"||d.exam==="ntlevel" ? "From 2027, O-Levels and N-Levels are replaced by the SEC exam. Sitting your exam in 2027 or later? Choose SEC."
+      : d.exam==="other" ? "Climb will follow this exam's usual content and question style."
+      : items.length ? "Another subject? Type it above and Climb will look up the official SEAB syllabus (up to a minute the first time)."
+      : "Type the subject above. Climb finds the official SEAB syllabus and builds your course from it."; };
+  loadReady().then(drawReady);
   $("fFile").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ $("fNotes").value=($("fNotes").value?$("fNotes").value+"\n\n":"")+String(r.result).slice(0,60000); if(!$("fTopic").value) $("fTopic").value=f.name.replace(/\.[^.]+$/,""); sync(); }; r.readAsText(f); e.target.value=""; };
   const imgs=$("fImgs"); if(imgs) imgs.onchange=e=>{ for(const f of e.target.files){ if(d.images.length<6) d.images.push(f); } thumbs(); e.target.value=""; };
   thumbs();
@@ -1247,7 +1264,9 @@ async function onBuild(){
   let focus="", scoped=false, kind=null, syllabus=null;
   const examMode = d.purpose==="exam";
   if(examMode){ const en=$("fExamName"), ed=$("fExamDate"); if(en) d.examName=en.value.trim(); if(ed) d.examDate=ed.value; }
-  if(examMode && SG_EXAM_KEYS.has(d.exam) && d.topic && window.climbSyllabus){
+  if(examMode && SG_EXAM_KEYS.has(d.exam) && d.topic){ await loadReady(); const rd=findReady(d.exam, d.topic);
+    if(rd){ syllabus=rd.syllabus; L("syllabus_found",{data:{exam:d.exam, subject:d.topic, code:syllabus.code, year:syllabus.year, ready:true, source:syllabus.source_url, topics:(syllabus.topics||[]).length}}); } }
+  if(!syllabus && examMode && SG_EXAM_KEYS.has(d.exam) && d.topic && window.climbSyllabus){
     main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Finding the official syllabus</h3></div><p class="small muted">Searching SEAB for the ${esc(examLabel(d.exam))} ${esc(d.topic)} syllabus and reading it. This can take up to a minute the first time; after that it's instant.</p></div>`;
     try{
       const r = await window.climbSyllabus(d.exam, d.topic, d.examDate ? d.examDate.slice(0,4) : String(new Date().getFullYear()));
@@ -1267,13 +1286,13 @@ async function onBuild(){
       }
     }catch(e){}
   }
-  const steps=(a,b,extra)=>{ main.innerHTML=`<div class="card"><span class="label">Building your course</span><h2>${esc(d.topic||"Your notes")}</h2>${focus?`<p class="small muted">Focus: ${esc(focus)}</p>`:""}${syllabus?`<p class="small muted">Using the official SEAB syllabus ${esc(syllabus.code||"")}${syllabus.year?" ("+esc(syllabus.year)+")":""}.</p>`:examMode&&SG_EXAM_KEYS.has(d.exam)?`<p class="small muted">Couldn't find the official syllabus, so building from what Claude knows about this exam.</p>`:""}${kind?`<p class="small muted">${esc((PLANS[kind]||PLANS.general).label)} lesson plan</p>`:""}
+  const steps=(a,b,extra)=>{ main.innerHTML=`<div class="card"><span class="label">Building your course</span><h2>${esc(d.topic||"Your notes")}</h2>${focus?`<p class="small muted">Focus: ${esc(focus)}</p>`:""}${syllabus?`<p class="small muted">Using the official SEAB syllabus ${esc(syllabus.code||"")}${syllabus.year?" ("+esc(syllabus.year)+")":""}${syllabus.checked?" · checked":""}.</p>`:examMode&&SG_EXAM_KEYS.has(d.exam)?`<p class="small muted">Couldn't find the official syllabus, so building from what Claude knows about this exam.</p>`:""}${kind?`<p class="small muted">${esc((PLANS[kind]||PLANS.general).label)} lesson plan</p>`:""}
     <ul class="steps"><li>${a?'<span class="done"></span>':'<div class="spinner"></div>'}<span>Mapping the topic into concepts</span></li><li>${b?'<span class="done"></span>':a?'<div class="spinner"></div>':'<span class="dot"></span>'}<span>Writing your first lesson</span></li></ul>
     ${extra||'<p class="small muted">This takes about 20 to 40 seconds.</p>'}</div>`; };
   steps(false,false);
   try{
     const c = await buildCourse({topic:d.topic, level:d.level, goal:d.goal, notes:d.notes, images:d.images, focus, scoped, kind, purpose:d.purpose,
-      exam: examMode ? {key:d.exam, label:examLabel(d.exam), name:d.examName, date:d.examDate, syllabus} : null});
+      exam: examMode ? {key:d.exam, label:examLabel(d.exam), subject:(syllabus&&syllabus.subject)||d.topic, name:d.examName, date:d.examDate, syllabus} : null});
     if(focus) c.focus_text=focus;
     L("course_built",{course:c.title, data:{topic:d.topic, level:d.level, goal:d.goal, focus, kind:c.kind, purpose:c.purpose, exam:c.exam?{key:c.exam.key, date:c.exam.date, code:c.exam.syllabus&&c.exam.syllabus.code}:null, language:c.language||null, hasNotes:!!d.notes, photos:d.images.length, writer:c.writer, units:c.units.map(u=>({title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}))}});
     steps(true,false, `<div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(c.title)}</h3>${c.units.map((u,i)=>`<div><span class="label">Unit ${i+1}</span><p class="small"><b>${esc(u.title)}</b>: <span class="muted">${u.concepts.map(id=>esc(c.concepts[id].name)).join(" · ")}</span></p></div>`).join("")}</div>`);
@@ -1316,7 +1335,7 @@ function renderCourse(){
   </div>
   ${isExam(c)?(()=>{ const e=c.exam, sy=e.syllabus, pc=pacing(c);
     return `<div class="card"><span class="label">Exam</span><h2>${esc(e.label)} ${esc(sy&&sy.subject||e.subject)}</h2>
-      ${sy?`<p class="small">Built from the official SEAB syllabus${sy.code?" "+esc(sy.code):""}${sy.year?" ("+esc(sy.year)+")":""}. <a href="${esc(sy.source_url)}" target="_blank" rel="noopener">Open the syllabus</a></p>${sy.assessment&&sy.assessment.length?`<p class="small muted">${sy.assessment.map(p=>esc(`${p.paper}${p.duration?" · "+p.duration:""}${p.marks?" · "+p.marks+" marks":""}`)).join("<br>")}</p>`:""}`:`<p class="small muted">No official syllabus was found, so this course follows the usual content of this exam. Add your syllabus or notes when building for a closer match.</p>`}
+      ${sy?`<p class="small">Built from the official SEAB syllabus${sy.code?" "+esc(sy.code):""}${sy.year?" ("+esc(sy.year)+")":""}${sy.checked?" · checked "+esc(sy.checked):""}. <a href="${esc(sy.source_url)}" target="_blank" rel="noopener">Open the syllabus</a></p>${sy.assessment&&sy.assessment.length?`<p class="small muted">${sy.assessment.map(p=>esc(`${p.paper}${p.duration?" · "+p.duration:""}${p.marks?" · "+p.marks+" marks":""}`)).join("<br>")}</p>`:""}`:`<p class="small muted">No official syllabus was found, so this course follows the usual content of this exam. Add your syllabus or notes when building for a closer match.</p>`}
       ${pc?(pc.days>0?`<p class="small"><b>${pc.days} days to go.</b> ${pc.remain} concepts left, so lessons now introduce about ${pc.perDay} a day, leaving two weeks for revision.</p>`:`<p class="small">Exam date has passed.</p>`):""}
       <button class="btn soft block" id="mockBtn">Take a mock test · 10 questions · 15 min</button></div>`; })():""}
   <div class="card">
@@ -1642,7 +1661,7 @@ QUESTION: ${b.q}
 KEY POINTS a strong answer covers: ${b.points.join("; ")}
 LEARNER: ${levelText(LS.c.level)}
 LEARNER'S ANSWER: ${txt}
-${isExam(LS.c)?`Mark it like a ${LS.c.exam.label} ${LS.c.exam.subject} examiner, out of ${b.marks||b.points.length||3} marks, one mark per mark-scheme point clearly made. Include "marks_awarded".`:""}
+${isExam(LS.c)?`Mark it like a ${LS.c.exam.label} ${LS.c.exam.subject||LS.c.topic} examiner, out of ${b.marks||b.points.length||3} marks, one mark per mark-scheme point clearly made. Include "marks_awarded".`:""}
 Return ONLY JSON: {"score": 0-100, "pass": true if score >= 60, "marks_awarded": number, "good": one short sentence on what they got right, "missing": one short sentence on what was missing or wrong (empty string if nothing), "better": a strong answer in under 60 words}`, {modelTier:"default", cache:false});
       if(!LS) return;
       const pass=!!r.pass||(+r.score>=60);
