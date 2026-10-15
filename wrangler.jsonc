@@ -13,7 +13,16 @@
       "name": "RL_BURST",
       "namespace_id": "4201",
       "simple": { "limit": 20, "period": 60 }
+    },
+    {
+      "name": "RL_LOG",
+      "namespace_id": "4202",
+      "simple": { "limit": 120, "period": 60 }
     }
+  ],
+  // Logs of every Claude generation and learner interaction, used to refine the content.
+  "d1_databases": [
+    { "binding": "LOGS", "database_name": "climb-logs", "database_id": "5e5301bc-1be2-49c8-9904-eec6d78d4ecc" }
   ],
   "observability": { "enabled": true }
 }

@@ -1,6 +1,35 @@
 // Connects the Climb app to this site's own server (/api/sample) instead of Claude-in-chat.
 // Progress is saved in this browser (localStorage) until accounts are added.
 (function () {
+  // Anonymous device id (random, stored in this browser) so logs from one learner can be followed.
+  const DEVICE = (() => {
+    try {
+      let d = localStorage.getItem("climb_device");
+      if (!d) { d = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36)); localStorage.setItem("climb_device", d); }
+      return d;
+    } catch (e) { return "nostore-" + Math.random().toString(36).slice(2, 10); }
+  })();
+
+  // Interaction log: batched to /api/log every few seconds and when the page is hidden.
+  const queue = [];
+  function flush(beacon) {
+    if (!queue.length) return;
+    const body = JSON.stringify({ device: DEVICE, events: queue.splice(0, 100) });
+    try {
+      if (beacon && navigator.sendBeacon && navigator.sendBeacon("/api/log", new Blob([body], { type: "text/plain" }))) return;
+      fetch("/api/log", { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true }).catch(() => {});
+    } catch (e) {}
+  }
+  window.climbLog = (kind, o) => {
+    o = o || {};
+    queue.push({ ts: new Date().toISOString(), kind, course: o.course || null, concept: o.concept || null, data: o.data || {} });
+    if (queue.length >= 25) flush(false);
+  };
+  setInterval(() => flush(false), 8000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(true); });
+  window.addEventListener("pagehide", () => flush(true));
+  window.addEventListener("error", (e) => window.climbLog("js_error", { data: { message: String(e.message || ""), where: (e.filename || "") + ":" + (e.lineno || "") } }));
+
   function shrinkImage(blob) {
     return new Promise((resolve) => {
       const url = URL.createObjectURL(blob);
@@ -25,7 +54,7 @@
     const images = opts.images && opts.images.length ? (await Promise.all([...opts.images].slice(0, 6).map(shrinkImage))).filter(Boolean) : [];
     const r = await fetch("/api/sample", {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", "x-climb-device": DEVICE },
       body: JSON.stringify({ prompt: text, json: !!wantJson, modelTier: opts.modelTier || "default", model: opts.model || null, images }),
       signal: opts.signal,
     });

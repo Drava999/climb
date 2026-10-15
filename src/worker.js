@@ -31,7 +31,51 @@ async function callClaude(env, model, content, maxTokens) {
   return { ok: true, text, truncated: d.stop_reason === "max_tokens" };
 }
 
-async function handleSample(request, env) {
+// ---------- logging (Cloudflare D1, binding LOGS) ----------
+const now = () => new Date().toISOString();
+const clip = (v, n) => (v == null ? null : String(v).slice(0, n));
+function purposeOf(prompt) {
+  const p = prompt.slice(0, 200);
+  if (p.startsWith("A learner wants to learn")) return "scope";
+  if (p.startsWith("You are an expert teacher designing")) return "outline";
+  if (p.startsWith("You are a brilliant teacher turning")) return "mini_lesson";
+  if (p.startsWith("Write practice questions")) return prompt.includes("already practised these questions") ? "questions_refill" : "questions";
+  if (p.startsWith("You are extending a course")) return "branch";
+  if (p.startsWith("Judge whether a learner")) return "answer_check";
+  if (p.startsWith("Mark a learner's open answer")) return "open_answer_mark";
+  if (p.startsWith("A learner studying")) return "explain_deeper";
+  if (p.startsWith("Explain \"")) return "explain_simpler";
+  if (p.startsWith("In a course called")) return "term_example";
+  return "other";
+}
+function logGeneration(env, ctx, row) {
+  if (!env.LOGS) return;
+  ctx.waitUntil(env.LOGS.prepare(
+    "INSERT INTO generations (ts, device, purpose, model, tier, ok, status, ms, truncated, prompt, reply, error) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+  ).bind(now(), clip(row.device, 64), row.purpose, row.model, row.tier, row.ok ? 1 : 0, String(row.status || ""), row.ms | 0,
+         row.truncated ? 1 : 0, clip(row.prompt, 200000), clip(row.reply, 200000), clip(row.error, 2000)).run().catch(() => {}));
+}
+
+async function handleLog(request, env, ctx) {
+  if (request.method !== "POST") return json({ code: "method" }, 405);
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).host !== new URL(request.url).host) return json({ code: "forbidden" }, 403);
+  const ip = request.headers.get("cf-connecting-ip") || "anon";
+  if (env.RL_LOG) { const { success } = await env.RL_LOG.limit({ key: ip }); if (!success) return json({ ok: false }, 429); }
+  if (!env.LOGS) return json({ ok: false });
+  const raw = await request.text();
+  if (raw.length > 200000) return json({ code: "too_long" }, 413);
+  let b; try { b = JSON.parse(raw); } catch { return json({ code: "bad_request" }, 400); }
+  const events = Array.isArray(b.events) ? b.events.slice(0, 100) : [];
+  if (!events.length) return json({ ok: true, n: 0 });
+  const stmt = env.LOGS.prepare("INSERT INTO events (ts, device, kind, course, concept, data) VALUES (?,?,?,?,?,?)");
+  const batch = events.filter((e) => e && e.kind).map((e) =>
+    stmt.bind(clip(e.ts, 40) || now(), clip(b.device, 64), clip(e.kind, 40), clip(e.course, 200), clip(e.concept, 200), clip(JSON.stringify(e.data || {}), 20000)));
+  ctx.waitUntil(env.LOGS.batch(batch).catch(() => {}));
+  return json({ ok: true, n: batch.length });
+}
+
+async function handleSample(request, env, ctx) {
   if (request.method !== "POST") return json({ code: "method", message: "Use POST" }, 405);
 
   // Only this site's own pages may call the API.
@@ -66,13 +110,18 @@ async function handleSample(request, env) {
 
   // Generous ceilings: course outlines, lessons and question sets are long. Billing is per token actually written.
   const maxTokens = tier === "quick" && !b.json ? 2048 : 16000;
+  const device = request.headers.get("x-climb-device") || null;
+  const purpose = purposeOf(prompt);
+  const t0 = Date.now();
   let model = wanted || TIER[tier];
   let res = await callClaude(env, model, content, maxTokens);
   if (!res.ok && wanted && (res.status === 400 || res.status === 403 || res.status === 404)) {
     model = TIER[tier];
     res = await callClaude(env, model, content, maxTokens);
   }
+  const logBase = { device, purpose, model, tier, ms: Date.now() - t0, prompt: (content.length > 1 ? `[${content.length - 1} image(s)]\n` : "") + prompt };
   if (!res.ok) {
+    logGeneration(env, ctx, { ...logBase, ok: false, status: res.status, error: res.message });
     const code = res.status === 429 ? "rate_limited" : res.status === 529 ? "overloaded" : "upstream";
     return json({ code, message: res.status === 429 ? "Claude is busy right now. Try again in a minute." : res.message }, res.status === 429 ? 429 : 502);
   }
@@ -86,18 +135,21 @@ async function handleSample(request, env) {
   if (b.json) {
     try { out.data = parseJson(res.text); }
     catch {
+      logGeneration(env, ctx, { ...logBase, ok: false, status: res.truncated ? "truncated" : "bad_json", truncated: res.truncated, reply: res.text });
       return json(res.truncated
         ? { code: "truncated", message: "The AI's reply was cut off before it finished" }
         : { code: "bad_json", message: "The AI's reply came back in the wrong format" }, 502);
     }
   }
+  logGeneration(env, ctx, { ...logBase, ok: true, status: 200, truncated: res.truncated, reply: res.text });
   return json(out);
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === "/api/sample") return handleSample(request, env);
+    if (url.pathname === "/api/sample") return handleSample(request, env, ctx);
+    if (url.pathname === "/api/log") return handleLog(request, env, ctx);
     if (url.pathname === "/api/health") return json({ ok: true, claude: !!env.ANTHROPIC_API_KEY });
     return env.ASSETS.fetch(request);
   },

@@ -252,6 +252,7 @@ main.lesson{padding-bottom:100px}
 (() => {
 const $ = id => document.getElementById(id);
 const main = $("main");
+const L = (kind, o) => { try{ window.climbLog && window.climbLog(kind, o||{}); }catch(e){} };
 const DAY = 864e5;
 const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
 const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5};
@@ -279,7 +280,7 @@ function toast(t){ const d=document.createElement("div"); d.className="toast pop
 const today = () => new Date().toLocaleDateString("en-CA");
 function ring(p, size){ const r=size/2-5, c=2*Math.PI*r, m=size/2; return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-label="${p}% climbed"><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c*p/100} ${c}" transform="rotate(-90 ${m} ${m})"/><text x="${m}" y="${m+4}" text-anchor="middle" font-size="12" font-family="IBM Plex Mono, monospace" font-weight="600" fill="var(--ink)">${p}%</text></svg>`; }
 function pips(r){ return `<span class="pips" aria-label="Level ${r} of 5">${[1,2,3,4,5].map(n=>`<i class="${n<=r?"on":""}"></i>`).join("")}</span>`; }
-function aiErr(e){ return e&&e.code==="not_granted"?"Claude access was declined, so this can't be generated.":e&&e.code==="rate_limited"?"Too many requests just now. Wait a minute and try again.":"Something went wrong: "+((e&&e.message)||"unknown error")+". Try again."; }
+function aiErr(e){ L("error",{data:{code:e&&e.code, message:e&&e.message}}); return e&&e.code==="not_granted"?"Claude access was declined, so this can't be generated.":e&&e.code==="rate_limited"?"Too many requests just now. Wait a minute and try again.":"Something went wrong: "+((e&&e.message)||"unknown error")+". Try again."; }
 function ago(ms){ const h=ms/36e5; if(h<1) return "within the hour"; if(h<24) return `in ${Math.round(h)} hour${Math.round(h)===1?"":"s"}`; const d=Math.round(h/24); return `in ${d} day${d===1?"":"s"}`; }
 
 /* ---------- storage ---------- */
@@ -410,7 +411,7 @@ function modelSheet(){
     <div class="opts">${MODELS.map((m,i)=>`<button class="opt${m.id===cur.id?" ok":""}" data-i="${i}"><b>${esc(m.n)}</b><br><span class="small muted">${esc(m.d)} · ${esc(m.cost)} per course</span></button>`).join("")}</div></div>`;
   const close=()=>bg.remove();
   bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
-  bg.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.profile.model=MODELS[+b.dataset.i].id; saveProfile(); close(); toast(`New courses and questions: ${MODELS[+b.dataset.i].n}`); render(); });
+  bg.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.profile.model=MODELS[+b.dataset.i].id; L("model_change",{data:{model:S.profile.model}}); saveProfile(); close(); toast(`New courses and questions: ${MODELS[+b.dataset.i].n}`); render(); });
   document.body.appendChild(bg);
 }
 const JARGON = `PLAIN-LANGUAGE RULE: the learner knows everyday words, plus the course concepts that come BEFORE the one being written about. Any other technical term (including later concepts) must be avoided or explained in plain words right where it appears, e.g. "freight rate (the price to hire a ship)". Never write vague shorthand like "freight cash".`;
@@ -610,6 +611,7 @@ function gloss(text, skip){
   return safe.replace(re,(m,pre,word)=>{ const w=word.toLowerCase(), key=byEsc[w]||byEsc[w.replace(/s$/,"")]||byEsc[w.replace(/es$/,"")]; if(!key||used.has(key)) return m; used.add(key); return `${pre}<button type="button" class="term" data-t="${encodeURIComponent(key)}">${word}</button>`; });
 }
 function termSheet(key){
+  L("term_tap",{data:{term:key}});
   const c=(LS&&LS.c)||S.cur, x=glossMap(c)[key]; if(!x) return;
   const bg=document.createElement("div"); bg.className="sheet-bg";
   bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(x.term)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(x.term)}</h2><button class="x" aria-label="Close">✕</button></div><p class="eli5" style="font-size:18px">${esc(x.def)}</p>${S.sample?`<button class="linkbtn" id="tmore" type="button" style="align-self:flex-start">Explain with an example</button><div id="tout"></div>`:""}</div>`;
@@ -733,6 +735,7 @@ Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 w
   if(o.parent){ u.parent=o.parent.id; const pi=c.units.findIndex(x=>x.concepts.includes(o.parent.id)); c.units.splice(pi+1, 0, u); }
   else { if(o.angle){ u.angle=o.angle; c.angles=(c.angles||[]).filter(a=>a!==o.angle); } c.units.push(u); }
   if(o.parent||o.angle) c.focus=u.id;
+  L("branch",{course:c.title, concept:o.parent?o.parent.name:null, data:{type:o.parent?"deeper":o.angle?"angle":"next_unit", angle:o.angle||null, title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}});
   saveCourse(c); return u;
 }
 
@@ -814,6 +817,7 @@ function renderHome(){
     <button class="btn block" id="build"${S.sample?"":" disabled"}>Build my course</button>
     <div class="row" style="justify-content:space-between"><span class="small muted">Written by</span><button class="chip" id="modelBtn" type="button">${esc(curModel().n)} ▾</button></div>
     ${S.sample?"":`<p class="small muted">Building courses needs Claude access, which isn't available in this view. You can still try the example course.</p>`}
+    <p class="tiny muted">Climb anonymously records what you do and what it generates, to improve its lessons.</p>
     <div class="chips">${sugg.map(s=>`<button class="chip" type="button">${esc(s)}</button>`).join("")}</div>
   </div>
   <span class="label">Your courses</span>
@@ -845,7 +849,7 @@ async function onBuild(){
       if(sc && sc.broad && Array.isArray(sc.options) && sc.options.length){
         const pick = await chooseFocus(d, sc);
         if(pick===null){ go("home"); return; }
-        focus=pick; scoped=true;
+        focus=pick; scoped=true; L("focus_chosen",{data:{topic:d.topic, choice:pick||"broad overview", options:(sc.options||[]).map(o=>o.title)}});
       }
     }catch(e){}
   }
@@ -856,6 +860,7 @@ async function onBuild(){
   try{
     const c = await buildCourse({topic:d.topic, level:d.level, goal:d.goal, notes:d.notes, images:d.images, focus, scoped});
     if(focus) c.focus_text=focus;
+    L("course_built",{course:c.title, data:{topic:d.topic, level:d.level, goal:d.goal, focus, hasNotes:!!d.notes, photos:d.images.length, writer:c.writer, units:c.units.map(u=>({title:u.title, concepts:u.concepts.map(id=>c.concepts[id].name)}))}});
     steps(true,false, `<div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(c.title)}</h3>${c.units.map((u,i)=>`<div><span class="label">Unit ${i+1}</span><p class="small"><b>${esc(u.title)}</b>: <span class="muted">${u.concepts.map(id=>esc(c.concepts[id].name)).join(" · ")}</span></p></div>`).join("")}</div>`);
     saveCourse(c);
     const first=buildLesson(c);
@@ -863,7 +868,7 @@ async function onBuild(){
     S.draft={topic:"",level:d.level,goal:"",notes:"",images:[]};
     S.cur=c; go("course"); prefetch(c);
   }catch(e){
-    main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't build the course</strong><span>${esc(aiErr(e))}</span></div><button class="btn block" id="back">Back</button></div>`;
+    main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't build the course</strong>${(L("course_build_failed",{data:{topic:d.topic, level:d.level}}),"")}<span>${esc(aiErr(e))}</span></div><button class="btn block" id="back">Back</button></div>`;
     $("back").onclick=()=>go("home");
   }
 }
@@ -964,13 +969,15 @@ async function startLesson(){
     S.view="loading"; window.scrollTo(0,0);
     main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Preparing your lesson</h3></div><p class="small muted">Writing ${teachNeed.length?"mini-lessons, diagrams and ":""}questions. About 20 to 40 seconds.</p></div>`;
     try{ await Promise.all([ensureBanks(c, missing), ensureTeach(c, teachNeed).catch(()=>{})]); }
-    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't prepare the lesson</strong><span>${esc(aiErr(e))}</span></div><div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="back">Back</button></div></div>`; $("retry").onclick=startLesson; $("back").onclick=()=>go("course"); return; }
+    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't prepare the lesson</strong>${(L("lesson_prep_failed",{course:c.title}),"")}<span>${esc(aiErr(e))}</span></div><div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="back">Back</button></div></div>`; $("retry").onclick=startLesson; $("back").onclick=()=>go("course"); return; }
   }
   if(c.example) saveCourse(c);
   LS = {c, steps:plan.steps, i:0, touched:new Set(), count:{}, retry:{}, fresh:new Set(plan.fresh), snap:Object.fromEntries(plan.all.map(id=>[id,c.concepts[id].rung])), xp:0, right:0, total:0, pending:null, q:null};
+  L("lesson_start",{course:c.title, data:{steps:plan.steps.length, newConcepts:plan.fresh.map(id=>c.concepts[id].name), reviews:plan.reviews, extra:plan.extra, accuracy:accuracy(c)}});
   S.view="lesson"; renderStep(); prefetch(c);
 }
 function quitLesson(home){
+  if(LS) L("lesson_quit",{course:LS.c.title, data:{at:LS.i, of:LS.steps.length, right:LS.right, total:LS.total}});
   if(LS){ if(LS.xp) addXp(LS.xp); saveCourse(LS.c); LS=null; }
   go(home?"home":"course");
 }
@@ -1014,6 +1021,7 @@ function renderIntro(k){
   const show=()=>{
     window.scrollTo(0,0);
     const kind=cards[idx], last=idx===cards.length-1;
+    L("intro_card",{course:LS&&LS.c.title, concept:k.name, data:{card:kind, index:idx, of:cards.length}});
     const dots=`<div class="tdots" aria-label="Card ${idx+1} of ${cards.length}">${cards.map((_,i)=>`<i class="${i===idx?"on":i<idx?"done":""}"></i>`).join("")}</div>`;
     let body="";
     if(kind==="predict"){ const p=t.predict; body=`<div class="prompt">${gloss(p.q)}</div><p class="small muted">Just guess. Guessing first helps it stick.</p><div class="opts">${p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="pfb"></div>`; }
@@ -1028,6 +1036,7 @@ function renderIntro(k){
     const tb=$("tback"); if(tb) tb.onclick=()=>{ idx--; show(); };
     if(kind==="predict") main.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
       const p=t.predict, ok=+b.dataset.i===p.answer; guessed=true;
+      L("predict",{course:LS&&LS.c.title, concept:k.name, data:{question:p.q, choice:p.options[+b.dataset.i], correct:ok}});
       main.querySelectorAll(".opt").forEach(x=>{ x.disabled=true; if(+x.dataset.i===p.answer) x.classList.add("ok"); });
       if(!ok) b.classList.add("no");
       $("pfb").innerHTML=`<div class="verdict ${ok?"ok":"part"} pop"><div class="vhead"><span class="vicon">${ok?"✓":"~"}</span><span>${ok?"Good instinct":"Good guess, here's the twist"}</span></div>${p.why?`<p class="small">${gloss(p.why)}</p>`:""}</div>`;
@@ -1035,7 +1044,7 @@ function renderIntro(k){
     });
     if(kind==="see") wireVisual(main, t.visual);
     const kb=$("kpBtn"); if(kb) kb.onclick=()=>{ $("kpList").hidden=false; kb.remove(); };
-    const sp=$("simpler"); if(sp) sp.onclick=()=>{ sp.remove(); const box=$("simpOut"); box.className="deep"; box.innerHTML=`<span class="label">Even simpler</span><div class="read" style="font-size:17px"></div>`; if(t&&t.simplest) box.lastElementChild.innerHTML=gloss(t.simplest); else streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k)); };
+    const sp=$("simpler"); if(sp) sp.onclick=()=>{ sp.remove(); L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"intro_simpler", prewritten:!!(t&&t.simplest)}}); const box=$("simpOut"); box.className="deep"; box.innerHTML=`<span class="label">Even simpler</span><div class="read" style="font-size:17px"></div>`; if(t&&t.simplest) box.lastElementChild.innerHTML=gloss(t.simplest); else streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k)); };
   };
   show();
 }
@@ -1171,7 +1180,7 @@ function renderTyped(ch, k, type, x){
   $("idk").onclick=()=>{ if(busy) return; busy=true; lock(""); answered("wrong", {answer:ans, why:shortWhy(k)}); };
   const submit = async ()=>{
     const el=$("tin"); if(busy||!el) return; const g=el.value.trim(); if(!g){ el.focus(); return; }
-    busy=true; lock(g); $("hintArea").innerHTML="";
+    busy=true; LS.q.typed=g; lock(g); $("hintArea").innerHTML="";
     if(similar(g,targets)) return answered(LS.q.hint?"helped":"right", {answer:ans, showAns:norm(g)!==norm(ans)});
     if(!S.sample) return answered("wrong", {answer:ans, guess:g, why:shortWhy(k)});
     bar(`<button class="btn block" disabled><span class="spinner"></span> Checking your answer…</button>`);
@@ -1225,6 +1234,7 @@ function answered(out, o){
   const q=LS.q; if(q.done) return; q.done=true;
   const k=q.k, before=k.rung;
   q.undo = grade(LS.c, k, q.eff, out);
+  L("answer",{course:LS.c.title, concept:k.name, data:{type:q.type, level:q.eff, stretch:q.stretch, hints:q.hint, question:q.text, answer:o.answer||null, typed:q.typed||null, outcome:out, partial:!!o.partial, note:o.note||null, rungBefore:before, rungAfter:k.rung, writer:k.writer||null}});
   LS.total++; if(out==="right") LS.right++;
   q.xp = xpFor(out,q.eff); LS.xp += q.xp;
   LS.pending = {cid:k.id, out};
@@ -1234,7 +1244,7 @@ function answered(out, o){
   const why = o.note || o.why || "";
   $("fb").innerHTML = `<div class="verdict ${vh.kind} pop" id="verdict"><div id="vh">${vh.html}</div>${ansBox}${why?`<p class="small">${gloss(why)}</p>`:""}${o.extra||""}${up}
     ${out==="wrong"&&hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}
-    <div class="vlinks">${out!=="right"&&k.teach&&k.teach.visual&&!["label","order","sort"].includes(q.type)?`<button class="linkbtn" id="pic" type="button">Show me the picture</button>`:""}${S.sample?`<button class="linkbtn" id="simpler" type="button">Explain simpler</button><button class="linkbtn" id="deeper" type="button">Explain in more depth</button>`:""}${o.canGuess?`<button class="linkbtn" id="guess" type="button">I guessed</button>`:""}${out==="wrong"&&o.guess?`<button class="linkbtn" id="mine" type="button">I was right</button>`:""}</div>
+    <div class="vlinks"><button class="linkbtn" id="flag" type="button">Flag this question</button>${out!=="right"&&k.teach&&k.teach.visual&&!["label","order","sort"].includes(q.type)?`<button class="linkbtn" id="pic" type="button">Show me the picture</button>`:""}${S.sample?`<button class="linkbtn" id="simpler" type="button">Explain simpler</button><button class="linkbtn" id="deeper" type="button">Explain in more depth</button>`:""}${o.canGuess?`<button class="linkbtn" id="guess" type="button">I guessed</button>`:""}${out==="wrong"&&o.guess?`<button class="linkbtn" id="mine" type="button">I was right</button>`:""}</div>
     <div id="deepOut"></div></div>`;
   const last = LS.i+1>=LS.steps.length && out!=="wrong" && !(LS.fresh.has(k.id)&&(LS.count[k.id]||0)<1);
   bar(`<button class="btn block" id="next">${last?"Finish lesson":"Continue"}</button>`);
@@ -1242,9 +1252,10 @@ function answered(out, o){
   try{ $("verdict").scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(e){}
   const g=$("guess"); if(g) g.onclick=()=>regrade("lucky","It'll come back sooner so you can lock it in.");
   const m=$("mine"); if(m) m.onclick=()=>regrade("right","Counted as correct.");
-  const pic=$("pic"); if(pic) pic.onclick=()=>{ pic.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=visualHtml(k.teach.visual,{hint:"Tap each part to review it."}); wireVisual(box, k.teach.visual); };
-  const smp=$("simpler"); if(smp) smp.onclick=()=>{ smp.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=`<span class="label">Simpler</span><div class="read" style="font-size:16px"></div>`; streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k, q.text)); };
-  const dp=$("deeper"); if(dp) dp.onclick=async()=>{
+  const fl=$("flag"); if(fl) fl.onclick=()=>{ fl.outerHTML=`<span class="chips" id="flagChips">${["Confusing","Missing background","Answer is wrong","Too easy","Too hard","Uses words I don't know"].map(r=>`<button class="chip" type="button">${r}</button>`).join("")}</span>`; $("flagChips").querySelectorAll(".chip").forEach(c2=>c2.onclick=()=>{ L("flag",{course:LS&&LS.c.title, concept:k.name, data:{reason:c2.textContent, type:q.type, level:q.eff, question:q.text, answer:o.answer||null, outcome:out}}); $("flagChips").outerHTML='<span class="small muted">Thanks, noted. This helps improve the lessons.</span>'; }); };
+  const pic=$("pic"); if(pic) pic.onclick=()=>{ L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"picture", question:q.text}}); pic.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=visualHtml(k.teach.visual,{hint:"Tap each part to review it."}); wireVisual(box, k.teach.visual); };
+  const smp=$("simpler"); if(smp) smp.onclick=()=>{ L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"simpler", question:q.text}}); smp.remove(); const box=$("deepOut"); box.className="deep"; box.innerHTML=`<span class="label">Simpler</span><div class="read" style="font-size:16px"></div>`; streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k, q.text)); };
+  const dp=$("deeper"); if(dp) dp.onclick=async()=>{ L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"deeper", question:q.text}});
     dp.remove(); const box=$("deepOut"); box.className="deep";
     box.innerHTML=`<span class="label">Going deeper</span><div class="read" id="deepTxt" style="font-size:16px">Thinking…</div>`;
     const t=$("deepTxt");
@@ -1257,6 +1268,7 @@ Explain this more deeply in under 130 words of plain language: why it's true, ho
   };
 }
 function regrade(out, msg){
+  L("regrade",{course:LS&&LS.c.title, concept:LS&&LS.q.k.name, data:{to:out, question:LS&&LS.q.text}});
   const q=LS.q; q.undo();
   if(LS.pending.out==="right") LS.right--; LS.xp-=q.xp;
   q.undo = grade(LS.c, q.k, q.eff, out);
@@ -1280,6 +1292,7 @@ function nextStep(){
 function finishLesson(){
   bar(""); main.classList.remove("lesson");
   const c=LS.c; c.lessons=(c.lessons||0)+1;
+  L("lesson_done",{course:c.title, data:{right:LS.right, total:LS.total, xp:LS.xp, levels:Object.entries(LS.snap).map(([id,r])=>({concept:c.concepts[id]&&c.concepts[id].name, from:r, to:c.concepts[id]&&c.concepts[id].rung}))}});
   const bonus=15; addXp(LS.xp+bonus); saveCourse(c);
   const climbed = Object.entries(LS.snap).map(([id,r])=>({k:c.concepts[id], from:r})).filter(x=>x.k&&x.k.rung>x.from);
   const pct = LS.total ? Math.round(LS.right/LS.total*100) : 0;
@@ -1303,6 +1316,7 @@ async function boot(){
   const p=lsGet("climb_profile"); if(p) S.profile={...S.profile,...p};
   const local=lsGet("climb_courses"); if(local) S.courses=local;
   renderHeader(); render();
+  L("app_open",{data:{courses:Object.keys(S.courses).length, screen:innerWidth+"x"+innerHeight}});
   const c=window.claude;
   if(!c||!c.use) return;
   const [db,user,sample]=await Promise.all([c.use("db"),c.use("user"),c.use("sample")]);
