@@ -393,7 +393,7 @@ const MODELS = [
   {id:"claude-sonnet-5-5", n:"Claude Sonnet 5.5", d:"Balanced quality and cost", tier:"default", cost:"about US$0.25"},
   {id:"claude-haiku-5-5", n:"Claude Haiku 5.5", d:"Fastest and cheapest", tier:"quick", cost:"about US$0.01"},
 ];
-const curModel = () => MODELS.find(m=>m.id===S.profile.model) || MODELS[0];
+const curModel = () => MODELS.find(m=>m.id===S.profile.model) || MODELS[2];
 function writerLabel(model, tier){ const m=MODELS.find(x=>x.id===model); return m ? m.n : `Claude (${tier||"standard"} model, fallback)`; }
 function parseJson(t){ const s=String(t||""); const a=s.indexOf("{"), b=s.lastIndexOf("}"); if(a<0||b<=a) throw new Error("no json"); return JSON.parse(s.slice(a,b+1)); }
 async function writerJson(prompt, extra){
