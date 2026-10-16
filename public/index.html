@@ -2291,14 +2291,14 @@ async function ensurePathText(c){
   if(!c.linksDone && c.modules.length>=3){ ensureFieldLinks(c); return; }
   const steps=pathSteps(c), sig=pathSig(steps);
   const units=c.units.filter(u=>u.mod && !u.canDo && u.concepts.some(id=>c.concepts[id])).slice(0,14);
-  const stale=!c.path || c.path.sig!==sig;
+  const stale=!c.path || c.path.sig!==sig || c.path.v!==2;
   if(!stale && !units.length) return;
   if(c.pathTried && Date.now()-c.pathTried<60000) return;
   pathBusy=true; c.pathTried=Date.now();
   try{
     const out = await S.sample.json(`A course called "${c.title}" (${levelText(c.level)}) is laid out as a learning PATH of steps. Fields in each step build on the steps before it.
 ${steps.map((s,i)=>`STEP ${i+1}: ${s.map(m=>`${m.title}${m.desc?` (${m.desc})`:""}${modCons(c,m).length?` [concepts: ${modCons(c,m).slice(0,8).map(k=>k.name).join("; ")}]`:""}${(m.needs||[]).length?` [builds on: ${m.needs.map(id=>(fieldOf(c,id)||{}).title).filter(Boolean).join(", ")}]`:""}`).join(" | ")}`).join("\n")}
-For EACH step write: "title": 2-5 words naming what the step is about; "why": for step 1, one sentence on why it is the starting point; for later steps 1-2 plain sentences (max 35 words) to the learner ("you") explaining how this step builds on the earlier ones, naming the earlier ideas it reuses and what new ability it unlocks; "uses": up to 3 earlier concept names (exactly as listed above) this step relies on, [] for step 1.${steps.length>1&&!steps[steps.length-1].some(m=>(m.needs||[]).length)?" If the last step's fields don't depend on others, explain them as ways to widen what you've learned.":""}
+For EACH step write: "title": 2-5 words naming what the step is about; "why": ONE short plain sentence (max 18 words) to the learner ("you"): for step 1, why it is the starting point; for later steps, what this step lets you do that the earlier steps set up. Do NOT list concept names in it (they are shown separately); "uses": up to 3 earlier concept names (exactly as listed above) this step relies on, [] for step 1.${steps.length>1&&!steps[steps.length-1].some(m=>(m.needs||[]).length)?" If the last step's fields don't depend on others, explain them as ways to widen what you've learned.":""}
 For EACH field pick an "icon" from: ${Object.keys(FICON).join(", ")}.
 ${units.length?`UNITS that need can-do statements:\n${units.map((u,i)=>`U${i+1}. "${u.title}" (field: ${(fieldOf(c,u.mod)||{}).title||""}; ${stageName(u.stage||1)}) concepts: ${u.concepts.filter(id=>c.concepts[id]).map(id=>c.concepts[id].name).join("; ")}`).join("\n")}
 For EACH unit: "can_do": 2-3 concrete things the learner will be able to DO after mastering it (start with a verb, max 12 words), each with "uses": the unit's concept names it needs; and "bridge": one sentence (max 30 words, to "you") on how this unit builds on what came before it.`:""}
@@ -2306,7 +2306,7 @@ Be accurate and specific to the subject. Return ONLY JSON: {"steps":[{"title":""
     const ss=arrOf(out&&out.steps), icons={};
     c.modules.forEach(m=>{ const k=out&&out.icons&&(out.icons[m.title]||Object.entries(out.icons).find(([t])=>norm(t)===norm(m.title))?.[1]); if(FICON[k]) icons[m.id]=k; });
     const all=order(c).map(id=>c.concepts[id]);
-    c.path={sig, icons:{...((c.path&&c.path.icons)||{}), ...icons}, steps:steps.map((s,i)=>{ const x=ss[i]||{}; return {title:String(x.title||"").slice(0,60), why:String(x.why||"").slice(0,300), uses:strs(x.uses).map(n=>(all.find(k=>norm(k.name)===norm(n))||{}).id).filter(Boolean).slice(0,3)}; })};
+    c.path={v:2, sig, icons:{...((c.path&&c.path.icons)||{}), ...icons}, steps:steps.map((s,i)=>{ const x=ss[i]||{}; return {title:String(x.title||"").slice(0,60), why:String(x.why||"").slice(0,200), uses:strs(x.uses).map(n=>(all.find(k=>norm(k.name)===norm(n))||{}).id).filter(Boolean).slice(0,3)}; })};
     arrOf(out&&out.units).forEach((x,i)=>{ const n=parseInt(String(x&&x.id||"").replace(/\D/g,""))||i+1, u=units[n-1]; if(u) setCanDo(c, u, x.can_do, x.bridge); });
     units.forEach(u=>{ if(!u.canDo) u.canDo=[]; });
     saveCourse(c);
@@ -2402,7 +2402,7 @@ function stepHead(c, i){ const t=c.path&&c.path.steps&&c.path.steps[i]; return {
 function usesChips(c, ids){ const ks=ids.map(id=>c.concepts[id]).filter(Boolean); return ks.length ? `<span class="uses"><span>Uses</span>${ks.map(k=>`<span class="uchip${k.rung>=4?" ok":""}">${k.rung>=4?CHECK(11):""}${esc(k.name)}</span>`).join("")}</span>` : ""; }
 function tileHtml(c, m, nx, sel){
   const f=fieldInfo(c,m,nx);
-  const stat = f.state==="here" ? `<span class="tstat here">You're here</span>` : f.state==="done" ? `<span class="tstat done">${CHECK(12)} ${esc(stageName(f.st))} done</span>` : f.state==="progress" ? `<span class="tstat">${esc(stageName(f.st))} · ${f.p}%</span>` : f.blockedBy ? `<span class="tstat after">Best after ${esc(f.blockedBy.title)}</span>` : `<span class="tstat after">Ready to start</span>`;
+  const stat = f.state==="here" ? `<span class="tstat here">You're here</span>` : f.state==="done" ? `<span class="tstat done">${CHECK(12)} ${esc(stageName(f.st))} done</span>` : f.state==="progress" ? `<span class="tstat">${esc(stageName(f.st))} · ${f.p}%</span>` : "";
   return `<button type="button" class="ptile s-${f.state}${f.blockedBy?" later":""}${sel?" sel":""}" data-m="${esc(m.id)}"><span class="ttop"><span class="fico">${fieldIcon(c,m,20)}</span>${f.ks.length&&f.state!=="done"?`<span class="tring">${miniRing(f.p,30)}</span>`:""}</span><span class="tname">${esc(m.title)}</span>${stat}</button>`;
 }
 function pathHeader(c, wide){
