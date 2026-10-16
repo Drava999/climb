@@ -724,7 +724,7 @@ const main = $("main");
 const L = (kind, o) => { try{ window.climbLog && window.climbLog(kind, o||{}); }catch(e){} };
 const DAY = 864e5;
 const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
-const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, graph:3, dtap:3, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
+const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, chain:4, graph:3, dtap:3, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
 const LEVELS = [["new","New to it"],["some","Know a bit"],["strong","Fairly confident"]];
 const SUGGEST = ["How the stock market works","Spanish for travel","Photosynthesis","Python basics","The Cold War","How vaccines work","Music theory","Supply and demand","Probability","Japanese hiragana","Climate change","First aid","Negotiation","Machine learning basics","The human heart","How shipping and trade work","Ancient Rome","Cognitive biases"];
 
@@ -944,7 +944,7 @@ Return ONLY JSON: {"title": course title (max 5 words), "angles": ["",...], "uni
 const UNI_RE = /\b(NTU|NUS|SMU|SUTD|SIT|SUSS|university|uni|undergrad|undergraduate|freshman|first[- ]year|module code|[A-Z]{2,3}\d{4})\b/i;
 const isUniGoal = o => UNI_RE.test(`${o.goal||""} ${o.topic||""} ${o.focus||""}`);
 const SKILL_KEYS = new Set(["calc","data","tradeoff","flaw","explain","predict"]);
-const BANK_KEYS = ["mcq","tf","cloze","recall","apply","connect"];
+const BANK_KEYS = ["mcq","tf","cloze","recall","apply","connect","chain"];
 const arrOf = x => Array.isArray(x) ? x : (x ? [x] : []);
 const strs = x => Array.isArray(x) ? x.filter(v=>v!=null&&v!=="").map(String) : [];
 const CLEAN = {
@@ -952,8 +952,9 @@ const CLEAN = {
   tf: x=>x&&x.s ? {s:String(x.s), t:x.t===true||x.t==="true"} : null,
   cloze: x=>x&&x.s&&String(x.s).includes("___")&&x.a ? {s:String(x.s), a:String(x.a)} : null,
   recall: x=>x&&x.q&&x.a ? {q:String(x.q), a:String(x.a), accept:strs(x.accept)} : null,
-  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||""), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:""} : null,
-  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:""} : null,
+  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||""), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:"", move:String(x.move||"").slice(0,12)} : null,
+  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:"", move:String(x.move||"").slice(0,12)} : null,
+  chain: x=>x&&strs(x.steps).length>=4 ? {q:String(x.title||"Chain of effects").slice(0,80), steps:strs(x.steps).slice(0,6).map(t=>t.slice(0,90))} : null,
 };
 function cleanBank(it){
   if(!it) return null;
@@ -969,16 +970,18 @@ function mergeBank(b, add){
 }
 function conceptLine(k){ return `${k.name}: ${k.summary}${k.points&&k.points.length?" Key points: "+k.points.join("; ")+".":""}`; }
 const QSPEC = `For each concept write questions at five levels of difficulty. Every question must test a DIFFERENT angle of the concept: how or why it works, a real example or case, a common misconception, an edge case or limit, a comparison with a related concept, cause and effect, or numbers. Don't just restate the summary.
-- "mcq" (level 1, recognise): 2 questions, each with "q", correct "a", and 3 plausible wrong answers "d" of similar length and style.
-- "tf" (level 1): 3 statements, a mix of true and subtly false.
+- "mcq" (levels 1-2): 2 questions, each with "q", correct "a", and 3 plausible wrong answers "d" of similar length and style. The first RECOGNISES what the concept is; the second EXPLAINS why or how it works (cause and effect), not another definition.
+- "tf" (level 1): 3 statements, a mix of true and subtly false; at least one targets a common misconception about WHY.
 - "cloze" (level 2, cued recall): 2 sentences "s" with a key word or short phrase replaced by ___, and the missing text "a" (1-3 words).
 - "recall" (level 3, produce from memory): 3 direct questions "q", each with ONE clear correct answer "a" (a term, name, number or short phrase, 1-6 words) and "accept": 1-3 other wordings that also count. Never ask the learner to "name" or "list" examples when several answers would be valid.
-- "apply" (level 4): 3 NEW realistic scenarios or small problems "q" that require using the concept in different situations. Each has correct "a", 3 plausible wrong answers "d", "why" (1 sentence), and "skill".
-- "connect" (level 5): 2 open questions "q" asking the learner to explain why or how, predict what happens if something changes, or link the concept to another named concept in this course; "points": 2-3 key points a strong answer covers, and "skill".
+- "apply" (level 4): 3 NEW realistic scenarios "q", each with correct "a", 3 plausible wrong answers "d", "why" (1 sentence), "skill" and "move". One APPLIES the concept to a new situation; one ANALYSES (a chain of effects, which factor matters most, where the rule breaks, or the flaw in a plausible claim); one JUDGES (the best choice under a trade-off). At most ONE of the three may need a calculation (only if the subject is not mainly mathematical), and it must end in a decision or interpretation, not just a number.
+- "connect" (level 5): 2 open questions "q": one JUDGE question (decide and justify with trade-offs or incomplete information) and one that PREDICTS a novel situation or links the concept to another named concept in this course; "points": 2-3 key points a strong answer covers; "skill" and "move".
+- "chain" (level 4): 1 cause-and-effect chain showing how the concept plays out in a real situation: "title" (max 8 words) and "steps": 4-6 links in the correct order, each max 9 words, every link following from the one before.
+"move" names the thinking move: recognise, explain, apply, analyse or judge.
 "skill" on apply and connect questions names the main thinking skill it trains: calc (a calculation), data (reading data, a table or a graph), tradeoff (weighing options), flaw (spotting a flaw or misconception), explain (explaining a mechanism), or predict (predicting an outcome). Vary them across questions where the concept allows.
 Write in plain, friendly language a beginner understands: short sentences, questions under 25 words, scenarios under 45 words. ${JARGON}
 Also for each concept "terms": 2-5 technical words or phrases that appear in its questions or answers (industry or subject terms, abbreviations), each with a plain definition a 12-year-old understands, max 15 words.
-${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "terms":[{"term":"","def":""}], "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":"","skill":""}], "connect":[{"q":"","points":[],"skill":""}]}]}`;
+${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "terms":[{"term":"","def":""}], "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":"","skill":"","move":""}], "connect":[{"q":"","points":[],"skill":"","move":""}], "chain":[{"title":"","steps":["","","",""]}]}]}`;
 function conceptStage(c, k){ const u=c.units.find(x=>x.concepts.includes(k.id)); const m=u&&u.mod&&(c.modules||[]).find(x=>x.id===u.mod); return {stage:u?(u.stage||1):1, field:m?m.title:""}; }
 function uniQuestionText(c){ return `UNIVERSITY STYLE (${c.uni}): write like first-year university exam questions for this degree: precise terminology, standard models and frameworks, calculations with working, and "discuss/evaluate" open questions. For every "apply" and "connect" question add "marks" (2-10) and make "points" the mark scheme, one point per mark.`; }
 const ONE_TYPE = {
@@ -986,8 +989,9 @@ const ONE_TYPE = {
   tf:`"tf": 3 NEW statements, a mix of true and subtly false.`,
   cloze:`"cloze": 2 NEW sentences "s" with a key term replaced by ___, and the missing text "a" (1-3 words).`,
   recall:`"recall": 2 NEW direct questions "q" with ONE clear answer "a" (1-6 words) and "accept": other wordings.`,
-  apply:`"apply": 2 NEW realistic problems "q", each with correct "a", 3 plausible wrong answers "d", "why", and "skill" (calc, data, tradeoff, flaw, explain or predict).`,
-  connect:`"connect": 2 NEW open questions "q" with "points": the 2-4 key points a strong answer covers, and "skill" (calc, data, tradeoff, flaw, explain or predict).`,
+  apply:`"apply": 2 NEW realistic scenarios "q", each with correct "a", 3 plausible wrong answers "d", "why", "skill" (calc, data, tradeoff, flaw, explain or predict) and "move". Go one thinking step beyond the earlier ones: ANALYSE (chain of effects, which factor matters most, where the rule breaks, flaw in a claim) or JUDGE (best choice under a trade-off). No calculations unless the subject is mainly mathematical.`,
+  connect:`"connect": 2 NEW open questions "q" with "points": the 2-4 key points a strong answer covers, "skill" (calc, data, tradeoff, flaw, explain or predict) and "move": JUDGE (decide and justify with trade-offs or incomplete information) or PREDICT a novel situation.`,
+  chain:`"chain": 1 NEW cause-and-effect chain: "title" (max 8 words) and "steps": 4-6 links in order, each max 9 words.`,
 };
 async function genBank(c, ids, refresh, onlyType){
   const cons = ids.map(id=>c.concepts[id]);
@@ -998,7 +1002,7 @@ ${c.notes?`Stay faithful to this source material:\n"""${c.notes}"""\n`:""}
 Write questions for ONLY these concepts:
 ${cons.map((k,i)=>{ const s0=conceptStage(c,k); return `${i+1}. ${conceptLine(k)} [STAGE: ${stageName(s0.stage)}${s0.field?"; field: "+s0.field:""}]`; }).join("\n")}
 Pitch every question at its concept's STAGE (house style rule 6) and include hands-on skill drills and thinking questions from Intermediate up (rule 7).
-${refresh?`\nThe learner has already practised these questions. Write NEW ones that go deeper and harder, covering angles and details these don't:\n- ${asked.slice(0,40).join("\n- ")}\n`:""}
+${refresh?`\nThe learner has already practised these questions. Write NEW ones that demand the NEXT thinking move (explain → apply → analyse → judge), covering angles these don't. Deeper reasoning, not bigger numbers:\n- ${asked.slice(0,40).join("\n- ")}\n`:""}
 ${onlyType ? `Write ONLY this question type: ${ONE_TYPE[onlyType]} ${JARGON} ${CONTEXT} Also "terms": technical words used in these questions, each with a plain definition (max 15 words). Return ONLY JSON: {"items":[{"name": concept name exactly as given, "${onlyType}":[...], "terms":[{"term":"","def":""}]}]}` : QSPEC}
 ${planOf(c).questions?"SUBJECT FOCUS: "+planOf(c).questions:""}
 ${isExam(c)?examQuestionText(c):c.uni?uniQuestionText(c):""}`;
@@ -1526,10 +1530,12 @@ function prefetch(c){
   if(tids.length) ensureTeach(c, tids).catch(()=>{});
 }
 const refreshing = new Set();
+const calcTopped=new Set(); // existing calc-heavy banks get one conceptual top-up per session
 function maybeRefresh(c, k, type){
   if(!S.sample || refreshing.has(k.id) || !k.bank) return;
   const used = k.used||{}, list = k.bank[type]||[];
-  if(list.length && list.filter(x=>!(used[qkey(type,x)]||0)).length<=1){ // top up while one fresh question is still left, so learners never see repeats
+  const fresh=list.filter(x=>!(used[qkey(type,x)]||0)), lowConcept = type==="apply" && fresh.length>1 && fresh.filter(x=>!isCalc(x)).length<=1 && !calcTopped.has(k.id);
+  if(list.length && (fresh.length<=1 || lowConcept)){ if(lowConcept) calcTopped.add(k.id); // top up while one fresh question is still left, so learners never see repeats
     refreshing.add(k.id);
     genBank(c, [k.id], true, type).catch(()=>{}).finally(()=>refreshing.delete(k.id));
   }
@@ -1537,6 +1543,7 @@ function maybeRefresh(c, k, type){
 function pickVariant(k, type){
   const list = k.bank[type]; k.used = k.used||{};
   let cands = list.filter(x=>qkey(type,x)!==k.last); if(!cands.length) cands = list;
+  if(!calcOk()){ const nc=cands.filter(x=>!isCalc(x)); if(nc.length) cands=nc; }
   const min = Math.min(...cands.map(x=>k.used[qkey(type,x)]||0));
   return shuffle(cands.filter(x=>(k.used[qkey(type,x)]||0)===min))[0];
 }
@@ -1570,11 +1577,11 @@ Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 w
 const STAGES = ["Foundations","Intermediate","Advanced","Expert"];
 const stageName = n => n<=4 ? STAGES[Math.max(1,n)-1] : `Frontier ${n-4}`;
 function stageStyle(n){
-  return n<=1 ? "FOUNDATIONS: the field's core ideas and vocabulary, explained from the ground up with one strong analogy each."
-    : n===2 ? "INTERMEDIATE: how it really works: mechanisms, calculations, standard tools, documents and terms practitioners use. Concrete worked examples."
-    : n===3 ? "ADVANCED: precise technical detail, multi-step problems with real numbers, edge cases, trade-offs and how the pieces interact."
-    : n===4 ? "EXPERT: what a seasoned professional or specialist knows: judgement calls, real case studies, sophisticated models, current debates."
-    : "FRONTIER: specialist material beyond standard courses: niche techniques, recent developments, research findings, open questions, deep case analysis. Still accurate and specific.";
+  return n<=1 ? "FOUNDATIONS: one idea at a time: what it is, why it works, a concrete example and the common misconception, with one strong analogy each."
+    : n===2 ? "INTERMEDIATE: how ideas interact: cause and effect across two or three factors, applying them to new realistic situations, and the standard tools and documents practitioners use."
+    : n===3 ? "ADVANCED: second-order effects and chains of consequences, which factor matters most, where the rules break down, trade-offs, and short real cases."
+    : n===4 ? "EXPERT: professional judgement with incomplete information, real case studies, competing explanations and critiquing expert claims."
+    : "FRONTIER: specialist material beyond standard courses: recent developments, research findings, open questions and deep case analysis. Still accurate and specific.";
 }
 const hasMap = c => !!(c && c.modules && c.modules.length);
 const modUnits = (c,m) => c.units.filter(u=>u.mod===m.id);
@@ -1678,11 +1685,24 @@ function visualType(k,L){
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
   return null;
 }
+const CALC_CAP = c => c && c.kind==="maths" ? .5 : .34;
+function isCalc(x){ if(!x) return false; if(x.skill==="calc") return true; const t=`${x.q||x.s||""} ${x.a||""}`; if(/[×÷]/.test(t)) return true;
+  const nums=(t.match(/\d[\d,.]*/g)||[]).filter(n=>n.replace(/\D/g,"").length>=2); if(nums.length>=3) return true;
+  return nums.length>=1 && /^\s*[$€£]?\s*[\d.,]+\s*(%|[a-z\/ ]{0,14})?\s*$/i.test(String(x.a||"")); }
+function calcOk(){ if(!LS) return true; const q=(LS.qn||0)+1; return (LS.calcn||0)+1 <= Math.max(1, Math.floor(q*CALC_CAP(LS.c))); }
 function typeFor(k,L){
+  let t=typeFor0(k,L); const b=k.bank;
+  if(b && Array.isArray(b[t]) && b[t].length && !calcOk() && b[t].every(isCalc)){
+    const alt=["connect","chain","apply","recall","cloze","mcq","tf"].find(o=>o!==t && Array.isArray(b[o]) && b[o].some(v=>!isCalc(v)) && (o!=="connect"||S.sample) && TL[o]<=Math.max(TL[t]||3,3)+1);
+    if(alt) t=alt; }
+  return t;
+}
+function typeFor0(k,L){
   if(isLang(LS.c) && k.lang) return langType(k,L);
   const vt=visualType(k,L);
   if(vt && k.lastVq!==vt && Math.random()<(vt==="graph"||vt==="dtap"?.6:vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
   const b=normBank(k.bank);
+  if(L>=4 && b.chain && b.chain.length && LS.c.kind!=="language" && Math.random()<.3) return "chain";
   if(L>=5 && b.connect.length && S.sample) return "connect";
   if(L>=4 && b.apply.length) return "apply";
   if(L>=3 && b.recall.length) return "recall";
@@ -2959,11 +2979,12 @@ function renderStep(){
   const {L,stretch} = LS.mock ? {L:[3,4,4,5][Math.floor(Math.random()*4)], stretch:false} : pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
   const vq = ["label","order","sort","graph","dtap"].includes(type) || LANGQ.has(type);
   const x = vq ? {q:type} : pickVariant(k,type);
-  if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); } else { k.lastVq=type; }
+  if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); LS.qn=(LS.qn||0)+1; if(isCalc(x)) LS.calcn=(LS.calcn||0)+1; } else { k.lastVq=type; LS.qn=(LS.qn||0)+1; }
   LS.q={k, type, eff, x, text:vq?(k.name+" diagram"):qtext(x), stretch: stretch&&eff>k.rung+1, hint:0, undo:null, xp:0, done:false};
   const ch=chip(eff, LS.q.stretch) + ((isExam(LS.c)||LS.c.uni)&&x&&x.marks?`<span class="tiny muted">[${x.marks} mark${x.marks>1?"s":""}]</span>`:"") + (k.writer?`<span class="tiny muted">Question by ${esc(k.writer)}</span>`:"");
   bar("");
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
+  else if(type==="chain") renderOrderQ(ch, {name:k.name, teach:{visual:{type:"flow", chain:true, title:x.q, steps:x.steps.map(label=>({label}))}}});
   else if(type==="graph") renderGraphQ(ch, k);
   else if(type==="dtap") renderDiagramQ(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
@@ -3060,7 +3081,7 @@ function renderOrderQ(ch, k){
   const correct = isTime ? v.items.map(x=>x.label) : isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
   let pool = shuffle(correct); let guard=0; while(pool.join("|")===correct.join("|") && guard++<5) pool=shuffle(correct);
   const picked=[];
-  const prompt = isTime ? `${v.title||k.name}: put these in time order, earliest first.` : isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
+  const prompt = v.chain ? `${v.title}: put the chain of cause and effect in order.` : isTime ? `${v.title||k.name}: put these in time order, earliest first.` : isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
   const draw=()=>{
     $("slots").innerHTML = correct.map((_,i)=>picked[i]!=null ? `<button type="button" class="slot" data-p="${i}"><span class="n">${i+1}</span><span>${esc(picked[i])}</span></button>` : `<div class="slot empty"><span class="n">${i+1}</span><span>Tap a card below</span></div>`).join("");
     $("pool").innerHTML = pool.map((x,i)=>picked.includes(x)?"":`<button type="button" class="chip" data-i="${i}">${esc(x)}</button>`).join("");
