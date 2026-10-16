@@ -670,6 +670,16 @@ line.ds,polyline.ds,path.ds{fill:none}
 .tapq .cm circle{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
 .tapq .mk{background:var(--surface);border-color:var(--ink);width:32px;height:32px}
 .tapq .tl .tll{color:var(--muted)}
+.pathbar{display:flex;justify-content:flex-end;margin:-6px 0 -8px}
+.pall{color:var(--accent-text);font-weight:800;text-decoration:none;padding:8px 4px}
+.pstep.fold .pline{min-height:10px}
+.pfold{flex:1;min-width:0;border:0;background:none;padding:4px 0 14px;text-align:left;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px}
+.pfold .pft{font:800 15px/1.3 var(--ui)}
+.pfold .pfm{font:700 13px var(--ui);color:var(--muted);flex:none}
+.pfold.ahead{flex-direction:column;align-items:stretch;gap:6px}
+.pfrow{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted)}.pfrow .pft{color:var(--ink);opacity:.85}
+.pfchips{display:flex;flex-wrap:wrap;gap:6px}.pfchips span{border:1.5px dashed var(--line);color:var(--muted);font:700 12px var(--ui);border-radius:99px;padding:3px 9px}
+.pclose{border:0;background:none;padding:0;font:inherit;color:inherit;display:inline-flex;align-items:center;gap:6px;text-align:left}.pclose svg{color:var(--muted)}
 @media (min-width:1024px){
   .tabbar{background:var(--raise);border-right:0;width:224px}
   .tabbar::before{content:"Climb";font:900 24px var(--ui)}
@@ -2426,12 +2436,23 @@ function testsHtml(c){
   return h+`</section>`;
 }
 function pathStepsPhone(c, nx){
-  const steps=pathSteps(c);
-  return `<div class="rail">${steps.map((mods,i)=>{ const ss=stepState(c,mods,nx), hd=stepHead(c,i);
+  const steps=pathSteps(c), states=steps.map(mods=>stepState(c,mods,nx));
+  let focus=states.indexOf("now"); if(focus<0) focus=states.indexOf("ahead"); if(focus<0) focus=steps.length-1;
+  const open=S.pathOpen&&S.pathOpen.course===c.id ? S.pathOpen.set : new Set();
+  const rows=steps.map((mods,i)=>{ const ss=states[i], hd=stepHead(c,i), isOpen=S.pathAll||i===focus||open.has(i);
     const node = ss==="done" ? `<span class="pnode done">${CHECK(16)}</span>` : `<span class="pnode ${ss}">${i+1}</span>`;
-    return `<section class="pstep ${ss}"><div class="pcol">${node}<span class="pline"></span></div><div class="pbody"><h3>Step ${i+1} · ${esc(hd.title)}</h3>
+    if(!isOpen && ss==="done") return `<section class="pstep fold done"><div class="pcol">${node}<span class="pline"></span></div><button type="button" class="pfold" data-open="${i}" aria-expanded="false"><span class="pft">Step ${i+1} · ${esc(hd.title)}</span><span class="pfm">${mods.length} field${mods.length>1?"s":""}</span></button></section>`;
+    if(!isOpen) return `<section class="pstep fold ${ss}"><div class="pcol">${node}<span class="pline"></span></div><button type="button" class="pfold ahead" data-open="${i}" aria-expanded="false"><span class="pfrow"><span class="pft">Step ${i+1} · ${esc(hd.title)}</span>${svgI('<path d="M6 9l6 6 6-6"/>',18)}</span><span class="pfchips">${mods.map(m=>`<span>${esc(m.title)}</span>`).join("")}</span></button></section>`;
+    return `<section class="pstep ${ss}"><div class="pcol">${node}<span class="pline"></span></div><div class="pbody"><h3>${i!==focus&&!S.pathAll?`<button type="button" class="pclose" data-close="${i}" aria-expanded="true">Step ${i+1} · ${esc(hd.title)} ${svgI('<path d="M6 15l6-6 6 6"/>',16)}</button>`:`Step ${i+1} · ${esc(hd.title)}`}</h3>
       ${i>0&&hd.why?`<div class="why ${ss==="ahead"?"ahead":""}"><p><b>${ss==="ahead"?"Why next":"Why now"}:</b> ${esc(hd.why)}</p>${usesChips(c,hd.uses)}</div>`:i===0&&hd.why?`<p class="small muted">${esc(hd.why)}</p>`:""}
-      <div class="ptiles">${mods.map(m=>tileHtml(c,m,nx)).join("")}</div></div></section>`; }).join("")}</div>`;
+      <div class="ptiles">${mods.map(m=>tileHtml(c,m,nx)).join("")}</div></div></section>`; }).join("");
+  return `<div class="pathbar"><button type="button" class="linkbtn pall" id="pAll">${S.pathAll?"Fold finished and later steps":"Show whole path"}</button></div><div class="rail">${rows}</div>`;
+}
+function wirePathFold(c){
+  const toggle=(i,on)=>{ if(!S.pathOpen||S.pathOpen.course!==c.id) S.pathOpen={course:c.id, set:new Set()}; on?S.pathOpen.set.add(i):S.pathOpen.set.delete(i); renderPath(); };
+  main.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>toggle(+b.dataset.open,true));
+  main.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>toggle(+b.dataset.close,false));
+  const pa=$("pAll"); if(pa) pa.onclick=()=>{ S.pathAll=!S.pathAll; renderPath(); };
 }
 function pathStepsWide(c, nx, sel){
   const steps=pathSteps(c);
@@ -2468,6 +2489,7 @@ function renderPath(){
     wireFieldDetail(c, m, $("pside"));
   } else {
     main.innerHTML = `<div class="screen path">${pathHeader(c, false)}${pathStepsPhone(c,nx)}<button type="button" class="addf" id="addF">${ICON.plus} Add a field</button>${testsHtml(c)}${delHtml(c)}</div>${navHtml("map")}`;
+    wirePathFold(c);
   }
   wireNav();
   $("cSwitch").onclick=()=>courseSwitchSheet();
