@@ -977,7 +977,8 @@ const QSPEC = `For each concept write questions at five levels of difficulty. Ev
 - "connect" (level 5): 2 open questions "q" asking the learner to explain why or how, predict what happens if something changes, or link the concept to another named concept in this course; "points": 2-3 key points a strong answer covers, and "skill".
 "skill" on apply and connect questions names the main thinking skill it trains: calc (a calculation), data (reading data, a table or a graph), tradeoff (weighing options), flaw (spotting a flaw or misconception), explain (explaining a mechanism), or predict (predicting an outcome). Vary them across questions where the concept allows.
 Write in plain, friendly language a beginner understands: short sentences, questions under 25 words, scenarios under 45 words. ${JARGON}
-${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":"","skill":""}], "connect":[{"q":"","points":[],"skill":""}]}]}`;
+Also for each concept "terms": 2-5 technical words or phrases that appear in its questions or answers (industry or subject terms, abbreviations), each with a plain definition a 12-year-old understands, max 15 words.
+${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "terms":[{"term":"","def":""}], "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":"","skill":""}], "connect":[{"q":"","points":[],"skill":""}]}]}`;
 function conceptStage(c, k){ const u=c.units.find(x=>x.concepts.includes(k.id)); const m=u&&u.mod&&(c.modules||[]).find(x=>x.id===u.mod); return {stage:u?(u.stage||1):1, field:m?m.title:""}; }
 function uniQuestionText(c){ return `UNIVERSITY STYLE (${c.uni}): write like first-year university exam questions for this degree: precise terminology, standard models and frameworks, calculations with working, and "discuss/evaluate" open questions. For every "apply" and "connect" question add "marks" (2-10) and make "points" the mark scheme, one point per mark.`; }
 const ONE_TYPE = {
@@ -998,11 +999,12 @@ Write questions for ONLY these concepts:
 ${cons.map((k,i)=>{ const s0=conceptStage(c,k); return `${i+1}. ${conceptLine(k)} [STAGE: ${stageName(s0.stage)}${s0.field?"; field: "+s0.field:""}]`; }).join("\n")}
 Pitch every question at its concept's STAGE (house style rule 6) and include hands-on skill drills and thinking questions from Intermediate up (rule 7).
 ${refresh?`\nThe learner has already practised these questions. Write NEW ones that go deeper and harder, covering angles and details these don't:\n- ${asked.slice(0,40).join("\n- ")}\n`:""}
-${onlyType ? `Write ONLY this question type: ${ONE_TYPE[onlyType]} ${JARGON} ${CONTEXT} Return ONLY JSON: {"items":[{"name": concept name exactly as given, "${onlyType}":[...]}]}` : QSPEC}
+${onlyType ? `Write ONLY this question type: ${ONE_TYPE[onlyType]} ${JARGON} ${CONTEXT} Also "terms": technical words used in these questions, each with a plain definition (max 15 words). Return ONLY JSON: {"items":[{"name": concept name exactly as given, "${onlyType}":[...], "terms":[{"term":"","def":""}]}]}` : QSPEC}
 ${planOf(c).questions?"SUBJECT FOCUS: "+planOf(c).questions:""}
 ${isExam(c)?examQuestionText(c):c.uni?uniQuestionText(c):""}`;
   const {data:out, writer} = await writerJson(prompt);
   const items = (out&&out.items)||[];
+  items.forEach(it=>addTerms(c, it&&it.terms));
   cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i];
     if(onlyType){ if(!it||!k.bank) return; const add={}; BANK_KEYS.forEach(t=>add[t]=t===onlyType?arrOf(it[t]).map(CLEAN[t]).filter(Boolean):[]); mergeBank(k.bank, add); k.writer=writer; return; }
     const b=cleanBank(it); if(!b) return; if(refresh && k.bank) mergeBank(k.bank,b); else { b.v=2; k.bank=b; k.used={}; k.last=null; } k.writer=writer; });
@@ -1503,7 +1505,7 @@ function streamInto(el, prompt){
   el.innerHTML='<span class="row" style="gap:8px"><span class="spinner"></span><span class="muted">Writing…</span></span>';
   const timer=setTimeout(()=>{ if(!got){ ctl.abort(); } }, 20000);
   S.sample(prompt, {modelTier:"quick", signal:ctl.signal, onText:({text})=>{ if(text&&text!=="Thinking..."){ got=true; el.textContent=text; } }})
-    .then(r=>{ got=true; if(r&&r.text) el.textContent=r.text; })
+    .then(r=>{ got=true; if(r&&r.text) el.innerHTML=gloss(r.text); })
     .catch(e=>{ el.innerHTML=`<span class="muted">${esc(e&&e.name==="AbortError"?"That took too long.":aiErr(e))}</span> <button class="linkbtn" type="button">Try again</button>`; el.querySelector("button").onclick=()=>streamInto(el, prompt); })
     .finally(()=>clearTimeout(timer));
 }
@@ -2342,9 +2344,11 @@ ${ks.map(line).join("\n")}
 Each question is a realistic case or problem (under 80 words, with concrete numbers or details where they help) that can only be answered well by reasoning across the combined concepts: decide and justify, evaluate, predict, or calculate then interpret. Pitch it at ${stageName(Math.max(3,top))} level (house style rule 6). Never answerable from one concept alone. Don't reveal the answer in the question.
 "q": the case and the question; "uses": the combined concept names exactly as listed; "points": 3-5 mark-scheme points a strong answer makes; "marks": 3-6; "skill": the main thinking skill it trains, one of ${Object.keys(SKILLS).join(", ")}.
 ${isExam(c)?examQuestionText(c):c.uni?uniQuestionText(c):""}
-Return ONLY JSON: {"questions":[{"q":"","uses":[""],"points":[""],"marks":4,"skill":""}]}`, {modelTier:"default", cache:false});
+Also "terms": technical words used in the questions, each with a plain definition (max 15 words).
+Return ONLY JSON: {"questions":[{"q":"","uses":[""],"points":[""],"marks":4,"skill":""}], "terms":[{"term":"","def":""}]}`, {modelTier:"default", cache:false});
     const add=arrOf(out&&out.questions).map(x=>{ const uses=strs(x&&x.uses).map(nm=>(ks.find(k=>norm(k.name)===norm(nm))||{}).id).filter(Boolean);
       return x&&x.q&&uses.length>=2 ? {id:uidGen(), q:String(x.q), uses:[...new Set(uses)].slice(0,3), points:strs(x.points).slice(0,6), marks:Math.min(8,Math.max(2,parseInt(x.marks)||strs(x.points).length||4)), skill:SKILLS[x.skill]?x.skill:"explain", used:false} : null; }).filter(Boolean);
+    addTerms(c, out&&out.terms);
     c.combos=[...(c.combos||[]).filter(x=>!x.used).slice(-6), ...add];
     saveCourse(c); return add;
   } finally{ comboBusy=false; }
@@ -2398,7 +2402,7 @@ Return ONLY JSON: {"marks_awarded": number, "score": 0-100, "good": one short se
       if(!LS) return;
       const got=Math.max(0,Math.min(x.marks, parseInt(r.marks_awarded)||0)), pass=got/x.marks>=.6;
       LS.q.marksAwarded=got;
-      answered(pass?"right":got>0?"helped":"wrong", {title:`${got}/${x.marks} marks`, partial:!pass&&got>0, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
+      answered(pass?"right":got>0?"helped":"wrong", {title:`${got}/${x.marks} marks`, partial:!pass&&got>0, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${gloss(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${gloss(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${gloss(r.better)}</span></div>`:""}`});
       if(pass) ks.filter(q=>q!==k).forEach(q=>{ if(q.rung<5 && q.rung>=3){ q.rung=Math.min(5,q.rung+1); } });
     }catch(e){ $("cin").disabled=false; $("cskip").hidden=false; toast(aiErr(e)); bar(`<button class="btn block" id="cgo2">Try again</button>`); $("cgo2").onclick=doCheck; }
   };
@@ -2889,7 +2893,7 @@ function sheet(c, k){
   ${k.teach&&k.teach.visual?`<div id="sheetVis">${visualHtml(k.teach.visual)}</div>`:""}
   <p class="read">${esc(k.summary)}</p>
   ${k.points&&k.points.length?`<ul class="kp">${k.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>`:""}
-  ${k.example?`<div class="ex"><span class="label">Example</span><span>${esc(k.example)}</span></div>`:""}${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}`
+  ${k.example?`<div class="ex"><span class="label">Example</span><span>${esc(k.example)}</span></div>`:""}${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${gloss(hookOf(k))}</span></div>`:""}`
   :`<p class="muted">You'll meet this one in a lesson soon. Learning it there first, then being tested, makes it stick better than reading ahead.</p>`}
   ${k.needs&&k.needs.length?`<p class="small muted">Builds on: ${k.needs.map(esc).join(" · ")}</p>`:""}
   ${kids.length?`<p class="small muted">Already branched: ${kids.map(u=>esc(u.title)).join(", ")}</p>`:""}
@@ -2989,7 +2993,7 @@ function renderIntro(k){
     else if(kind==="worked") body=`<div class="vans"><span class="label">Problem</span><span style="font-weight:600">${gloss(t.worked.problem)}</span></div><ol class="wsteps">${t.worked.steps.map((x,i)=>`<li${i?" hidden":""}>${gloss(x)}</li>`).join("")}</ol>${t.worked.steps.length>1?`<button class="btn soft sm" id="wNext" type="button" style="align-self:flex-start">Show next step</button>`:""}<div id="wAns" class="hook"${t.worked.steps.length>1?" hidden":""}><span class="label">Answer</span><span>${gloss(t.worked.answer)}</span></div>`;
     else if(kind==="mistakes") body=`<ul class="kp">${t.mistakes.map(x=>`<li>${gloss(x)}</li>`).join("")}</ul>`;
     else if(kind==="real") body=`<p class="read">${gloss(k.summary, k.name)}</p>${k.points&&k.points.length?`<button class="btn soft sm" id="kpBtn" type="button" style="align-self:flex-start">Show ${k.points.length} key points</button><ul class="kp" id="kpList" hidden>${k.points.map(x=>`<li>${gloss(x, k.name)}</li>`).join("")}</ul>`:""}${k.example?`<div class="ex"><span class="label">Example</span><span>${gloss(k.example, k.name)}</span></div>`:""}<p class="tiny muted">Tap an underlined word for a plain definition.</p>`;
-    else body=`<p class="eli5">${gloss(t&&t.takeaway||(k.points&&k.points[0])||k.summary, k.name)}</p>${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}`;
+    else body=`<p class="eli5">${gloss(t&&t.takeaway||(k.points&&k.points[0])||k.summary, k.name)}</p>${hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${gloss(hookOf(k))}</span></div>`:""}`;
     main.innerHTML = head()+`<div class="card pop">${dots}<span class="label">${LBL[kind]}</span><div class="intro-name" style="font-size:22px">${esc(k.name)}</div>${body}</div>`;
     wireQuit();
     bar(`<div class="row" style="flex-wrap:nowrap">${idx?'<button class="btn ghost" id="tback">Back</button>':""}<button class="btn" id="tnext" style="flex:1">${last?"Got it, test me":kind==="predict"&&!guessed?"Skip":"Continue"}</button></div>`);
@@ -3207,7 +3211,7 @@ Return ONLY JSON: {"score": 0-100, "pass": true if score >= 60, "marks_awarded":
       const pass=!!r.pass||(+r.score>=60);
       const mTot = b.marks||b.points.length||3, mGot = Math.max(0, Math.min(mTot, parseInt(r.marks_awarded)||0));
       if(LS.q) LS.q.marksAwarded = (isExam(LS.c)||LS.c.uni) ? mGot : null;
-      answered(pass?"right":"wrong", {title: (isExam(LS.c)||LS.c.uni) ? `${mGot}/${mTot} marks` : pass?`Strong answer · ${r.score}/100`:`Not there yet · ${r.score}/100`, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
+      answered(pass?"right":"wrong", {title: (isExam(LS.c)||LS.c.uni) ? `${mGot}/${mTot} marks` : pass?`Strong answer · ${r.score}/100`:`Not there yet · ${r.score}/100`, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${gloss(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${gloss(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${gloss(r.better)}</span></div>`:""}`});
     }catch(e){
       $("cin").disabled=false; $("cskip").hidden=false; toast(aiErr(e));
       bar(`<button class="btn block" id="cgo2">Try again</button>`); $("cgo2").onclick=doCheck;
@@ -3233,12 +3237,14 @@ function answered(out, o){
   LS.pending = {cid:k.id, out};
   const vh = verdictHead(out,o,q);
   const up = k.rung>before ? `<span class="up">↑ ${esc(k.name)} reached level ${k.rung} · ${LVN[k.rung]}</span>` : "";
-  const ansBox = !o.noAnsBox && o.answer && (out!=="right" || o.showAns) ? `<div class="vans"><span class="label">Answer</span><span>${esc(o.answer)}</span></div>` : "";
+  const ansBox = !o.noAnsBox && o.answer && (out!=="right" || o.showAns) ? `<div class="vans"><span class="label">Answer</span><span>${gloss(o.answer)}</span></div>` : "";
   const why = o.note || o.why || "";
   $("fb").innerHTML = `<div class="verdict ${vh.kind} pop" id="verdict"><div id="vh">${vh.html}</div>${ansBox}${why?`<p class="small">${gloss(why)}</p>`:""}${o.extra||""}${up}
-    ${out==="wrong"&&hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${esc(hookOf(k))}</span></div>`:""}
+    ${out==="wrong"&&hookOf(k)?`<div class="hook"><span class="label">Memory hook</span><span>${gloss(hookOf(k))}</span></div>`:""}
     <div class="vlinks"><button class="linkbtn" id="flag" type="button">Flag this question</button>${out!=="right"&&k.teach&&k.teach.visual&&!["label","order","sort"].includes(q.type)?`<button class="linkbtn" id="pic" type="button">Show me the picture</button>`:""}${S.sample?`<button class="linkbtn" id="simpler" type="button">Explain simpler</button><button class="linkbtn" id="deeper" type="button">Explain in more depth</button>`:""}${o.canGuess?`<button class="linkbtn" id="guess" type="button">I guessed</button>`:""}${out==="wrong"&&o.guess?`<button class="linkbtn" id="mine" type="button">I was right</button>`:""}</div>
+    ${(S.profile.tipTerms||0)<4?`<p class="tiny muted">Tip: tap an underlined word, or press and hold any word, to see what it means.</p>`:""}
     <div id="deepOut"></div></div>`;
+  S.profile.tipTerms=(S.profile.tipTerms||0)+1;
   const last = LS.i+1>=LS.steps.length && out!=="wrong" && !(LS.fresh.has(k.id)&&(LS.count[k.id]||0)<1);
   bar(`<button class="btn block" id="next">${last?"Finish lesson":"Continue"}</button>`);
   $("next").onclick=nextStep;
@@ -3257,7 +3263,7 @@ function answered(out, o){
 QUESTION: ${q.text}
 ${o.answer?"CORRECT ANSWER: "+o.answer:""}
 CONCEPT: ${k.summary}
-Explain this more deeply in under 130 words of plain language: why it's true, how it works underneath, and one non-obvious detail or real-world case that goes beyond the basics. No headings, no preamble.`, {modelTier:"default", onText:({text})=>{ t.textContent=text; }}); }
+Explain this more deeply in under 130 words of plain language: why it's true, how it works underneath, and one non-obvious detail or real-world case that goes beyond the basics. Define any technical term in a few plain words the first time you use it. No headings, no preamble.`, {modelTier:"default", onText:({text})=>{ t.textContent=text; }}); t.innerHTML=gloss(t.textContent); }
     catch(e){ t.textContent=aiErr(e); }
   };
 }
