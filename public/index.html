@@ -616,6 +616,37 @@ h2,h3{font-weight:900}
 .nextstrip{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:12px}
 .nextstrip b{font-size:17px;font-weight:900}.nextstrip span{font-size:14px;font-weight:700}
 .nextstrip .playbtn{background:var(--accent-ink);color:var(--accent);width:52px;height:52px;border-radius:16px}
+/* graphs */
+:root{--g1:#8F5400;--g2:#2C7A57;--g3:#2F63B0;--g4:#A3456B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--g1:#F7C25E;--g2:#5DC495;--g3:#8DB4F0;--g4:#EE93B8}}
+:root[data-theme="dark"]{--g1:#F7C25E;--g2:#5DC495;--g3:#8DB4F0;--g4:#EE93B8}
+.graph{width:100%;max-width:480px;height:auto;align-self:center;display:block;margin:0 auto;overflow:visible}
+.gbox{background:var(--surface);border-radius:18px;padding:8px 6px 2px}
+main.lesson .gbox{background:var(--surface)}
+.gax{stroke:var(--ink);stroke-width:1.6}.gax0{stroke:var(--line);stroke-width:1.2}.ggrid{stroke:var(--line);stroke-width:1}
+.gal{font:800 11.5px var(--ui);fill:var(--muted)}.gtk{font:700 11px var(--ui);fill:var(--muted)}.gtk.b{fill:var(--ink);font-weight:900}
+.gl{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.gline.c1 .gl{stroke:var(--g1)}.gline.c2 .gl{stroke:var(--g2)}.gline.c3 .gl{stroke:var(--g3)}.gline.c4 .gl{stroke:var(--g4)}
+.gll{font:900 12px var(--ui)}.gll.c1{fill:var(--g1)}.gll.c2{fill:var(--g2)}.gll.c3{fill:var(--g3)}.gll.c4{fill:var(--g4)}
+.gline.old .gl{stroke-dasharray:5 6;opacity:.5}
+.gl.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:gdraw 650ms var(--ease-out) forwards}
+.gline.old .gl.draw{animation:none;stroke-dashoffset:0;stroke-dasharray:5 6}
+@keyframes gdraw{to{stroke-dashoffset:0}}
+.ggd{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-dasharray:3 4}
+.gdot{fill:var(--ink);stroke:var(--surface);stroke-width:2}
+.gpt.pick{cursor:pointer}.gpt.pick .gdot{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}.ghitc{fill:transparent}
+.gpt.ok .gdot{fill:var(--good);stroke:var(--surface)}.gpt.no .gdot{fill:var(--bad);stroke:var(--surface)}
+.gpl{font:900 12px var(--ui);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.gll{paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.garea{fill:color-mix(in srgb,var(--g1) 24%,transparent)}.garea:nth-of-type(2){fill:color-mix(in srgb,var(--g2) 24%,transparent)}.garea:nth-of-type(3){fill:color-mix(in srgb,var(--g3) 22%,transparent)}.garea:nth-of-type(4){fill:color-mix(in srgb,var(--g4) 22%,transparent)}
+.garea.pick{cursor:pointer;stroke:var(--surface);stroke-width:2}
+.garea.ok{fill:color-mix(in srgb,var(--good) 45%,transparent)}.garea.no{fill:color-mix(in srgb,var(--bad) 40%,transparent)}
+.galbl{font:800 11px var(--ui);fill:var(--ink);pointer-events:none}.galbl.big{font-size:16px;font-weight:900}
+.gline.drag{cursor:grab;touch-action:none;transition:transform 220ms var(--ease-out)}.gline.drag.held{transition:none;cursor:grabbing}.gline.drag .gl{stroke-width:4}
+.ghit{stroke:transparent;stroke-width:30;fill:none}
+.gstep{display:flex;flex-direction:column;gap:10px}.gtext{font-size:16px;line-height:1.45;min-height:46px}
+.gnav{display:flex;align-items:center;gap:8px}.gnav span{flex:1}
+@media (prefers-reduced-motion:reduce){.gl.draw{animation:none;stroke-dashoffset:0;stroke-dasharray:none}.gline.drag{transition:none}}
 @media (min-width:1024px){
   .tabbar{background:var(--raise);border-right:0;width:224px}
   .tabbar::before{content:"Climb";font:900 24px var(--ui)}
@@ -660,7 +691,7 @@ const main = $("main");
 const L = (kind, o) => { try{ window.climbLog && window.climbLog(kind, o||{}); }catch(e){} };
 const DAY = 864e5;
 const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
-const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
+const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, graph:3, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
 const LEVELS = [["new","New to it"],["some","Know a bit"],["strong","Fairly confident"]];
 const SUGGEST = ["How the stock market works","Spanish for travel","Photosynthesis","Python basics","The Cold War","How vaccines work","Music theory","Supply and demand","Probability","Japanese hiragana","Climate change","First aid","Negotiation","Machine learning basics","The human heart","How shipping and trade work","Ancient Rome","Cognitive biases"];
 
@@ -963,6 +994,7 @@ function cleanVisual(v){
 }
 function cleanVisual0(v){
   if(!v||!v.type) return null;
+  if(v.type==="graph") return cleanGraph(v);
   if(v.type==="curve"){
     const T = x => String(x==null?"":x).trim();
     const points = arrOf(v.points).map(p=>Array.isArray(p)?[+p[0],+p[1]]:p&&typeof p==="object"?[+p.x,+p.y]:null).filter(p=>p&&isFinite(p[0])&&isFinite(p[1])).map(p=>[Math.max(0,Math.min(100,p[0])),Math.max(0,Math.min(100,p[1]))]).sort((a,b)=>a[0]-b[0]);
@@ -1005,12 +1037,13 @@ For each concept return:
 - "builds_on": the name of the earlier course concept this most builds on, exactly as listed, or "" if none.
 - "builds": if builds_on is set, one sentence (max 20 words) linking them, e.g. "You saw X. This is what happens next…"; otherwise "".
 - "visual": ONE simple picture that makes the idea click for a beginner. Pick the type that truly fits the idea:
-  "curve" (how something rises or falls over time, or as something else changes: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
+  "graph" (USE THIS for any real graph in economics, maths, physics, chemistry or biology where lines cross or shift, or areas matter: supply and demand, price controls, taxes, surplus, PPC, cost and revenue curves, AD/AS, externalities, straight lines and quadratics, distance- or speed-time, energy profiles, rate curves. Coordinates are in the axis units you set; keep everything inside the axes. Lines: straight {"id","label","from":[x,y],"to":[x,y]}, smooth {"id","label","points":[[x,y],...]} or a formula {"id","label","fn":"x^2-4","from_x":-3,"to_x":3}; a shifted line has "of": the original line's id. Points: {"id","on":["D","S"]} (the app computes the exact crossing) or {"id","at":[x,y]}, with "label" (e.g. "E1") and optional axis labels "px" (e.g. "P1") and "qx" (e.g. "Q1"). Areas: {"id","label","poly":[corners as point ids, "E1.y0" (on the y-axis level with E1), "E1.x0" (on the x-axis below E1), or [x,y]]}. "steps": 2-6 build-up steps, each {"text": one plain sentence saying what changed and why, "show": the ids that appear at this step}. "asks": 2-3 questions the app can mark: {"type":"point","q":"","answer":point id,"why":""}, {"type":"area","q":"","answer":area id,"why":""} (only with 2+ areas), {"type":"shift","q": a real-world event, then "Drag the curve.","line": line id,"to": the shifted line's id,"answer":"left" or "right","why":""}, {"type":"read","q":"What is the new price?","answer":"E2.y" or "E2.x","why":""}),
+  "curve" (a single shape rising or falling with nothing crossing it: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
   "bars" (comparing amounts: 2-6 bars with real or illustrative values),
   "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
   Every label must be plain words a beginner understands, e.g. "Highest point", not "Cmax". If a technical name matters, put it in the note: "Highest point (called Cmax)". Labels max 4 words. Notes max 18 words, saying what that part means in everyday terms.
   Every visual has "caption": one plain sentence telling the learner what the picture shows.
-  Shapes: {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
+  Shapes: {"type":"graph","title":"","caption":"","x":"Quantity","y":"Price","xmin":0,"xmax":100,"ymin":0,"ymax":100,"unitx":"","unity":"","lines":[],"points":[],"areas":[],"steps":[],"asks":[]} | {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
 - "simplest": the same idea for a 7-year-old, max 25 words, using the SAME anchor in even simpler words.
 - "hook": a memory hook, max 20 words, built on the SAME anchor (no new analogy).
 - "takeaway": the one thing to remember, max 15 words.
@@ -1168,6 +1201,7 @@ function curveSvg(v, hide){
 }
 function visualHtml(v, o){
   o=o||{}; const hide=o.hide;
+  if(v.type==="graph") return graphHtml(v, o);
   let body="";
   if(v.type==="flow") body=`<div class="vflow">${v.steps.map((st,i)=>`${i?'<div class="varrow" aria-hidden="true">↓</div>':""}<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i+1}</span><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div>`;
   else if(v.type==="cycle") body=cycleSvg(v.steps, hide);
@@ -1181,7 +1215,155 @@ function visualHtml(v, o){
   const tappable = ["flow","cycle","parts","scale","curve","bars"].includes(v.type) && hide==null && !o.still;
   return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}${body}${tappable?`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap each part to see what it does.")}</div>`:""}</div>`;
 }
+/* ---------- graph engine: the AI describes, the app computes and draws (exact intersections, guides, areas) ---------- */
+function exprFn(src){
+  const s=String(src||"").toLowerCase().replace(/\s+/g,"").replace(/\*\*/g,"^"); let i=0;
+  const peek=()=>s[i], eat=c=>{ if(s[i]===c){ i++; return true; } return false; };
+  const FN={sqrt:Math.sqrt, sin:Math.sin, cos:Math.cos, tan:Math.tan, exp:Math.exp, ln:Math.log, log:Math.log10, abs:Math.abs};
+  function prim(){ // returns function of x
+    if(eat("(")){ const e=expr(); if(!eat(")")) throw 0; return e; }
+    if(eat("-")){ const p=power(); return x=>-p(x); }
+    const m=s.slice(i).match(/^(\d+\.?\d*|\.\d+)/); if(m){ i+=m[0].length; const v=+m[0]; return ()=>v; }
+    if(eat("x")) return x=>x;
+    if(s.slice(i,i+2)==="pi"){ i+=2; return ()=>Math.PI; }
+    const f=s.slice(i).match(/^[a-z]+/); if(f&&FN[f[0]]){ i+=f[0].length; if(!eat("(")) throw 0; const a=expr(); if(!eat(")")) throw 0; const g=FN[f[0]]; return x=>g(a(x)); }
+    throw 0;
+  }
+  function implicit(){ let a=prim(); while(i<s.length && /[\d.x(a-z]/.test(peek()) && !/^[+\-*/^)]/.test(peek())){ const b=prim(), a0=a; a=x=>a0(x)*b(x); } return a; }
+  function power(){ const b=implicit(); if(eat("^")){ const e=power(); return x=>Math.pow(b(x),e(x)); } return b; }
+  function term(){ let a=power(); for(;;){ if(eat("*")){ const b=power(), a0=a; a=x=>a0(x)*b(x); } else if(eat("/")){ const b=power(), a0=a; a=x=>a0(x)/b(x); } else return a; } }
+  function expr(){ let a=term(); for(;;){ if(eat("+")){ const b=term(), a0=a; a=x=>a0(x)+b(x); } else if(eat("-")){ const b=term(), a0=a; a=x=>a0(x)-b(x); } else return a; } }
+  try{ const f=expr(); if(i!==s.length) return null; f(1); return f; }catch(e){ return null; }
+}
+function catmull(pts, n){ if(pts.length<3) return pts; const out=[];
+  for(let i=0;i<pts.length-1;i++){ const p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+    for(let t=0;t<n;t++){ const u=t/n, u2=u*u, u3=u2*u; out.push([0,1].map(d=>.5*((2*p1[d])+(-p0[d]+p2[d])*u+(2*p0[d]-5*p1[d]+4*p2[d]-p3[d])*u2+(-p0[d]+3*p1[d]-3*p2[d]+p3[d])*u3))); } }
+  out.push(pts[pts.length-1]); return out; }
+function cleanGraph(v){
+  const T=x=>String(x==null?"":x).trim(), num=x=>isFinite(+x)?+x:null, ax=v.axes||{};
+  const g={type:"graph", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), x:T(v.x||ax.x).slice(0,40), y:T(v.y||ax.y).slice(0,40),
+    xmin:num(v.xmin??ax.xmin)??0, xmax:num(v.xmax??ax.xmax)??100, ymin:num(v.ymin??ax.ymin)??0, ymax:num(v.ymax??ax.ymax)??100, unitx:T(v.unitx).slice(0,8), unity:T(v.unity).slice(0,8)};
+  if(!(g.xmax>g.xmin && g.ymax>g.ymin)) return null;
+  const P=p=>Array.isArray(p)&&isFinite(+p[0])&&isFinite(+p[1])?[+p[0],+p[1]]:null;
+  g.lines=arrOf(v.lines).map((l,i)=>{ if(!l) return null; const id=T(l.id||("L"+i)).slice(0,12), base={id, label:T(l.label).slice(0,24), of:T(l.of).slice(0,12)||null};
+    if(l.fn){ const f=exprFn(l.fn); if(!f) return null; const a=num(l.from_x)??g.xmin, b=num(l.to_x)??g.xmax, pts=[]; for(let k=0;k<=120;k++){ const x=a+(b-a)*k/120, y=f(x); if(isFinite(y)) pts.push([x,y]); } return pts.length>2?{...base, pts, fn:T(l.fn)}:null; }
+    if(l.from&&l.to){ const a=P(l.from), b=P(l.to); return a&&b?{...base, pts:[a,b]}:null; }
+    const pts=arrOf(l.points).map(P).filter(Boolean).sort((a,b)=>a[0]-b[0]); return pts.length>=2?{...base, pts:pts.length>2?catmull(pts,16):pts}:null; }).filter(Boolean).slice(0,6);
+  if(!g.lines.length) return null;
+  const ids=new Set(g.lines.map(l=>l.id));
+  g.points=arrOf(v.points).map((p,i)=>{ if(!p) return null; const id=T(p.id||("P"+i)).slice(0,12); let at=P(p.at);
+    if(!at && Array.isArray(p.on) && p.on.length===2){ const a=g.lines.find(l=>l.id===T(p.on[0])), b=g.lines.find(l=>l.id===T(p.on[1])); at=a&&b?crossOf(a.pts,b.pts):null; }
+    if(!at && p.on && p.x!=null){ const l=g.lines.find(q=>q.id===T(arrOf(p.on)[0])); at=l?onLineAt(l.pts,+p.x):null; }
+    return at?{id, at, label:T(p.label).slice(0,10), px:T(p.px).slice(0,10), qx:T(p.qx).slice(0,10), guides:p.guides!==false}:null; }).filter(Boolean).slice(0,6);
+  const ref=r=>{ if(Array.isArray(r)) return P(r); const m=String(r||"").match(/^([\w]+)(?:\.(x0|y0))?$/); if(!m) return null; const pt=g.points.find(q=>q.id===m[1]); if(!pt) return null; return m[2]==="x0"?[pt.at[0],g.ymin]:m[2]==="y0"?[g.xmin,pt.at[1]]:pt.at; };
+  g.areas=arrOf(v.areas).map((a,i)=>{ if(!a) return null; const poly=arrOf(a.poly).map(ref).filter(Boolean); return poly.length>=3?{id:T(a.id||("A"+i)).slice(0,12), label:T(a.label).slice(0,28), poly}:null; }).filter(Boolean).slice(0,4);
+  const all=new Set([...g.lines.map(l=>l.id), ...g.points.map(p=>p.id), ...g.areas.map(a=>a.id)]);
+  g.steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>all.has(x))}:null).filter(Boolean).slice(0,7);
+  if(!g.steps.length) g.steps=[{text:g.caption||"", show:[...all]}];
+  g.asks=arrOf(v.asks).map(q=>{ if(!q||!q.q) return null; const t=T(q.type), a=T(q.answer);
+    if(t==="point" && g.points.some(p=>p.id===a)) return {type:t, q:T(q.q), answer:a, why:T(q.why).slice(0,200)};
+    if(t==="area" && g.areas.some(p=>p.id===a) && g.areas.length>=2) return {type:t, q:T(q.q), answer:a, why:T(q.why).slice(0,200)};
+    if(t==="shift" && ids.has(T(q.line)) && /^(left|right)$/.test(a)) return {type:t, q:T(q.q), line:T(q.line), answer:a, to:ids.has(T(q.to))?T(q.to):null, why:T(q.why).slice(0,200)};
+    if(t==="read"){ const m=a.match(/^(\w+)\.(x|y)$/); const pt=m&&g.points.find(p=>p.id===m[1]); if(pt) return {type:t, q:T(q.q), answer:a, value:pt.at[m[2]==="x"?0:1], axis:m[2], why:T(q.why).slice(0,200)}; }
+    return null; }).filter(Boolean).slice(0,4);
+  return g;
+}
+function segCross(a,b,c,d){ const r=[b[0]-a[0],b[1]-a[1]], s=[d[0]-c[0],d[1]-c[1]], den=r[0]*s[1]-r[1]*s[0]; if(Math.abs(den)<1e-12) return null;
+  const t=((c[0]-a[0])*s[1]-(c[1]-a[1])*s[0])/den, u=((c[0]-a[0])*r[1]-(c[1]-a[1])*r[0])/den; return t>=-1e-9&&t<=1+1e-9&&u>=-1e-9&&u<=1+1e-9?[a[0]+t*r[0],a[1]+t*r[1]]:null; }
+function crossOf(p,q){ for(let i=0;i<p.length-1;i++) for(let j=0;j<q.length-1;j++){ const x=segCross(p[i],p[i+1],q[j],q[j+1]); if(x) return x; } return null; }
+function onLineAt(p,x){ for(let i=0;i<p.length-1;i++){ const a=p[i], b=p[i+1]; if((x-a[0])*(x-b[0])<=0 && a[0]!==b[0]) return [x, a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0])]; } return null; }
+const GW=340, GH=262, GX0=46, GX1=326, GY0=14, GY1=222;
+function gMap(g){ const sx=x=>GX0+(x-g.xmin)/(g.xmax-g.xmin)*(GX1-GX0), sy=y=>GY1-(y-g.ymin)/(g.ymax-g.ymin)*(GY1-GY0); return {sx,sy, pt:p=>[sx(p[0]),sy(p[1])]}; }
+const gFmt=v=>{ const a=Math.abs(v); return a>=100?String(Math.round(v)):a>=10?String(+v.toFixed(1)):String(+v.toFixed(2)); };
+function lineColor(g,l){ const base=l.of||l.id, roots=[...new Set(g.lines.map(x=>x.of||x.id))]; return ["c1","c2","c3","c4"][roots.indexOf(base)%4]; }
+function graphSvg(g, o){
+  o=o||{}; const M=gMap(g), vis=o.show?new Set(o.show):null, on=id=>!vis||vis.has(id);
+  const clip=`<clipPath id="gclip${o.uid||""}"><rect x="${GX0}" y="${GY0-2}" width="${GX1-GX0+2}" height="${GY1-GY0+2}"/></clipPath>`;
+  let axes=`<line x1="${GX0}" y1="${GY1}" x2="${GX1+6}" y2="${GY1}" class="gax"/><line x1="${GX0}" y1="${GY1}" x2="${GX0}" y2="${GY0-6}" class="gax"/>`;
+  if(g.ymin<0&&g.ymax>0) axes+=`<line x1="${GX0}" y1="${M.sy(0)}" x2="${GX1}" y2="${M.sy(0)}" class="gax0"/>`;
+  if(g.xmin<0&&g.xmax>0) axes+=`<line x1="${M.sx(0)}" y1="${GY0}" x2="${M.sx(0)}" y2="${GY1}" class="gax0"/>`;
+  axes+=`<text x="${GX1}" y="${GY1+30}" text-anchor="end" class="gal">${esc(g.x)}${g.unitx?` (${esc(g.unitx)})`:""}</text><text x="12" y="${GY0+4}" class="gal" transform="rotate(-90 12 ${GY0+4})" text-anchor="end">${esc(g.y)}${g.unity?` (${esc(g.unity)})`:""}</text>`;
+  if(o.grid){ const nice=(a,b)=>{ const span=b-a, raw=span/5, p=Math.pow(10,Math.floor(Math.log10(raw))), st=[1,2,2.5,5,10].map(m=>m*p).find(m=>m>=raw)||raw, out=[]; for(let v=Math.ceil(a/st)*st; v<=b+1e-9; v+=st) out.push(+v.toFixed(6)); return out; };
+    nice(g.xmin,g.xmax).forEach(v=>{ axes+=`<line x1="${M.sx(v)}" y1="${GY0}" x2="${M.sx(v)}" y2="${GY1}" class="ggrid"/><text x="${M.sx(v)}" y="${GY1+14}" text-anchor="middle" class="gtk">${gFmt(v)}</text>`; });
+    nice(g.ymin,g.ymax).forEach(v=>{ axes+=`<line x1="${GX0}" y1="${M.sy(v)}" x2="${GX1}" y2="${M.sy(v)}" class="ggrid"/><text x="${GX0-5}" y="${M.sy(v)+4}" text-anchor="end" class="gtk">${gFmt(v)}</text>`; }); }
+  else if(o.ticks!==false) [g.xmin,g.xmax].forEach((v,i)=>{ if(v!==0||g.xmin<0) axes+=`<text x="${M.sx(v)}" y="${GY1+14}" text-anchor="${i?"end":"middle"}" class="gtk">${gFmt(v)}</text>`; }), [g.ymin,g.ymax].forEach(v=>{ axes+=`<text x="${GX0-5}" y="${M.sy(v)+4}" text-anchor="end" class="gtk">${gFmt(v)}</text>`; });
+  let areas="", lines="", guides="", pts="", labels="";
+  g.areas.forEach(a=>{ if(!on(a.id)&&!o.areasAll) return; const c=a.poly.map(M.pt), cx=c.reduce((s,p)=>s+p[0],0)/c.length, cy=c.reduce((s,p)=>s+p[1],0)/c.length;
+    areas+=`<polygon points="${c.map(p=>p.map(v=>v.toFixed(1)).join(",")).join(" ")}" class="garea${o.pick==="area"?" pick":""}${o.mark&&o.mark[a.id]?" "+o.mark[a.id]:""}" data-a="${esc(a.id)}"${o.pick==="area"?` tabindex="0" role="button" aria-label="Area ${esc(a.id)}"`:""}/>`;
+    if(!o.hideAreaLabels) labels+=`<text x="${cx.toFixed(1)}" y="${(cy+4).toFixed(1)}" text-anchor="middle" class="galbl">${esc(a.label)}</text>`; else if(o.pick==="area") labels+=`<text x="${cx.toFixed(1)}" y="${(cy+5).toFixed(1)}" text-anchor="middle" class="galbl big">${esc(a.id)}</text>`; });
+  const shifted=new Set(g.lines.filter(l=>l.of&&on(l.id)).map(l=>l.of));
+  g.lines.forEach(l=>{ if(!on(l.id)) return; const d=l.pts.map((p,i)=>`${i?"L":"M"}${M.sx(p[0]).toFixed(1)} ${M.sy(p[1]).toFixed(1)}`).join(""), cls=lineColor(g,l);
+    lines+=`<g class="gline ${cls}${shifted.has(l.id)?" old":""}${o.drag===l.id?" drag":""}" data-l="${esc(l.id)}">${o.animate&&o.animate.includes(l.id)?`<path d="${d}" class="gl draw" pathLength="1"/>`:`<path d="${d}" class="gl"/>`}${o.drag===l.id?`<path d="${d}" class="ghit"/>`:""}</g>`;
+    const end=l.pts[l.pts.length-1].map((v,i)=>i?M.sy(v):M.sx(v)); const inPlot=end[0]>=GX0&&end[0]<=GX1+2&&end[1]>=GY0-2&&end[1]<=GY1;
+    let lp=end; if(!inPlot){ const vis2=l.pts.map(M.pt).filter(p=>p[0]>=GX0&&p[0]<=GX1&&p[1]>=GY0&&p[1]<=GY1); lp=vis2[vis2.length-1]||end; }
+    if(l.label){ const right=lp[0]>GX1-36; labels+=`<text x="${(right?lp[0]-8:lp[0]+6).toFixed(1)}" y="${Math.max(GY0+10,Math.min(GY1-6,lp[1]-(right?12:4))).toFixed(1)}" text-anchor="${right?"end":"start"}" class="gll ${cls}">${esc(l.label)}</text>`; } });
+  g.points.forEach(p=>{ if(!on(p.id)&&!o.pointsAll) return; const [x,y]=M.pt(p.at);
+    if(p.guides && !o.noGuides){ guides+=`<path d="M${GX0} ${y.toFixed(1)}H${x.toFixed(1)}V${GY1}" class="ggd"/>`;
+      if(p.px && !o.noGuideLabels) labels+=`<text x="${GX0-5}" y="${(y+4).toFixed(1)}" text-anchor="end" class="gtk b">${esc(p.px)}</text>`;
+      if(p.qx && !o.noGuideLabels) labels+=`<text x="${x.toFixed(1)}" y="${GY1+14}" text-anchor="middle" class="gtk b">${esc(p.qx)}</text>`; }
+    pts+=`<g class="gpt${o.pick==="point"?" pick":""}${o.mark&&o.mark[p.id]?" "+o.mark[p.id]:""}" data-p="${esc(p.id)}"${o.pick==="point"?` tabindex="0" role="button" aria-label="Point"`:""}><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${o.pick==="point"?9:5.5}" class="gdot"/>${o.pick==="point"?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="20" class="ghitc"/>`:""}</g>`;
+    if(p.label && !o.hidePointLabels) labels+=`<text x="${(x-9).toFixed(1)}" y="${(y-9).toFixed(1)}" text-anchor="end" class="gpl">${esc(p.label)}</text>`; });
+  return `<svg class="graph" viewBox="0 0 ${GW} ${GH}" role="img" aria-label="${esc(g.title||"Graph")}: ${esc(g.y)} against ${esc(g.x)}"><defs>${clip}</defs>${axes}<g clip-path="url(#gclip${o.uid||""})">${areas}${guides}${lines}</g>${pts}${labels}</svg>`;
+}
+function graphShown(g, upto){ const s=new Set(); g.steps.slice(0,upto+1).forEach(st=>st.show.forEach(x=>s.add(x))); return s; }
+function graphHtml(g, o){
+  o=o||{};
+  if(o.still) return `<div class="vis gvis">${g.title&&!o.noTitle?`<h3>${esc(g.title)}</h3>`:""}${graphSvg(g,{})}</div>`;
+  return `<div class="vis gvis">${g.title&&!o.noTitle?`<h3>${esc(g.title)}</h3>`:""}${g.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(g.caption)}</p>`:""}<div class="gbox" data-step="0">${graphSvg(g,{show:[...graphShown(g,0)], animate:[...graphShown(g,0)]})}</div>
+    <div class="gstep"><p class="gtext">${gloss(g.steps[0].text)}</p>${g.steps.length>1?`<div class="gnav"><span class="small muted">${1} of ${g.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div></div>`;
+}
+function wireGraph(root, g){
+  const box=root.querySelector(".gbox"); if(!box) return; let i=0;
+  const draw=dir=>{ const prev=graphShown(g,i-dir), now=graphShown(g,i), fresh=[...now].filter(x=>!prev.has(x));
+    box.innerHTML=graphSvg(g,{show:[...now], animate:dir>0?fresh:[]}); const st=root.querySelector(".gstep");
+    st.querySelector(".gtext").innerHTML=gloss(g.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${g.steps.length}`;
+    st.querySelector('[data-g="back"]').disabled=i===0; const nb=st.querySelector('[data-g="next"]'); nb.disabled=i>=g.steps.length-1; };
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ const d=b.dataset.g==="next"?1:-1; i=Math.max(0,Math.min(g.steps.length-1,i+d)); draw(d); });
+}
+function pickAsk(k){ const g=k.teach.visual, asks=g.asks; k.gAsk=((k.gAsk==null?-1:k.gAsk)+1)%asks.length; return asks[k.gAsk]; }
+function renderGraphQ(ch, k){
+  const g=k.teach.visual, a=pickAsk(k), eff=3; LS.q.eff=Math.max(1,Math.min(5,eff)); LS.q.text=a.q; LS.q.x={q:"graph", skill:a.type==="shift"?"predict":"data"};
+  const ans = a.type==="read" ? gFmt(a.value) : a.answer;
+  const done = (ok, extra)=>answered(ok?"right":"wrong", {answer:a.type==="read"?`${gFmt(a.value)}${(a.axis==="x"?g.unitx:g.unity)?" "+(a.axis==="x"?g.unitx:g.unity):""}`:null, why:a.why||"", noAnsBox:a.type!=="read", ...extra});
+  const show=[...new Set(g.steps.flatMap(s=>s.show))];
+  let svgO={show}, after={show};
+  if(a.type==="point"){ svgO={show:show.filter(x=>!g.points.some(p=>p.id===x)), pointsAll:true, pick:"point", hidePointLabels:true, noGuides:true}; }
+  if(a.type==="area"){ svgO={show:show.filter(x=>!g.areas.some(p=>p.id===x)), areasAll:true, pick:"area", hideAreaLabels:true}; }
+  if(a.type==="shift"){ svgO={show:g.lines.filter(l=>!l.of).map(l=>l.id), drag:a.line}; }
+  if(a.type==="read"){ svgO={show, grid:true, noGuideLabels:true}; after={show, grid:true}; }
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${gloss(a.q)}</div><div class="gbox q" id="gq">${graphSvg(g,{...svgO, uid:"q"})}</div>
+    ${a.type==="shift"?`<p class="small muted">Drag the line, or use the buttons.</p><div class="tfrow"><button class="opt" data-s="left" type="button">← Shift left</button><button class="opt" data-s="right" type="button">Shift right →</button></div>`:""}
+    ${a.type==="read"?`<form id="gform" class="row" style="flex-wrap:nowrap" autocomplete="off"><input type="text" id="gin" inputmode="decimal" placeholder="Read it off the graph"><button class="btn sm" type="submit">Check</button></form>`:""}
+    ${a.type==="point"||a.type==="area"?`<p class="small muted">Tap ${a.type==="point"?"a point":"an area"} on the graph.</p>`:""}<div id="fb"></div></div>`;
+  wireQuit();
+  const box=$("gq"); let locked=false;
+  const reveal=(mark)=>{ box.innerHTML=graphSvg(g,{...after, uid:"q", mark}); };
+  if(a.type==="point"||a.type==="area"){
+    const attr=a.type==="point"?"data-p":"data-a";
+    const pick=el=>{ if(locked) return; locked=true; const id=el.getAttribute(attr), ok=id===a.answer; reveal({[a.answer]:"ok", ...(ok?{}:{[id]:"no"})}); done(ok,{}); };
+    box.querySelectorAll(`[${attr}]`).forEach(el=>{ el.addEventListener("click",()=>pick(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(el); } }); });
+  }
+  if(a.type==="shift"){
+    const finish=dir=>{ if(locked) return; locked=true; const ok=dir===a.answer; main.querySelectorAll("[data-s]").forEach(b=>{ b.disabled=true; if(b.dataset.s===a.answer) b.classList.add("ok"); else if(b.dataset.s===dir) b.classList.add("no"); });
+      box.innerHTML=graphSvg(g,{show, uid:"q", animate:a.to?[a.to]:[]}); done(ok,{answer:`Shifts ${a.answer}`}); };
+    main.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>finish(b.dataset.s));
+    const svg=box.querySelector("svg"), ln=box.querySelector(".gline.drag"); if(svg&&ln){ let x0=null, dx=0;
+      const scale=()=>GW/svg.getBoundingClientRect().width;
+      ln.addEventListener("pointerdown",e=>{ if(locked) return; x0=e.clientX; dx=0; ln.setPointerCapture(e.pointerId); ln.classList.add("held"); });
+      ln.addEventListener("pointermove",e=>{ if(x0==null) return; dx=Math.max(-70,Math.min(70,(e.clientX-x0)*scale())); ln.style.transform=`translateX(${dx}px)`; });
+      const up=()=>{ if(x0==null) return; x0=null; ln.classList.remove("held"); if(Math.abs(dx)>12) finish(dx<0?"left":"right"); else ln.style.transform=""; };
+      ln.addEventListener("pointerup",up); ln.addEventListener("pointercancel",up); }
+  }
+  if(a.type==="read"){
+    const f=$("gform"); setTimeout(()=>{ const i=$("gin"); if(i) i.focus(); },60);
+    f.onsubmit=e=>{ e.preventDefault(); if(locked) return; const v=parseFloat(String($("gin").value).replace(/,/g,"")); if(!isFinite(v)){ $("gin").focus(); return; }
+      locked=true; const span=(a.axis==="x"?g.xmax-g.xmin:g.ymax-g.ymin), ok=Math.abs(v-a.value)<=Math.max(span*.03, Math.abs(a.value)*.02);
+      LS.q.typed=String(v); f.outerHTML=`<div class="yours"><span class="label">You read</span><span>${esc(String(v))}</span></div>`; done(ok,{showAns:true}); };
+  }
+}
+
 function wireVisual(root, v){
+  if(v&&v.type==="graph") return wireGraph(root, v);
   const items=visItems(v), noteEl=root.querySelector(".vnote"); if(!noteEl) return;
   const sel=i=>{ root.querySelectorAll("[data-i]").forEach(el=>el.classList.toggle("on", +el.dataset.i===i)); root.querySelectorAll(".carea").forEach(a=>a.style.display=items[i]&&items[i].area?"":"none"); const it=items[i]; if(it) noteEl.innerHTML=`<b>${esc(it.label)}</b>${it.note?" · "+gloss(it.note):""}`; };
   root.querySelectorAll("[data-i]").forEach(el=>{ el.onclick=()=>sel(+el.dataset.i); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sel(+el.dataset.i); } }; });
@@ -1357,6 +1539,7 @@ function pickLevel(c,k){
 }
 function visualType(k,L){
   const v=k.teach&&k.teach.visual; if(!v) return null;
+  if(v.type==="graph") return v.asks&&v.asks.length&&L>=2&&L<=4&&k.lastVq!=="graph" ? "graph" : null;
   if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
   return null;
@@ -1364,7 +1547,7 @@ function visualType(k,L){
 function typeFor(k,L){
   if(isLang(LS.c) && k.lang) return langType(k,L);
   const vt=visualType(k,L);
-  if(vt && k.lastVq!==vt && Math.random()<(vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
+  if(vt && k.lastVq!==vt && Math.random()<(vt==="graph"?.6:vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
   const b=normBank(k.bank);
   if(L>=5 && b.connect.length && S.sample) return "connect";
   if(L>=4 && b.apply.length) return "apply";
@@ -2626,13 +2809,14 @@ function renderStep(){
   normBank(k.bank);
   if(st.t==="intro") return isLang(LS.c) ? renderLangIntro(k) : renderIntro(k);
   const {L,stretch} = LS.mock ? {L:[3,4,4,5][Math.floor(Math.random()*4)], stretch:false} : pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
-  const vq = ["label","order","sort"].includes(type) || LANGQ.has(type);
+  const vq = ["label","order","sort","graph"].includes(type) || LANGQ.has(type);
   const x = vq ? {q:type} : pickVariant(k,type);
   if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); } else { k.lastVq=type; }
   LS.q={k, type, eff, x, text:vq?(k.name+" diagram"):qtext(x), stretch: stretch&&eff>k.rung+1, hint:0, undo:null, xp:0, done:false};
   const ch=chip(eff, LS.q.stretch) + ((isExam(LS.c)||LS.c.uni)&&x&&x.marks?`<span class="tiny muted">[${x.marks} mark${x.marks>1?"s":""}]</span>`:"") + (k.writer?`<span class="tiny muted">Question by ${esc(k.writer)}</span>`:"");
   bar("");
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
+  else if(type==="graph") renderGraphQ(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
   else if(type==="sort") renderSortQ(ch, k);
