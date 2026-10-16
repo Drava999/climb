@@ -2915,7 +2915,7 @@ function quitLesson(home){
 function head(){
   const pct = Math.round(LS.i/Math.max(1,LS.steps.length)*100), n=LS.steps.length;
   const prog = n>0 && n<=14 ? `<div class="segbar" style="grid-template-columns:repeat(${n},minmax(0,1fr))" role="progressbar" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${LS.i}">${LS.steps.map((_,i)=>`<i class="${i<LS.i?"on":i===LS.i?"cur":""}"></i>`).join("")}</div>` : `<div class="bar"><i style="width:${pct}%"></i></div>`;
-  return `<div class="lessonhead"><button class="x" id="quit" aria-label="Leave lesson">✕</button>${prog}${LS.mock?`<span class="timer" id="mockT">${Math.max(0,Math.floor((LS.mock.end-Date.now())/60000))}:${String(Math.max(0,Math.floor((LS.mock.end-Date.now())/1000))%60).padStart(2,"0")}</span>`:`<span class="tiny muted num">${LS.right}/${LS.total}</span>`}</div>`;
+  return `<div class="lessonhead"><button class="x" id="quit" aria-label="Leave lesson">✕</button>${prog}${LS.mock?`<span class="timer" id="mockT">${Math.max(0,Math.floor((LS.mock.end-Date.now())/60000))}:${String(Math.max(0,Math.floor((LS.mock.end-Date.now())/1000))%60).padStart(2,"0")}</span>`:LS.total?`<span class="tiny muted num" aria-label="${LS.right} of ${LS.total} answers right">${LS.right}/${LS.total} right</span>`:""}</div>`;
 }
 function chip(eff, stretch){
   return `<span class="lvl"><span class="ladder" aria-hidden="true">${[1,2,3,4,5].map(n=>`<i style="height:${4+n*2}px" class="${n<=eff?"on":""}"></i>`).join("")}</span>Level ${eff} · ${LVN[eff]}${stretch?" · Stretch":""}</span>`;
