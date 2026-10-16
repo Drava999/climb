@@ -647,6 +647,25 @@ main.lesson .gbox{background:var(--surface)}
 .gstep{display:flex;flex-direction:column;gap:10px}.gtext{font-size:16px;line-height:1.45;min-height:46px}
 .gnav{display:flex;align-items:center;gap:8px}.gnav span{flex:1}
 @media (prefers-reduced-motion:reduce){.gl.draw{animation:none;stroke-dashoffset:0;stroke-dasharray:none}.gline.drag{transition:none}}
+/* diagrams + timelines */
+.diag{width:100%;max-width:460px;height:auto;display:block;margin:0 auto}
+.ds{stroke:var(--ink);stroke-width:1.8px;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.dd{stroke-dasharray:5 4}
+.df-soft{fill:var(--raise)}.df-part{fill:color-mix(in srgb,var(--accent) 35%,var(--surface))}.df-green{fill:color-mix(in srgb,var(--g2) 30%,var(--surface))}.df-blue{fill:color-mix(in srgb,var(--g3) 28%,var(--surface))}.df-pink{fill:color-mix(in srgb,var(--g4) 28%,var(--surface))}.df-dark{fill:var(--muted)}.df-none{fill:none}
+line.ds,polyline.ds,path.ds{fill:none}
+.darh{fill:var(--ink)}
+.dtx{font:800 4.2px var(--ui);fill:var(--ink)}
+.dm{cursor:pointer}.dmc{fill:var(--ink);stroke:var(--surface);stroke-width:1.5px;vector-effect:non-scaling-stroke}.dmn{font:900 3.6px var(--ui);fill:var(--surface);pointer-events:none}
+.dm.on .dmc{fill:var(--accent-text)}.dm.pick .dmc{fill:var(--surface);stroke:var(--ink);stroke-width:2.5px}.dmh{fill:transparent}
+.dm.ok .dmc{fill:var(--good)}.dm.no .dmc{fill:var(--bad)}
+.vtime{display:flex;flex-direction:column;position:relative;padding:4px 0}
+.vtime::before{content:"";position:absolute;left:86.5px;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--line)}
+.tl{display:grid;grid-template-columns:70px 22px minmax(0,1fr);align-items:center;gap:6px;border:0;background:none;padding:6px 0;text-align:left;color:var(--ink);position:relative;width:100%;min-height:44px}
+.tlw{font:900 14px var(--ui);text-align:right;color:var(--accent-text)}
+.tld{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent);justify-self:center;z-index:1}
+.tll{font:800 15px/1.3 var(--ui);background:var(--surface);border-radius:12px;padding:8px 12px}
+.tl.on .tll{background:var(--accent-soft)}.tl.on .tld{background:var(--accent)}
+.tl.hid .tll,.tl.hid .tlw{color:var(--accent-text)}
 @media (min-width:1024px){
   .tabbar{background:var(--raise);border-right:0;width:224px}
   .tabbar::before{content:"Climb";font:900 24px var(--ui)}
@@ -691,7 +710,7 @@ const main = $("main");
 const L = (kind, o) => { try{ window.climbLog && window.climbLog(kind, o||{}); }catch(e){} };
 const DAY = 864e5;
 const LVN = ["Not started","Recognise","Cue","Recall","Apply","Explain"];
-const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, graph:3, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
+const TL = {mcq:1, tf:1, label:1, cloze:2, order:2, sort:2, recall:3, apply:4, connect:5, graph:3, dtap:3, lhear:1, lsee:1, lpick:2, lbuild:2, ltype:3, llisten:3, lrespond:4, ltrans:5};
 const LEVELS = [["new","New to it"],["some","Know a bit"],["strong","Fairly confident"]];
 const SUGGEST = ["How the stock market works","Spanish for travel","Photosynthesis","Python basics","The Cold War","How vaccines work","Music theory","Supply and demand","Probability","Japanese hiragana","Climate change","First aid","Negotiation","Machine learning basics","The human heart","How shipping and trade work","Ancient Rome","Cognitive biases"];
 
@@ -995,6 +1014,8 @@ function cleanVisual(v){
 function cleanVisual0(v){
   if(!v||!v.type) return null;
   if(v.type==="graph") return cleanGraph(v);
+  if(v.type==="diagram") return cleanDiagram(v);
+  if(v.type==="timeline") return cleanTimeline(v);
   if(v.type==="curve"){
     const T = x => String(x==null?"":x).trim();
     const points = arrOf(v.points).map(p=>Array.isArray(p)?[+p[0],+p[1]]:p&&typeof p==="object"?[+p.x,+p.y]:null).filter(p=>p&&isFinite(p[0])&&isFinite(p[1])).map(p=>[Math.max(0,Math.min(100,p[0])),Math.max(0,Math.min(100,p[1]))]).sort((a,b)=>a[0]-b[0]);
@@ -1038,12 +1059,14 @@ For each concept return:
 - "builds": if builds_on is set, one sentence (max 20 words) linking them, e.g. "You saw X. This is what happens next…"; otherwise "".
 - "visual": ONE simple picture that makes the idea click for a beginner. Pick the type that truly fits the idea:
   "graph" (USE THIS for any real graph in economics, maths, physics, chemistry or biology where lines cross or shift, or areas matter: supply and demand, price controls, taxes, surplus, PPC, cost and revenue curves, AD/AS, externalities, straight lines and quadratics, distance- or speed-time, energy profiles, rate curves. Coordinates are in the axis units you set; keep everything inside the axes. Lines: straight {"id","label","from":[x,y],"to":[x,y]}, smooth {"id","label","points":[[x,y],...]} or a formula {"id","label","fn":"x^2-4","from_x":-3,"to_x":3}; a shifted line has "of": the original line's id. Points: {"id","on":["D","S"]} (the app computes the exact crossing) or {"id","at":[x,y]}, with "label" (e.g. "E1") and optional axis labels "px" (e.g. "P1") and "qx" (e.g. "Q1"). Areas: {"id","label","poly":[corners as point ids, "E1.y0" (on the y-axis level with E1), "E1.x0" (on the x-axis below E1), or [x,y]]}. "steps": 2-6 build-up steps, each {"text": one plain sentence saying what changed and why, "show": the ids that appear at this step}. "asks": 2-3 questions the app can mark: {"type":"point","q":"","answer":point id,"why":""}, {"type":"area","q":"","answer":area id,"why":""} (only with 2+ areas), {"type":"shift","q": a real-world event, then "Drag the curve.","line": line id,"to": the shifted line's id,"answer":"left" or "right","why":""}, {"type":"read","q":"What is the new price?","answer":"E2.y" or "E2.x","why":""}),
+  "diagram" (a labelled picture of a thing's structure or a physical setup: a cell, the heart, a ship, a circuit, forces on an object, a geometry figure, a layout or map. Draw it with simple shapes on a canvas 100 wide and about 70 tall (x to the right, y DOWNWARDS): {"id","shape":"rect","x","y","w","h","r"} | {"id","shape":"circle","x","y","r"} | {"id","shape":"ellipse","x","y","rx","ry"} | {"id","shape":"line" or "arrow","x1","y1","x2","y2"} | {"id","shape":"polygon" or "polyline" or "curve","points":[[x,y],...]} | {"id","shape":"text","x","y","text"}; optional "fill": "soft", "part", "green", "blue", "pink", "dark" or "none", and "dash": true. Keep it simple, recognisable and correctly proportioned: 4-20 shapes. "parts": 3-7 parts to learn, each {"id","label","note","at":[x,y] a point ON that part}. Optional "steps": 2-5 build-up steps {"text","show":[shape and part ids]}),
+  "timeline" (events or stages in time order: 3-7 items, each {"label","when": what to display, e.g. "1914" or "Day 3","t": a number used for spacing, e.g. the year,"note"}),
   "curve" (a single shape rising or falling with nothing crossing it: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
   "bars" (comparing amounts: 2-6 bars with real or illustrative values),
   "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
   Every label must be plain words a beginner understands, e.g. "Highest point", not "Cmax". If a technical name matters, put it in the note: "Highest point (called Cmax)". Labels max 4 words. Notes max 18 words, saying what that part means in everyday terms.
   Every visual has "caption": one plain sentence telling the learner what the picture shows.
-  Shapes: {"type":"graph","title":"","caption":"","x":"Quantity","y":"Price","xmin":0,"xmax":100,"ymin":0,"ymax":100,"unitx":"","unity":"","lines":[],"points":[],"areas":[],"steps":[],"asks":[]} | {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
+  Shapes: {"type":"diagram","title":"","caption":"","shapes":[],"parts":[],"steps":[]} | {"type":"timeline","title":"","caption":"","items":[{"label":"","when":"","t":0,"note":""}]} | {"type":"graph","title":"","caption":"","x":"Quantity","y":"Price","xmin":0,"xmax":100,"ymin":0,"ymax":100,"unitx":"","unity":"","lines":[],"points":[],"areas":[],"steps":[],"asks":[]} | {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
 - "simplest": the same idea for a 7-year-old, max 25 words, using the SAME anchor in even simpler words.
 - "hook": a memory hook, max 20 words, built on the SAME anchor (no new analogy).
 - "takeaway": the one thing to remember, max 15 words.
@@ -1185,7 +1208,7 @@ function cycleSvg(steps, hide){
     return `<g class="cn${i===hide?" hid":""}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden step":st.label)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>${lines.map((l,j)=>`<text x="${x.toFixed(1)}" y="${(ty+j*14).toFixed(1)}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`; }).join("");
   return `<svg class="vcycle" viewBox="0 0 320 300" role="img" aria-label="Cycle diagram"><defs><marker id="cyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>${arcs}${nodes}</svg>`;
 }
-const visItems = v => v.steps || v.parts || v.marks || v.items || [];
+const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : (v.steps || v.parts || v.marks || v.items || []);
 function curveSvg(v, hide){
   const X0=46, X1=306, Y0=16, Y1=168, W=X1-X0, H=Y1-Y0, px=x=>X0+W*x/100, py=y=>Y1-H*y/100;
   const pts=v.points.map(([x,y])=>[px(x),py(y)]);
@@ -1202,6 +1225,8 @@ function curveSvg(v, hide){
 function visualHtml(v, o){
   o=o||{}; const hide=o.hide;
   if(v.type==="graph") return graphHtml(v, o);
+  if(v.type==="diagram") return diagramHtml(v, o);
+  if(v.type==="timeline") return timelineHtml(v, o);
   let body="";
   if(v.type==="flow") body=`<div class="vflow">${v.steps.map((st,i)=>`${i?'<div class="varrow" aria-hidden="true">↓</div>':""}<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i+1}</span><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div>`;
   else if(v.type==="cycle") body=cycleSvg(v.steps, hide);
@@ -1362,8 +1387,99 @@ function renderGraphQ(ch, k){
   }
 }
 
+/* ---------- labelled diagrams and timelines: the AI describes simple shapes and parts, the app draws them ---------- */
+const DFILL = {soft:"df-soft", part:"df-part", green:"df-green", blue:"df-blue", pink:"df-pink", dark:"df-dark", none:"df-none"};
+function cleanDiagram(v){
+  const T=x=>String(x==null?"":x).trim(), N=x=>isFinite(+x)?Math.max(-20,Math.min(120,+x)):null, P=p=>Array.isArray(p)&&isFinite(+p[0])&&isFinite(+p[1])?[N(p[0]),N(p[1])]:null;
+  const shapes=arrOf(v.shapes).map((s,i)=>{ if(!s||!s.shape) return null; const t=T(s.shape), o={id:T(s.id||("s"+i)).slice(0,14), shape:t, fill:DFILL[T(s.fill)]?T(s.fill):(t==="text"||t==="line"||t==="arrow"||t==="polyline"||t==="curve"?"none":"soft"), dash:!!s.dash};
+    if(t==="rect"){ Object.assign(o,{x:N(s.x),y:N(s.y),w:N(s.w),h:N(s.h),r:N(s.r)||0}); return o.x!=null&&o.y!=null&&o.w>0&&o.h>0?o:null; }
+    if(t==="circle"){ Object.assign(o,{x:N(s.x),y:N(s.y),r:N(s.r)}); return o.x!=null&&o.y!=null&&o.r>0?o:null; }
+    if(t==="ellipse"){ Object.assign(o,{x:N(s.x),y:N(s.y),rx:N(s.rx),ry:N(s.ry)}); return o.x!=null&&o.y!=null&&o.rx>0&&o.ry>0?o:null; }
+    if(t==="line"||t==="arrow"){ Object.assign(o,{x1:N(s.x1),y1:N(s.y1),x2:N(s.x2),y2:N(s.y2)}); return [o.x1,o.y1,o.x2,o.y2].every(x=>x!=null)?o:null; }
+    if(t==="polygon"||t==="polyline"||t==="curve"){ o.points=arrOf(s.points).map(P).filter(Boolean).slice(0,40); return o.points.length>=2?o:null; }
+    if(t==="text"){ Object.assign(o,{x:N(s.x),y:N(s.y),text:T(s.text).slice(0,24)}); return o.x!=null&&o.y!=null&&o.text?o:null; }
+    return null; }).filter(Boolean).slice(0,40);
+  const parts=arrOf(v.parts).map((p,i)=>p&&p.label&&P(p.at)?{id:T(p.id||("p"+i)).slice(0,14), label:T(p.label).slice(0,40), note:T(p.note).slice(0,180), at:P(p.at)}:null).filter(Boolean).slice(0,8);
+  if(shapes.length<1 || parts.length<2) return null;
+  const all=new Set([...shapes.map(s=>s.id), ...parts.map(p=>p.id)]);
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>all.has(x))}:null).filter(st=>st&&st.show.length).slice(0,6);
+  return {type:"diagram", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), shapes, parts, steps};
+}
+function cleanTimeline(v){
+  const T=x=>String(x==null?"":x).trim();
+  const items=arrOf(v.items).map((x,i)=>x&&x.label?{label:T(x.label).slice(0,48), when:T(x.when).slice(0,20), t:isFinite(+x.t)?+x.t:i, note:T(x.note).slice(0,180)}:null).filter(Boolean).slice(0,8).sort((a,b)=>a.t-b.t);
+  return items.length>=3 ? {type:"timeline", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), items} : null;
+}
+function shapeSvg(s){
+  const f=`class="ds ${DFILL[s.fill]||"df-soft"}${s.dash?" dd":""}" data-s="${esc(s.id)}"`;
+  if(s.shape==="rect") return `<rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="${s.r}" ${f}/>`;
+  if(s.shape==="circle") return `<circle cx="${s.x}" cy="${s.y}" r="${s.r}" ${f}/>`;
+  if(s.shape==="ellipse") return `<ellipse cx="${s.x}" cy="${s.y}" rx="${s.rx}" ry="${s.ry}" ${f}/>`;
+  if(s.shape==="line") return `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" ${f}/>`;
+  if(s.shape==="arrow") return `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" ${f} marker-end="url(#darr)"/>`;
+  if(s.shape==="polygon") return `<polygon points="${s.points.map(p=>p.join(",")).join(" ")}" ${f}/>`;
+  if(s.shape==="polyline") return `<polyline points="${s.points.map(p=>p.join(",")).join(" ")}" ${f}/>`;
+  if(s.shape==="curve"){ const c=catmull(s.points,10); return `<path d="${c.map((p,i)=>`${i?"L":"M"}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join("")}" ${f}/>`; }
+  if(s.shape==="text") return `<text x="${s.x}" y="${s.y}" class="dtx" text-anchor="middle">${esc(s.text)}</text>`;
+  return "";
+}
+function diagramSvg(v, o){
+  o=o||{}; const vis=o.show?new Set(o.show):null, on=id=>!vis||vis.has(id);
+  const xs=[], ys=[]; v.shapes.forEach(s=>{ const t=s.shape;
+    if(s.points) s.points.forEach(p=>{xs.push(p[0]);ys.push(p[1]);});
+    else if(t==="line"||t==="arrow"){ xs.push(s.x1,s.x2); ys.push(s.y1,s.y2); }
+    else if(t==="rect"){ xs.push(s.x,s.x+s.w); ys.push(s.y,s.y+s.h); }
+    else if(t==="circle"){ xs.push(s.x-s.r,s.x+s.r); ys.push(s.y-s.r,s.y+s.r); }
+    else if(t==="ellipse"){ xs.push(s.x-s.rx,s.x+s.rx); ys.push(s.y-s.ry,s.y+s.ry); }
+    else if(t==="text"){ xs.push(s.x-12,s.x+12); ys.push(s.y-5,s.y+1); } });
+  v.parts.forEach(p=>{ xs.push(p.at[0]); ys.push(p.at[1]); });
+  const fx=xs.filter(isFinite), fy=ys.filter(isFinite), x0=Math.min(0,...fx)-4, y0=Math.min(...fy)-6, x1=Math.max(100,...fx)+4, y1=Math.max(...fy,40)+4;
+  const shapes=v.shapes.filter(s=>on(s.id)).map(shapeSvg).join("");
+  const marks=v.parts.map((p,i)=>{ if(!on(p.id) && !o.allParts) return ""; const st=o.mark&&o.mark[p.id]||"";
+    const lbl=o.pick?"":String(i+1);
+    return `<g class="dm${o.pick?" pick":""}${o.sel===i?" on":""}${st?" "+st:""}" data-i="${i}" data-p="${esc(p.id)}"${o.pick?` tabindex="0" role="button" aria-label="A part of the diagram"`:""}><circle cx="${p.at[0]}" cy="${p.at[1]}" r="${o.pick?3.6:3.3}" class="dmc"/>${o.pick?`<circle cx="${p.at[0]}" cy="${p.at[1]}" r="8" class="dmh"/>`:`<text x="${p.at[0]}" y="${p.at[1]+1.35}" text-anchor="middle" class="dmn">${lbl}</text>`}</g>`; }).join("");
+  return `<svg class="diag" viewBox="${x0} ${y0} ${x1-x0} ${y1-y0}" role="img" aria-label="${esc(v.title||"Diagram")}: ${esc(v.parts.map(p=>p.label).join(", "))}"><defs><marker id="darr" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="darh"/></marker></defs>${shapes}${marks}</svg>`;
+}
+function diagramShown(v, upto){ if(!v.steps.length) return null; const s=new Set(); v.steps.slice(0,upto+1).forEach(st=>st.show.forEach(x=>s.add(x))); return [...s]; }
+function diagramHtml(v, o){
+  o=o||{};
+  const legend=`<div class="vlegend">${v.parts.map((p,i)=>`<button type="button" class="vnode" data-i="${i}"><span class="n">${i+1}</span><span>${esc(p.label)}</span></button>`).join("")}</div>`;
+  if(o.still) return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}<div class="gbox">${diagramSvg(v,{})}</div></div>`;
+  const stepped=v.steps.length>1;
+  return `<div class="vis dvis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}<div class="gbox dbox">${diagramSvg(v,{show:stepped?diagramShown(v,0):null})}</div>
+    ${stepped?`<div class="gstep"><p class="gtext">${gloss(v.steps[0].text)}</p><div class="gnav"><span class="small muted">1 of ${v.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div></div>`:""}
+    ${legend}<div class="vnote" aria-live="polite">${esc(o.hint||"Tap a part to see what it does.")}</div></div>`;
+}
+function wireDiagram(root, v){
+  const box=root.querySelector(".dbox"); if(!box) return; let i=0, sel=null;
+  const draw=()=>{ box.innerHTML=diagramSvg(v,{show:v.steps.length>1&&i<v.steps.length-1?diagramShown(v,i):null, sel}); box.querySelectorAll(".dm").forEach(el=>el.onclick=()=>pick(+el.dataset.i)); };
+  const note=root.querySelector(".vnote");
+  const pick=k=>{ sel=k; root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===k)); const p=v.parts[k]; if(note&&p) note.innerHTML=`<b>${esc(p.label)}</b>${p.note?" · "+gloss(p.note):""}`; draw(); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); const st=root.querySelector(".gstep");
+    st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; draw(); });
+  draw();
+}
+function timelineHtml(v, o){
+  o=o||{}; const its=v.items, span=Math.max(1e-9, its[its.length-1].t-its[0].t);
+  const rows=its.map((x,i)=>{ const gap=i?Math.round(Math.max(6, Math.min(44, (x.t-its[i-1].t)/span*150))):0;
+    return `<button type="button" class="tl${o.hide===i?" hid":""}" data-i="${i}" style="margin-top:${gap}px"><span class="tlw">${o.hide===i?"?":esc(x.when||"")}</span><span class="tld" aria-hidden="true"></span><span class="tll">${o.hide===i?"?":esc(x.label)}</span></button>`; }).join("");
+  return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}<div class="vtime">${rows}</div>${o.still||o.hide!=null?"":`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap an event to see why it matters.")}</div>`}</div>`;
+}
+function renderDiagramQ(ch, k){
+  const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.parts.length; const t=k.dAsk, part=v.parts[t];
+  LS.q.text=`Tap the ${part.label}`; LS.q.x={q:"diagram", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">Tap the ${esc(part.label.charAt(0).toLowerCase()+part.label.slice(1))}.</div><div class="gbox" id="dq">${diagramSvg(v,{pick:true, allParts:true})}</div><p class="small muted">Tap a dot on the diagram.</p><div id="fb"></div></div>`;
+  wireQuit(); let locked=false;
+  const go=el=>{ if(locked) return; locked=true; const i=+el.dataset.i, ok=i===t;
+    $("dq").innerHTML=diagramSvg(v,{allParts:true, sel:t, mark:{[part.id]:"ok", ...(ok?{}:{[v.parts[i].id]:"no"})}});
+    answered(ok?"right":"wrong", {answer:part.label, why:part.note, noAnsBox:ok, extra:ok?"":`<p class="small">You tapped: <b>${esc(v.parts[i].label)}</b></p>`}); };
+  $("dq").querySelectorAll(".dm").forEach(el=>{ el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
+}
+
 function wireVisual(root, v){
   if(v&&v.type==="graph") return wireGraph(root, v);
+  if(v&&v.type==="diagram") return wireDiagram(root, v);
   const items=visItems(v), noteEl=root.querySelector(".vnote"); if(!noteEl) return;
   const sel=i=>{ root.querySelectorAll("[data-i]").forEach(el=>el.classList.toggle("on", +el.dataset.i===i)); root.querySelectorAll(".carea").forEach(a=>a.style.display=items[i]&&items[i].area?"":"none"); const it=items[i]; if(it) noteEl.innerHTML=`<b>${esc(it.label)}</b>${it.note?" · "+gloss(it.note):""}`; };
   root.querySelectorAll("[data-i]").forEach(el=>{ el.onclick=()=>sel(+el.dataset.i); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sel(+el.dataset.i); } }; });
@@ -1540,6 +1656,8 @@ function pickLevel(c,k){
 function visualType(k,L){
   const v=k.teach&&k.teach.visual; if(!v) return null;
   if(v.type==="graph") return v.asks&&v.asks.length&&L>=2&&L<=4&&k.lastVq!=="graph" ? "graph" : null;
+  if(v.type==="diagram"){ if(L===1 && v.parts.filter(x=>x.note&&x.note.length>8).length>=1 && v.parts.length>=3) return "label"; return L>=2&&L<=4&&v.parts.length>=3&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="timeline"){ if(L===1 && v.items.filter(x=>x.note&&x.note.length>8).length>=1) return "label"; return L>=2&&L<=3 ? "order" : null; }
   if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
   return null;
@@ -1547,7 +1665,7 @@ function visualType(k,L){
 function typeFor(k,L){
   if(isLang(LS.c) && k.lang) return langType(k,L);
   const vt=visualType(k,L);
-  if(vt && k.lastVq!==vt && Math.random()<(vt==="graph"?.6:vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
+  if(vt && k.lastVq!==vt && Math.random()<(vt==="graph"||vt==="dtap"?.6:vt==="order"&&["history","skill"].includes(LS.c.kind)?.65:.45)) return vt;
   const b=normBank(k.bank);
   if(L>=5 && b.connect.length && S.sample) return "connect";
   if(L>=4 && b.apply.length) return "apply";
@@ -2809,7 +2927,7 @@ function renderStep(){
   normBank(k.bank);
   if(st.t==="intro") return isLang(LS.c) ? renderLangIntro(k) : renderIntro(k);
   const {L,stretch} = LS.mock ? {L:[3,4,4,5][Math.floor(Math.random()*4)], stretch:false} : pickLevel(LS.c,k), type=typeFor(k,L), eff=TL[type];
-  const vq = ["label","order","sort","graph"].includes(type) || LANGQ.has(type);
+  const vq = ["label","order","sort","graph","dtap"].includes(type) || LANGQ.has(type);
   const x = vq ? {q:type} : pickVariant(k,type);
   if(!vq){ markUsed(k,type,x); maybeRefresh(LS.c,k,type); } else { k.lastVq=type; }
   LS.q={k, type, eff, x, text:vq?(k.name+" diagram"):qtext(x), stretch: stretch&&eff>k.rung+1, hint:0, undo:null, xp:0, done:false};
@@ -2817,6 +2935,7 @@ function renderStep(){
   bar("");
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
   else if(type==="graph") renderGraphQ(ch, k);
+  else if(type==="dtap") renderDiagramQ(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
   else if(type==="sort") renderSortQ(ch, k);
@@ -2890,11 +3009,11 @@ function renderLabelQ(ch, k){
   });
 }
 function renderOrderQ(ch, k){
-  const v=k.teach.visual, isScale=v.type==="scale", isBars=v.type==="bars";
-  const correct = isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
+  const v=k.teach.visual, isScale=v.type==="scale", isBars=v.type==="bars", isTime=v.type==="timeline";
+  const correct = isTime ? v.items.map(x=>x.label) : isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
   let pool = shuffle(correct); let guard=0; while(pool.join("|")===correct.join("|") && guard++<5) pool=shuffle(correct);
   const picked=[];
-  const prompt = isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
+  const prompt = isTime ? `${v.title||k.name}: put these in time order, earliest first.` : isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
   const draw=()=>{
     $("slots").innerHTML = correct.map((_,i)=>picked[i]!=null ? `<button type="button" class="slot" data-p="${i}"><span class="n">${i+1}</span><span>${esc(picked[i])}</span></button>` : `<div class="slot empty"><span class="n">${i+1}</span><span>Tap a card below</span></div>`).join("");
     $("pool").innerHTML = pool.map((x,i)=>picked.includes(x)?"":`<button type="button" class="chip" data-i="${i}">${esc(x)}</button>`).join("");
