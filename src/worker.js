@@ -77,7 +77,11 @@ function purposeOf(prompt) {
   if (p.startsWith("In a course called")) return "term_example";
   if (p.startsWith("You are planning the full curriculum map")) return "course_map";
   if (p.startsWith("A learner in a course called")) return "explain_term";
+  if (p.startsWith("A course called") && prompt.includes("learning PATH")) return "path_text";
+  if (p.startsWith("A course called") && prompt.includes("build on knowledge from which")) return "field_links";
   if (p.startsWith("A course called")) return "suggest_fields";
+  if (/^Write \d+ higher-order questions/.test(p)) return "combo_questions";
+  if (p.startsWith("Mark a learner's answer to a question that combines")) return "combo_mark";
   return "other";
 }
 function logGeneration(env, ctx, row) {
@@ -347,7 +351,7 @@ async function handleData(request, env, path) {
 
 // ---------- shared library: reuse identical generations across learners ----------
 // Only server-generated replies are stored, keyed by a hash of the exact request, so nobody can inject content.
-const CACHEABLE = new Set(["scope", "outline", "course_map", "mini_lesson", "questions", "explain_term", "explain_simpler", "term_example", "suggest_fields", "explain_deeper", "other"]);
+const CACHEABLE = new Set(["scope", "outline", "course_map", "path_text", "field_links", "mini_lesson", "questions", "explain_term", "explain_simpler", "term_example", "suggest_fields", "explain_deeper", "other"]);
 const cacheKey = (model, json, prompt) => sha256(`${model}|${json ? 1 : 0}|${prompt}`);
 async function cacheGet(env, key) {
   if (!env.LOGS) return null;

@@ -378,6 +378,139 @@ input[type=date]{font:inherit;color:var(--ink);background:var(--surface);border:
 .plan{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--ui);letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px;align-self:flex-start}
 .timer{font:600 14px var(--mono);color:var(--bad)}
 @media (prefers-reduced-motion:reduce){.pop,.spinner,.bar>i{animation:none;transition:none}}
+/* path */
+.path{gap:14px}
+.phead{display:flex;align-items:center;gap:10px;padding-top:6px}
+.cswitch{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:0;background:var(--surface);border-radius:18px;padding:8px 12px;text-align:left;color:var(--ink);min-height:60px;box-shadow:0 1px 2px rgba(20,32,26,.05)}
+.cswitch b{font-size:18px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cswitch>svg:last-child{color:var(--muted);flex:none}.cring{flex:none;display:flex}
+.playbtn{border:0;background:var(--accent);color:var(--accent-ink);width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:none}
+.pnext{margin:-4px 4px 0}
+.rail{display:flex;flex-direction:column}
+.pstep{display:flex;gap:12px}
+.pcol{width:32px;flex:none;display:flex;flex-direction:column;align-items:center}
+.pnode{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 15px var(--ui);background:var(--surface);border:2.5px solid var(--line);color:var(--muted);flex:none}
+.pnode.done{background:var(--good);border-color:var(--good);color:#fff}
+.pnode.now{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 5px var(--accent-soft)}
+.pline{flex:1;width:4px;border-radius:2px;background:var(--line);margin:4px 0;min-height:16px}
+.pstep.done .pline{background:var(--good)}.pstep.now .pline{background:linear-gradient(var(--accent) 45%,var(--line) 45%)}
+.pstep:last-child .pline{background:transparent}
+.pbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:18px}
+.pbody h3{font-size:16px;font-weight:800;padding-top:5px;margin:0}
+.why{background:var(--accent-soft);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45}
+.why.ahead{background:var(--surface);border:1.5px dashed var(--line)}
+.whyh{display:flex;align-items:center;gap:6px;font:800 12px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.why.ahead .whyh{color:var(--muted)}
+.uses{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.uchip{display:inline-flex;align-items:center;gap:4px;font-weight:700;background:var(--surface);color:var(--ink);border-radius:99px;padding:3px 9px}
+.uchip.ok{color:var(--good)}
+.ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ptile{border:2px solid transparent;background:var(--surface);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:7px;text-align:left;color:var(--ink);min-height:96px;box-shadow:0 1px 2px rgba(20,32,26,.05)}
+.ttop{display:flex;justify-content:space-between;align-items:center;width:100%}
+.fico{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none;font-size:16px}
+.fico.big{width:44px;height:44px;border-radius:12px}
+.ptile.s-done .fico{background:var(--good-soft);color:var(--good)}
+.ptile.s-empty .fico,.ptile.later .fico{background:var(--raise);color:var(--muted)}
+.tname{font-size:14.5px;font-weight:700;line-height:1.25}
+.tstat{align-self:flex-start;font-size:11.5px;font-weight:700;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
+.tstat.here{background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 8px;text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+.tstat.done{color:var(--good)}
+.ptile.s-here{border-color:var(--accent)}
+.ptile.s-empty,.ptile.later{background:transparent;border:2px dashed var(--line);box-shadow:none}
+.ptile.sel{border-color:var(--ink);box-shadow:0 6px 16px rgba(21,32,26,.14)}
+.addf{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--line);background:none;border-radius:16px;min-height:52px;font:700 15px var(--ui);color:var(--muted)}
+.tests h2{margin:0}
+.testrow{display:flex;align-items:center;gap:12px;border:0;background:var(--bg);border-radius:16px;padding:12px;text-align:left;color:var(--ink);min-height:64px;width:100%}
+.testrow:disabled{opacity:.6}
+.tico{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.tico.dark{background:var(--ink);color:var(--bg)}.tico.good{background:var(--good-soft);color:var(--good)}
+.swrow{display:flex;align-items:center;gap:12px;border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:10px 14px;text-align:left;color:var(--ink);min-height:64px;width:100%}
+.swrow.on{border-color:var(--accent);background:var(--accent-soft)}.swrow.new{border-style:dashed;justify-content:flex-start}
+.swtick{color:var(--accent);display:flex}
+/* field page */
+.fpage{gap:12px}
+.fhead{display:flex;align-items:center;gap:10px}
+.fhead h1{font-size:24px;margin:0;line-height:1.15}.fhead h2{margin:0}
+.fcard{background:var(--surface);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.flinks{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto minmax(0,1fr);align-items:center;gap:6px}
+.fcolx{display:flex;flex-direction:column;gap:6px}
+.fchip{border:0;border-radius:99px;padding:8px 10px;font:700 12.5px var(--ui);background:var(--raise);color:var(--ink);text-align:center;line-height:1.2}
+.fchip.done{background:var(--good-soft);color:var(--good)}.fchip.here,.fchip.progress{background:var(--accent-soft);color:var(--accent)}
+.fchip.empty,.fchip.ready{background:none;border:1.5px dashed var(--line);color:var(--muted)}
+.fme{background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:10px 12px;font:800 13px var(--ui);white-space:nowrap}
+.farr{color:var(--muted);font-weight:800}
+.fnone{font-size:12px;color:var(--muted);text-align:center}
+.fcap{display:flex;justify-content:space-between;font:700 11px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:0 4px}
+.stair{width:100%;height:auto;display:block}
+.st-d{fill:var(--good)}.st-b{fill:var(--accent-soft)}.st-p{fill:var(--accent)}.st-f{fill:var(--bg);stroke:var(--line);stroke-dasharray:4 3}
+.st-ck{stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.st-t{font:800 13px var(--ui);fill:#fff}.st-t.dk{fill:var(--ink)}.st-me{fill:var(--accent);stroke:var(--surface);stroke-width:4}
+.stairl{display:grid;text-align:center;font:700 11.5px var(--ui);color:var(--muted);margin-top:-4px}
+.stairl .d{color:var(--good)}.stairl .c{color:var(--accent);font-weight:800}
+.cdrow{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.4}
+.cdi{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.cdi.e{background:var(--good);color:#fff}.cdi.p{border:2.5px solid var(--accent);background:linear-gradient(90deg,var(--accent) 50%,transparent 50%)}.cdi.n{border:2.5px solid var(--line)}
+.crow2{display:flex;justify-content:space-between;align-items:center;gap:10px;border:0;border-bottom:1px solid var(--line);background:none;padding:11px 0;font:600 15px var(--ui);color:var(--ink);text-align:left;width:100%;min-height:46px}
+.crow2:last-child{border-bottom:0}
+.cpill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;flex:none}
+.cpill.m{background:var(--good-soft);color:var(--good)}.cpill.p{background:var(--accent-soft);color:var(--accent)}.cpill.r{background:var(--hook-bg);color:var(--hook-ink)}.cpill.n{background:var(--raise);color:var(--muted)}
+.factions{display:flex;flex-direction:column;gap:8px}
+.factions .fact{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.factions .btn.soft{font-size:15px}
+/* combined questions */
+.combotag{background:var(--ink);color:var(--bg);font:700 12px var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px}
+.marktag{background:var(--hook-bg);color:var(--hook-ink);font:700 12px var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px}
+.brings{background:var(--raise);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.bchips{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.bchip{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;line-height:1.2}
+.bchip b{font-size:13.5px}.bchip small{font-size:11px;color:var(--muted);font-weight:600}
+main.lesson .prompt.combo{font-size:18px;font-weight:600;line-height:1.5}
+.bplus{font:800 16px var(--ui);color:var(--muted)}
+/* skills */
+.badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.badge{background:var(--surface);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.badge b{font-size:13px;line-height:1.25}.badge span{font-size:11px;color:var(--muted)}.badge .acc{color:var(--accent);font-weight:700}
+.badge.off{background:none;border:2px dashed var(--line)}
+.radarp{align-items:center}
+.radar{width:100%;max-width:420px;height:auto}
+.radar .rg1{fill:var(--bg);stroke:var(--line)}.radar .rg2{fill:none;stroke:var(--line)}
+.radar .rv1{fill:color-mix(in srgb,var(--accent) 22%,transparent);stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}.radar .rd{fill:var(--accent)}
+.radar .rl{font:700 12px var(--ui);fill:var(--ink)}.radar .rv{fill:var(--muted);font-weight:600}
+/* computer layout */
+.legend .ln{width:18px;height:3px;border-radius:2px;background:var(--line)}.legend .ln.good{background:var(--good)}.legend .ln.acc{background:color-mix(in srgb,var(--accent) 50%,var(--surface))}
+@media (min-width:1024px){
+  .tabbar{top:0;bottom:0;right:auto;width:208px;display:flex;flex-direction:column;gap:4px;padding:24px 14px;border-top:0;border-right:1px solid var(--line)}
+  .tabbar::before{content:"Climb";font:800 22px var(--ui);color:var(--ink);padding:0 12px 22px}
+  .tab{flex-direction:row;justify-content:flex-start;gap:12px;min-height:48px;padding:0 12px;border-radius:12px;font-size:15px}
+  .tab.on{background:var(--accent-soft)}
+  body:has(.tabbar){padding-left:232px;padding-right:24px}
+  body:has(.tabbar) .app{max-width:1180px}
+  .screen{padding-bottom:56px}
+  .screen:not(.path){max-width:680px;width:100%;margin:0 auto}
+  .fab{bottom:32px;right:40px}
+  .path.wide .phead{padding-top:20px}
+  .path.wide .phead .btn{flex:none;min-height:56px;padding:0 22px;display:flex;align-items:center;gap:10px}
+  .path.wide .cswitch{flex:0 1 auto}
+  .pgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+  .pmain{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .pside{position:sticky;top:16px;background:var(--surface);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 32px);overflow:auto}
+  .pside .fcard{padding:0;background:none}
+  .pside .why{background:var(--accent-soft)}
+  .hwrap{position:relative;overflow-x:auto;padding:4px 2px 8px}
+  .hlinks{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+  .hlinks path{fill:none;stroke:var(--line);stroke-width:2.6;stroke-linecap:round}
+  .hlinks path.good{stroke:var(--good)}.hlinks path.acc{stroke:color-mix(in srgb,var(--accent) 50%,var(--surface))}
+  .hpath{display:grid;gap:40px;position:relative;z-index:1;min-width:min-content}
+  .hcol{display:flex;flex-direction:column;gap:14px}
+  .hhead{display:flex;flex-direction:column;gap:4px;min-height:132px}
+  .hlabel{font:800 11px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .hcol.done .hlabel{color:var(--good)}.hcol.now .hlabel{color:var(--accent)}
+  .hhead b{font-size:15.5px;line-height:1.25}
+  .hwhy{color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+  .hcol.now .hwhy{color:var(--ink)}
+  .hcol .ptile{min-height:84px}
+  .badges{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 </style>
 
 <div class="app">
@@ -621,6 +754,7 @@ Return ONLY JSON: {"title": course title (max 5 words), "angles": ["",...], "uni
 }
 const UNI_RE = /\b(NTU|NUS|SMU|SUTD|SIT|SUSS|university|uni|undergrad|undergraduate|freshman|first[- ]year|module code|[A-Z]{2,3}\d{4})\b/i;
 const isUniGoal = o => UNI_RE.test(`${o.goal||""} ${o.topic||""} ${o.focus||""}`);
+const SKILL_KEYS = new Set(["calc","data","tradeoff","flaw","explain","predict"]);
 const BANK_KEYS = ["mcq","tf","cloze","recall","apply","connect"];
 const arrOf = x => Array.isArray(x) ? x : (x ? [x] : []);
 const strs = x => Array.isArray(x) ? x.filter(v=>v!=null&&v!=="").map(String) : [];
@@ -629,8 +763,8 @@ const CLEAN = {
   tf: x=>x&&x.s ? {s:String(x.s), t:x.t===true||x.t==="true"} : null,
   cloze: x=>x&&x.s&&String(x.s).includes("___")&&x.a ? {s:String(x.s), a:String(x.a)} : null,
   recall: x=>x&&x.q&&x.a ? {q:String(x.q), a:String(x.a), accept:strs(x.accept)} : null,
-  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||""), marks:parseInt(x.marks)||0} : null,
-  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points), marks:parseInt(x.marks)||0} : null,
+  apply: x=>x&&x.q&&x.a&&strs(x.d).length>=2 ? {q:String(x.q), a:String(x.a), d:strs(x.d).slice(0,3), why:String(x.why||""), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:""} : null,
+  connect: x=>x&&x.q ? {q:String(x.q), points:strs(x.points), marks:parseInt(x.marks)||0, skill:SKILL_KEYS.has(x.skill)?x.skill:""} : null,
 };
 function cleanBank(it){
   if(!it) return null;
@@ -650,10 +784,11 @@ const QSPEC = `For each concept write questions at five levels of difficulty. Ev
 - "tf" (level 1): 3 statements, a mix of true and subtly false.
 - "cloze" (level 2, cued recall): 2 sentences "s" with a key word or short phrase replaced by ___, and the missing text "a" (1-3 words).
 - "recall" (level 3, produce from memory): 3 direct questions "q", each with ONE clear correct answer "a" (a term, name, number or short phrase, 1-6 words) and "accept": 1-3 other wordings that also count. Never ask the learner to "name" or "list" examples when several answers would be valid.
-- "apply" (level 4): 3 NEW realistic scenarios or small problems "q" that require using the concept in different situations. Each has correct "a", 3 plausible wrong answers "d", and "why" (1 sentence).
-- "connect" (level 5): 2 open questions "q" asking the learner to explain why or how, predict what happens if something changes, or link the concept to another named concept in this course; "points": 2-3 key points a strong answer covers.
+- "apply" (level 4): 3 NEW realistic scenarios or small problems "q" that require using the concept in different situations. Each has correct "a", 3 plausible wrong answers "d", "why" (1 sentence), and "skill".
+- "connect" (level 5): 2 open questions "q" asking the learner to explain why or how, predict what happens if something changes, or link the concept to another named concept in this course; "points": 2-3 key points a strong answer covers, and "skill".
+"skill" on apply and connect questions names the main thinking skill it trains: calc (a calculation), data (reading data, a table or a graph), tradeoff (weighing options), flaw (spotting a flaw or misconception), explain (explaining a mechanism), or predict (predicting an outcome). Vary them across questions where the concept allows.
 Write in plain, friendly language a beginner understands: short sentences, questions under 25 words, scenarios under 45 words. ${JARGON}
-${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":""}], "connect":[{"q":"","points":[]}]}]}`;
+${CONTEXT} Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "mcq":[{"q":"","a":"","d":["","",""]}], "tf":[{"s":"","t":true}], "cloze":[{"s":"","a":""}], "recall":[{"q":"","a":"","accept":[]}], "apply":[{"q":"","a":"","d":["","",""],"why":"","skill":""}], "connect":[{"q":"","points":[],"skill":""}]}]}`;
 function conceptStage(c, k){ const u=c.units.find(x=>x.concepts.includes(k.id)); const m=u&&u.mod&&(c.modules||[]).find(x=>x.id===u.mod); return {stage:u?(u.stage||1):1, field:m?m.title:""}; }
 function uniQuestionText(c){ return `UNIVERSITY STYLE (${c.uni}): write like first-year university exam questions for this degree: precise terminology, standard models and frameworks, calculations with working, and "discuss/evaluate" open questions. For every "apply" and "connect" question add "marks" (2-10) and make "points" the mark scheme, one point per mark.`; }
 const ONE_TYPE = {
@@ -661,8 +796,8 @@ const ONE_TYPE = {
   tf:`"tf": 3 NEW statements, a mix of true and subtly false.`,
   cloze:`"cloze": 2 NEW sentences "s" with a key term replaced by ___, and the missing text "a" (1-3 words).`,
   recall:`"recall": 2 NEW direct questions "q" with ONE clear answer "a" (1-6 words) and "accept": other wordings.`,
-  apply:`"apply": 2 NEW realistic problems "q", each with correct "a", 3 plausible wrong answers "d", and "why".`,
-  connect:`"connect": 2 NEW open questions "q" with "points": the 2-4 key points a strong answer covers.`,
+  apply:`"apply": 2 NEW realistic problems "q", each with correct "a", 3 plausible wrong answers "d", "why", and "skill" (calc, data, tradeoff, flaw, explain or predict).`,
+  connect:`"connect": 2 NEW open questions "q" with "points": the 2-4 key points a strong answer covers, and "skill" (calc, data, tradeoff, flaw, explain or predict).`,
 };
 async function genBank(c, ids, refresh, onlyType){
   const cons = ids.map(id=>c.concepts[id]);
@@ -946,6 +1081,7 @@ function prefetch(c){
   if(!S.sample) return;
   const ids = [...new Set([...buildLesson(c).all, ...order(c)])].filter(id=>needsBank(c.concepts[id]) && !inflight[id]).slice(0,3);
   if(ids.length) ensureBanks(c, ids).catch(()=>{});
+  prefetchCombos(c);
   if(isLang(c)) return;
   const tids = order(c).filter(id=>{ const k=c.concepts[id]; return k.rung===0 && needsTeach(k) && !inflightT[id]; }).slice(0,3);
   if(tids.length) ensureTeach(c, tids).catch(()=>{});
@@ -976,11 +1112,12 @@ async function addBranch(c, o){
 Concepts already in the course: ${order(c).map(id=>c.concepts[id].name).join("; ")}.
 ${ask} Don't repeat existing concepts. Be accurate.
 ${qualityRules(c.level)}
-Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": max 45 words, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": max 30 words, "hook": memory aid, max 25 words, "needs": [up to 3 names of existing or earlier concepts this one builds on]}]}`;
+Return ONLY JSON: {"title": unit title (max 5 words), "concepts":[{"name": 1-5 words, "summary": max 45 words, "points": 3 short key points (how or why it works, an important nuance, a common misconception), "example": max 30 words, "hook": memory aid, max 25 words, "needs": [up to 3 names of existing or earlier concepts this one builds on]}]${o.mod?`, "can_do":[{"text": something concrete the learner can DO after mastering this unit, start with a verb, max 12 words, "uses":[names of this unit's concepts it needs]}] (2-3 items), "bridge": one sentence (max 30 words) to the learner ("you") on how this unit builds on what they learned before it`:""}}`;
   const out = isLang(c) ? await addLangBranch(c, o) : (await writerJson(prompt)).data;
   const before = c.units.length; addUnits(c, [out]);
   if(c.units.length===before) throw {message:"No new concepts came back"};
   const u = c.units.pop();
+  if(o.mod && out) setCanDo(c, u, out.can_do, out.bridge);
   if(o.parent){ u.parent=o.parent.id; const pi=c.units.findIndex(x=>x.concepts.includes(o.parent.id)); const pu=c.units[pi]; c.units.splice(pi+1, 0, u);
     if(pu&&pu.mod){ u.mod=pu.mod; u.stage=(pu.stage||1)+1; } }
   else { if(o.angle){ u.angle=o.angle; c.angles=(c.angles||[]).filter(a=>a!==o.angle); } c.units.push(u); }
@@ -1072,8 +1209,8 @@ Return ONLY JSON: {"fields":[""]}`, {modelTier:"quick"});
 }
 
 /* ---------- lesson engine ---------- */
-function buildLesson(c){
-  const now=Date.now(), cons=order(c).map(id=>c.concepts[id]), a=accuracy(c);
+function buildLesson(c, only){
+  const now=Date.now(), cons=order(c).filter(id=>!only||only.has(id)).map(id=>c.concepts[id]), a=accuracy(c);
   let nNew = a==null ? 3 : a<.7 ? 1 : a>=.9 ? 4 : 3;
   const pc = isExam(c) ? pacing(c) : null; if(pc && pc.days>0) nNew = Math.min(5, Math.max(nNew, pc.perDay));
   const due = cons.filter(k=>k.rung>0 && k.due<=now).sort((x,y)=>x.due-y.due).slice(0,5);
@@ -1485,7 +1622,7 @@ async function startMock(){
 /* ---------- app shell v2: bottom tabs, Today, Courses, You, step-by-step new course, mind map ---------- */
 const ICON = {
   today:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
-  map:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="12" cy="21" r="2"/><path d="M6 7l4 3M18 7l-4 3M12 15v4"/></svg>',
+  map:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="6" cy="19" r="2"/><path d="M8 5h4a4 4 0 0 1 4 4v1M16 14v1a4 4 0 0 1-4 4H8"/></svg>',
   courses:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h6v14H4zM14 5h6v14h-6z"/></svg>',
   you:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>',
   back:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -1496,7 +1633,7 @@ const ICON = {
   uni:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>',
   work:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16v11H4z"/><path d="M9 8V5h6v3"/></svg>',
 };
-const TABS = [["today","Today"],["map","Map"],["courses","Courses"],["you","You"]];
+const TABS = [["today","Today"],["map","Path"],["courses","Courses"],["you","You"]];
 const VIEW_ALIAS = {home:"today", course:"map"};
 let ME = {auth:false, user:null};
 function navHtml(active){ return `<nav class="tabbar" aria-label="Main">${TABS.map(([k,n])=>`<button type="button" class="tab${k===active?" on":""}" data-tab="${k}"${k===active?' aria-current="page"':""}>${ICON[k]}<span>${n}</span></button>`).join("")}</nav>`; }
@@ -1552,11 +1689,12 @@ function renderYou(){
       <p class="small muted">Your courses and progress are saved to your account and sync across devices.</p><button type="button" class="btn ghost block" id="signOut">Sign out</button>`
       : ME.auth ? `<b>Save your progress</b><p class="small muted">Sign in to keep your courses safe, use them on any device, and get a higher daily limit. Courses on this device move into your account.</p><div id="gsi" class="gsi"></div>`
       : `<b>Accounts are coming soon</b><p class="small muted">For now your courses are saved in this browser only.</p>`}</section>
-    <div class="stats"><div><b class="num">${streakNow()}</b><span>Day streak</span></div><div><b class="num">${P.xp}</b><span>XP</span></div><div><b class="num">${cs.length}</b><span>Courses</span></div><div><b class="num">${mastered}</b><span>Mastered</span></div></div>
+    <div class="stats"><div><b class="num">${streakNow()}</b><span>Day streak</span></div><div><b class="num">${P.xp}</b><span>XP</span></div><div><b class="num">${allCanDos().filter(x=>x.s.st==="earned").length}</b><span>Skills</span></div><div><b class="num">${mastered}</b><span>Mastered</span></div></div>
+    ${skillsHtml()}
     <section class="panel"><button type="button" class="setrow" id="modelBtn"><span class="col" style="gap:2px;text-align:left"><b>Course writer</b><span class="small muted">The AI model that writes new courses</span></span><span class="small" style="font-weight:700">${esc(curModel().n)}</span></button></section>
     <p class="tiny muted">Climb records what you do and what it generates, to improve its lessons. ${u?"Your account stores your name, email and progress.":""}</p>
   </div>${navHtml("you")}`;
-  wireNav(); $("modelBtn").onclick=modelSheet;
+  wireNav(); $("modelBtn").onclick=modelSheet; const asb=$("allSkills"); if(asb) asb.onclick=skillsSheet;
   const gs=$("gsi"); if(gs && window.climbAuth){ const dark=matchMedia("(prefers-color-scheme: dark)").matches;
     window.climbAuth.renderButton(gs, ME.clientId, dark).then(ok=>{ if(ok) return; gs.innerHTML = ME.redirect ? `<button type="button" class="btn block gbtn" id="signIn">Sign in with Google</button>` : `<p class="small muted">Couldn't load Google sign-in. Check your connection and try again.</p>`; const si=$("signIn"); if(si) si.onclick=()=>{ L("signin_start"); window.climbAuth.signIn(); }; }); }
   const so=$("signOut"); if(so) so.onclick=()=>{ L("signout"); window.climbAuth.signOut(); };
@@ -1630,128 +1768,379 @@ function renderNew(){
 }
 
 /* ---------- mind map (computed in the app, no AI) ---------- */
-function wrapWords(t, max){ const w=String(t).split(/\s+/), out=[]; let line=""; w.forEach(x=>{ if((line+" "+x).trim().length>max && line){ out.push(line); line=x; } else line=(line+" "+x).trim(); }); if(line) out.push(line); if(out.length>2){ out[1]=out.slice(1).join(" "); out.length=2; if(out[1].length>max+2) out[1]=out[1].slice(0,max)+"…"; } return out; }
-function mapLayout(c){
-  const mods=c.modules, n=mods.length, R=Math.max(118, n*118/(2*Math.PI)), rx=R, ry=R*1.18;
-  const pos={}; mods.forEach((m,i)=>{ const a=-Math.PI/2 + i*2*Math.PI/n; pos[m.id]={x:rx*Math.cos(a), y:ry*Math.sin(a), a}; });
-  return {pos, rx, ry};
-}
-function dotColor(k){ const now=Date.now(); return k.rung>=5?"var(--good)":k.rung>0&&k.due<=now?"var(--warn)":k.rung>0||k.seen>0?"var(--accent)":"var(--dot)"; }
-function mindMapSvg(c, sel){
-  const {pos, rx, ry}=mapLayout(c), nx=nextUp(c), nextField=nx.field&&nx.field.id, nextK=nx.k&&nx.k.id;
-  let spokes="", links="", nodes="", dots="";
-  c.modules.forEach(m=>{ const p=pos[m.id], hot=m.id===nextField;
-    spokes+=`<line x1="0" y1="0" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" class="${hot?"spoke hot":"spoke"}"/>`;
-    (m.needs||[]).forEach(fid=>{ const q=pos[fid]; if(!q) return; const cx=(p.x+q.x)*.3, cy=(p.y+q.y)*.3; links+=`<path d="M${q.x.toFixed(1)} ${q.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)}" class="xlink"/>`; });
-    const ks=modCons(c,m), st=modStage(c,m), pr=modProgress(c,m), r=30, circ=2*Math.PI*r;
-    ks.forEach((k,j)=>{ const per=9, ring=Math.floor(j/per), idx=j%per, cnt=Math.min(per, ks.length-ring*per); const a=p.a+Math.PI + (idx-(cnt-1)/2)*0.34, rr=44+ring*11;
-      const dx=p.x+rr*Math.cos(a), dy=p.y+rr*Math.sin(a);
-      dots+=`${k.id===nextK?`<circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="9" class="glow"/>`:""}<circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="4.5" fill="${dotColor(k)}"/><circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="11" fill="transparent" data-k="${esc(k.id)}" class="hit"/>`; });
-    const lines=wrapWords(m.title, 14), ca=Math.cos(p.a), sa=Math.sin(p.a), lx=p.x, anchor="middle";
-    const nL=lines.length+1, lh=14, top = sa<-0.35 ? p.y-r-10-(nL-1)*lh : p.y+r+18;
-    const ty=top, above=sa<-0.35;
-    nodes+=`<g class="fnode${m.id===sel?" sel":""}${st?"":" empty"}" data-m="${esc(m.id)}" role="button" tabindex="0" aria-label="${esc(m.title)}">
-      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" class="fbg"/>
-      ${st?`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" class="fprog" stroke-dasharray="${(circ*pr/100).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 ${p.x.toFixed(1)} ${p.y.toFixed(1)})"/>`:""}
-      <text x="${p.x.toFixed(1)}" y="${(p.y+5).toFixed(1)}" text-anchor="middle" class="fnum">${st?ks.length:"+"}</text>
-      ${lines.map((t,i)=>`<text x="${lx.toFixed(1)}" y="${(ty+i*14).toFixed(1)}" text-anchor="${anchor}" class="flabel">${esc(t)}</text>`).join("")}
-      <text x="${lx.toFixed(1)}" y="${(ty+lines.length*14-1).toFixed(1)}" text-anchor="${anchor}" class="fstage">${st?esc(stageName(st)):"Not started"}</text>
-      ${m.id===nextField?`<text x="${lx.toFixed(1)}" y="${(above?ty-14:ty+lines.length*14+13).toFixed(1)}" text-anchor="${anchor}" class="fnext">NEXT UP</text>`:""}
-    </g>`; });
-  const tl=wrapWords(c.title, 13);
-  const center=`<g class="cnode"><rect x="-62" y="-28" width="124" height="56" rx="18"/>${tl.map((t,i)=>`<text x="0" y="${(tl.length>1?-4:5)+i*16}" text-anchor="middle">${esc(t)}</text>`).join("")}</g>`;
-  const span=Math.max(rx+64, ry+92);
-  return {svg:`<g class="links">${spokes}${links}</g>${dots}${nodes}${center}`, span};
-}
-function wireMindMap(c, box, onField){
-  const svg=box.querySelector("svg"), g=svg.querySelector("#mmg"), W=box.clientWidth||360, H=box.clientHeight||420;
-  const span=+box.dataset.span||300; let k=Math.min(1.05, Math.max(.45, Math.min(W,H)/(2*span)*1.1)), tx=W/2, ty=H/2;
-  const apply=()=>g.setAttribute("transform",`translate(${tx.toFixed(1)} ${ty.toFixed(1)}) scale(${k.toFixed(3)})`); apply();
-  const pts=new Map(); let start=null, moved=false;
-  svg.addEventListener("pointerdown",e=>{ svg.setPointerCapture(e.pointerId); pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); moved=false;
-    if(pts.size===2){ const [a,b]=[...pts.values()]; start={d:Math.hypot(a.x-b.x,a.y-b.y), k, tx, ty, mx:(a.x+b.x)/2, my:(a.y+b.y)/2}; } else start={x:e.clientX,y:e.clientY,tx,ty}; });
-  svg.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
-    if(pts.size===2 && start&&start.d){ const [a,b]=[...pts.values()], d=Math.hypot(a.x-b.x,a.y-b.y); const nk=Math.min(2.4,Math.max(.35,start.k*d/start.d)); const r=svg.getBoundingClientRect(), mx=start.mx-r.left, my=start.my-r.top; tx=mx-(mx-start.tx)*nk/start.k; ty=my-(my-start.ty)*nk/start.k; k=nk; moved=true; apply(); }
-    else if(pts.size===1 && start&&start.x!=null){ const dx=e.clientX-start.x, dy=e.clientY-start.y; if(Math.abs(dx)+Math.abs(dy)>6) moved=true; tx=start.tx+dx; ty=start.ty+dy; apply(); } });
-  const up=e=>{ pts.delete(e.pointerId); if(pts.size===1){ const [a]=[...pts.values()]; start={x:a.x,y:a.y,tx,ty}; } else if(!pts.size) start=null; };
-  svg.addEventListener("pointerup",e=>{ const was=moved; up(e); if(was) return; const t=document.elementFromPoint(e.clientX,e.clientY); if(!t) return;
-    const kk=t.closest&&t.closest("[data-k]"); if(kk){ const kc=c.concepts[kk.dataset.k]; if(kc) sheet(c,kc); return; }
-    const f=t.closest&&t.closest(".fnode"); if(f) onField(f.dataset.m); });
-  svg.addEventListener("pointercancel",up);
-  svg.addEventListener("wheel",e=>{ e.preventDefault(); const r=svg.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top, nk=Math.min(2.4,Math.max(.35,k*(e.deltaY<0?1.12:.89))); tx=mx-(mx-tx)*nk/k; ty=my-(my-ty)*nk/k; k=nk; apply(); },{passive:false});
-  box.querySelectorAll("[data-z]").forEach(b=>b.onclick=()=>{ const z=b.dataset.z; if(z==="fit"){ k=Math.min(1.05, Math.max(.45, Math.min(W,H)/(2*span)*1.1)); tx=W/2; ty=H/2; } else { const nk=Math.min(2.4,Math.max(.35,k*(z==="in"?1.25:.8))); tx=W/2-(W/2-tx)*nk/k; ty=H/2-(H/2-ty)*nk/k; k=nk; } apply(); });
-  box.querySelectorAll(".fnode").forEach(n=>n.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); onField(n.dataset.m); } }));
-}
 async function ensureFieldLinks(c){
   if(!hasMap(c) || c.linksDone || !S.sample || c.modules.length<3 || ensureFieldLinks.busy) return;
   ensureFieldLinks.busy=true;
   try{
     const out=await S.sample.json(`A course called "${c.title}" has these fields:\n${c.modules.map((m,i)=>`${i+1}. ${m.title}: ${m.desc}`).join("\n")}\nWhich fields build on knowledge from which other fields? List only strong, real dependencies, at most 2 per field.\nReturn ONLY JSON: {"links":[[field number, field number it builds on]]}`, {modelTier:"quick"});
     arrOf(out&&out.links).forEach(p=>{ if(!Array.isArray(p)) return; const a=c.modules[(parseInt(p[0])||0)-1], b=c.modules[(parseInt(p[1])||0)-1]; if(a&&b&&a!==b){ a.needs=[...new Set([...(a.needs||[]), b.id])].slice(0,3); } });
-    c.linksDone=true; saveCourse(c); if(S.view==="map" && S.cur===c && (S.mapMode||"map")==="map") renderMapTab();
+    c.linksDone=true; saveCourse(c); if((S.view==="map"||S.view==="field") && S.cur===c) render();
   }catch(e){} finally{ ensureFieldLinks.busy=false; }
 }
-function stageBars(c,m){
-  const st=modStage(c,m), top=Math.max(4,st);
-  return `<div class="stagebars" style="grid-template-columns:repeat(${Math.min(top,6)},minmax(0,1fr))">${Array.from({length:Math.min(top,6)},(_,i)=>{ const n=top>6?top-5+i:i+1; const ks=modUnits(c,m).filter(u=>(u.stage||1)===n).flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean); const pr=ks.length?Math.round(ks.reduce((s,k)=>s+k.rung,0)/(ks.length*5)*100):0; const cls=ks.length&&pr>=80?"done":n===st?"cur":""; return `<div class="sb ${cls}"><span class="sbt"><i style="width:${ks.length?Math.max(6,pr):0}%"></i></span><span>${esc(stageName(n))}</span></div>`; }).join("")}</div>`;
+/* ---------- Path: steps built from "builds on" links, bridges, can-dos, field page, combined questions, skills ---------- */
+const isWide = () => { try{ return matchMedia("(min-width:1024px)").matches; }catch(e){ return false; } };
+const FICON = {
+  chart:'<path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/>', scale:'<path d="M12 4v16M5 20h14M6 8h12M6 8l-3 6h6zM18 8l-3 6h6z"/>',
+  document:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h5"/>', globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>', ship:'<path d="M3 15l2 5h14l2-5z"/><path d="M6 15V9h12v6M12 9V4"/>',
+  money:'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>', leaf:'<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l8-8"/>',
+  flask:'<path d="M9 3h6M10 3v6l-5 10h14l-5-10V3"/>', atom:'<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(120 12 12)"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>', chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  code:'<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 6l-2 12"/>', people:'<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M15 14c3 0 6 2 6 5"/>',
+  brain:'<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', map:'<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
+  heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>', music:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  calculator:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>', shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  building:'<path d="M4 21V5l8-2v18M12 9h8v12M8 8v.01M8 12v.01M8 16v.01M16 13v.01M16 17v.01"/>', pen:'<path d="M4 20l4-1 11-11-3-3L5 16z"/>',
+  lightbulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
+};
+const svgI = (p, s) => `<svg width="${s||20}" height="${s||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const CHECK = s => svgI('<path d="M5 12l5 5 9-10"/>', s||16).replace('stroke-width="2.1"','stroke-width="3"');
+const LINKI = s => svgI('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>', s||15);
+function fieldIcon(c, m, s){ const k=c.path&&c.path.icons&&c.path.icons[m.id]; return FICON[k] ? svgI(FICON[k], s) : `<b>${esc((m.title||"?").slice(0,1).toUpperCase())}</b>`; }
+function miniRing(p, size, color){ const r=size/2-3.5, cf=2*Math.PI*r, m=size/2; return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="var(--raise)" stroke-width="4"/><circle cx="${m}" cy="${m}" r="${r}" fill="none" stroke="${color||"var(--accent)"}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${(cf*p/100).toFixed(1)} ${cf.toFixed(1)}" transform="rotate(-90 ${m} ${m})"/></svg>`; }
+
+function fieldDepths(c){
+  const mods=c.modules||[], byId=Object.fromEntries(mods.map(m=>[m.id,m])), memo={};
+  const d=(m,seen)=>{ if(memo[m.id]!=null) return memo[m.id]; if(seen.has(m.id)) return 0; seen.add(m.id);
+    const ns=(m.needs||[]).map(id=>byId[id]).filter(Boolean); const v=ns.length?1+Math.max(...ns.map(x=>d(x,seen))):0; seen.delete(m.id); return memo[m.id]=v; };
+  mods.forEach(m=>d(m,new Set())); return memo;
 }
-function fieldPanel(c, m){
-  if(!m) return "";
-  const st=modStage(c,m), ks=modCons(c,m);
-  return `<section class="dock" id="dock"><span class="grab"></span>
-    <div class="row" style="justify-content:space-between;align-items:baseline;flex-wrap:nowrap"><h2>${esc(m.title)}</h2><span class="small muted">${ks.length} concept${ks.length===1?"":"s"}</span></div>
-    ${m.desc?`<p class="small muted">${esc(m.desc)}</p>`:""}
-    ${st?stageBars(c,m):""}
-    ${st?`<div class="fact"><button class="btn soft" data-act="more" type="button"><span>More on this<small>same level</small></span></button><button class="btn" data-act="deeper" type="button"><span>Go deeper<small>to ${esc(stageName(st+1))}</small></span></button></div>
-      ${stageReady(c,m)?"":`<p class="tiny muted">Tip: practise the ${esc(stageName(st))} concepts a little more first for the best results, but it's your call.</p>`}
-      <details class="clist"><summary>See all ${ks.length} concepts</summary>${modUnits(c,m).map(u=>`<div class="unit${u.parent?" branch":""}"><span class="label">${esc(stageName(u.stage||1))}</span><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`).join("")}</details>`
-      : `<button class="btn block" data-act="open" type="button">Start this field</button>`}
-  </section>`;
+function pathSteps(c){
+  const mods=c.modules||[]; if(!mods.length) return [];
+  if(!mods.some(m=>m.needs&&m.needs.length)){ const out=[]; for(let i=0;i<mods.length;i+=2) out.push(mods.slice(i,i+2)); return out; }
+  const dp=fieldDepths(c), needed=new Set(mods.flatMap(m=>m.needs||[]));
+  const loose=mods.filter(m=>!(m.needs&&m.needs.length) && !needed.has(m.id));
+  const core=mods.filter(m=>!loose.includes(m)), max=Math.max(0,...core.map(m=>dp[m.id])), out=[];
+  for(let i=0;i<=max;i++){ const s=core.filter(m=>dp[m.id]===i); if(s.length) out.push(s); }
+  if(loose.length) out.push(loose);
+  return out;
 }
-function renderMapTab(){
+const pathSig = steps => steps.map(s=>s.map(m=>m.id).join(",")).join("|");
+const fieldOf = (c, id) => (c.modules||[]).find(m=>m.id===id);
+function fieldInfo(c, m, nx){
+  const ks=modCons(c,m), st=modStage(c,m), p=modProgress(c,m), strong=ks.filter(k=>k.rung>=4).length;
+  const state = !ks.length ? "empty" : (nx&&nx.field&&nx.field.id===m.id) ? "here" : strong/ks.length>=.8 ? "done" : ks.some(k=>k.rung>0) ? "progress" : "ready";
+  const blockedBy = (state==="empty"||state==="ready") ? (m.needs||[]).map(id=>fieldOf(c,id)).find(f=>f && fieldInfo(c,f).state!=="done") : null;
+  return {ks, st, p, state, blockedBy};
+}
+function stepState(c, mods, nx){ const ss=mods.map(m=>fieldInfo(c,m,nx).state); return ss.every(s=>s==="done") ? "done" : ss.some(s=>s==="here"||s==="progress") ? "now" : "ahead"; }
+function canDoState(c, cd){ const ks=(cd.uses||[]).map(id=>c.concepts[id]).filter(Boolean); if(!ks.length) return {st:"new", left:0, total:0};
+  const left=ks.filter(k=>k.rung<4).length; return {st:left===0?"earned":ks.some(k=>k.rung>0)?"progress":"new", left, total:ks.length}; }
+function setCanDo(c, u, arr, bridge){
+  const ids=u.concepts.filter(id=>c.concepts[id]);
+  const cds=arrOf(arr).map(x=>{ const t=String((x&&x.text)||x||"").trim().slice(0,140); if(!t) return null;
+    const uses=strs(x&&x.uses).map(n=>ids.find(id=>norm(c.concepts[id].name)===norm(n))).filter(Boolean); return {t, uses:uses.length?[...new Set(uses)]:ids}; }).filter(Boolean).slice(0,3);
+  if(cds.length) u.canDo=cds; if(bridge) u.bridge=String(bridge).slice(0,240);
+}
+let pathBusy=false;
+async function ensurePathText(c){
+  if(!S.sample || !hasMap(c) || pathBusy || c.example) return;
+  if(!c.linksDone && c.modules.length>=3){ ensureFieldLinks(c); return; }
+  const steps=pathSteps(c), sig=pathSig(steps);
+  const units=c.units.filter(u=>u.mod && !u.canDo && u.concepts.some(id=>c.concepts[id])).slice(0,14);
+  const stale=!c.path || c.path.sig!==sig;
+  if(!stale && !units.length) return;
+  if(c.pathTried && Date.now()-c.pathTried<60000) return;
+  pathBusy=true; c.pathTried=Date.now();
+  try{
+    const out = await S.sample.json(`A course called "${c.title}" (${levelText(c.level)}) is laid out as a learning PATH of steps. Fields in each step build on the steps before it.
+${steps.map((s,i)=>`STEP ${i+1}: ${s.map(m=>`${m.title}${m.desc?` (${m.desc})`:""}${modCons(c,m).length?` [concepts: ${modCons(c,m).slice(0,8).map(k=>k.name).join("; ")}]`:""}${(m.needs||[]).length?` [builds on: ${m.needs.map(id=>(fieldOf(c,id)||{}).title).filter(Boolean).join(", ")}]`:""}`).join(" | ")}`).join("\n")}
+For EACH step write: "title": 2-5 words naming what the step is about; "why": for step 1, one sentence on why it is the starting point; for later steps 1-2 plain sentences (max 35 words) to the learner ("you") explaining how this step builds on the earlier ones, naming the earlier ideas it reuses and what new ability it unlocks; "uses": up to 3 earlier concept names (exactly as listed above) this step relies on, [] for step 1.${steps.length>1&&!steps[steps.length-1].some(m=>(m.needs||[]).length)?" If the last step's fields don't depend on others, explain them as ways to widen what you've learned.":""}
+For EACH field pick an "icon" from: ${Object.keys(FICON).join(", ")}.
+${units.length?`UNITS that need can-do statements:\n${units.map((u,i)=>`U${i+1}. "${u.title}" (field: ${(fieldOf(c,u.mod)||{}).title||""}; ${stageName(u.stage||1)}) concepts: ${u.concepts.filter(id=>c.concepts[id]).map(id=>c.concepts[id].name).join("; ")}`).join("\n")}
+For EACH unit: "can_do": 2-3 concrete things the learner will be able to DO after mastering it (start with a verb, max 12 words), each with "uses": the unit's concept names it needs; and "bridge": one sentence (max 30 words, to "you") on how this unit builds on what came before it.`:""}
+Be accurate and specific to the subject. Return ONLY JSON: {"steps":[{"title":"","why":"","uses":[]}],"icons":{"exact field title":"icon"}${units.length?`,"units":[{"id":"U1","can_do":[{"text":"","uses":[""]}],"bridge":""}]`:""}}`, {modelTier:"default"});
+    const ss=arrOf(out&&out.steps), icons={};
+    c.modules.forEach(m=>{ const k=out&&out.icons&&(out.icons[m.title]||Object.entries(out.icons).find(([t])=>norm(t)===norm(m.title))?.[1]); if(FICON[k]) icons[m.id]=k; });
+    const all=order(c).map(id=>c.concepts[id]);
+    c.path={sig, icons:{...((c.path&&c.path.icons)||{}), ...icons}, steps:steps.map((s,i)=>{ const x=ss[i]||{}; return {title:String(x.title||"").slice(0,60), why:String(x.why||"").slice(0,300), uses:strs(x.uses).map(n=>(all.find(k=>norm(k.name)===norm(n))||{}).id).filter(Boolean).slice(0,3)}; })};
+    arrOf(out&&out.units).forEach((x,i)=>{ const n=parseInt(String(x&&x.id||"").replace(/\D/g,""))||i+1, u=units[n-1]; if(u) setCanDo(c, u, x.can_do, x.bridge); });
+    units.forEach(u=>{ if(!u.canDo) u.canDo=[]; });
+    saveCourse(c);
+    if(S.cur===c && (S.view==="map"||S.view==="field")) render();
+  }catch(e){} finally{ pathBusy=false; }
+}
+
+/* combined, higher-order questions */
+const SKILLS = {calc:"Calculations", data:"Reading data", tradeoff:"Trade-offs", flaw:"Spotting flaws", explain:"Explaining", predict:"Predicting"};
+const freshCombos = c => (c.combos||[]).filter(x=>!x.used && x.uses.every(id=>c.concepts[id]));
+function comboPool(c){ return order(c).map(id=>c.concepts[id]).filter(k=>k.rung>=3); }
+function comboReady(c){ const ks=comboPool(c); return !isLang(c) && ks.length>=3 && new Set(ks.map(k=>(c.units.find(u=>u.concepts.includes(k.id))||{}).id)).size>=2; }
+let comboBusy=false;
+async function genCombos(c, n){
+  if(comboBusy) return; comboBusy=true;
+  try{
+    const ks=shuffle(comboPool(c)).sort((a,b)=>b.rung-a.rung).slice(0,14);
+    const line=k=>{ const s=conceptStage(c,k); return `- ${k.name} [${s.field||"core"}; ${stageName(s.stage)}]: ${k.summary}${(k.needs||[]).length?` (builds on: ${k.needs.join(", ")})`:""}`; };
+    const top=Math.max(...ks.map(k=>conceptStage(c,k).stage));
+    const out = await S.sample.json(`Write ${n} higher-order questions for a learner studying "${c.title}" (${levelText(c.level)}${c.goal?"; goal: "+c.goal:""}).
+Each question must COMBINE 2-3 of these concepts the learner has already learned. Prefer concepts from different fields that genuinely interact (one builds on, causes or constrains the other):
+${ks.map(line).join("\n")}
+Each question is a realistic case or problem (under 80 words, with concrete numbers or details where they help) that can only be answered well by reasoning across the combined concepts: decide and justify, evaluate, predict, or calculate then interpret. Pitch it at ${stageName(Math.max(3,top))} level (house style rule 6). Never answerable from one concept alone. Don't reveal the answer in the question.
+"q": the case and the question; "uses": the combined concept names exactly as listed; "points": 3-5 mark-scheme points a strong answer makes; "marks": 3-6; "skill": the main thinking skill it trains, one of ${Object.keys(SKILLS).join(", ")}.
+${isExam(c)?examQuestionText(c):c.uni?uniQuestionText(c):""}
+Return ONLY JSON: {"questions":[{"q":"","uses":[""],"points":[""],"marks":4,"skill":""}]}`, {modelTier:"default", cache:false});
+    const add=arrOf(out&&out.questions).map(x=>{ const uses=strs(x&&x.uses).map(nm=>(ks.find(k=>norm(k.name)===norm(nm))||{}).id).filter(Boolean);
+      return x&&x.q&&uses.length>=2 ? {id:uidGen(), q:String(x.q), uses:[...new Set(uses)].slice(0,3), points:strs(x.points).slice(0,6), marks:Math.min(8,Math.max(2,parseInt(x.marks)||strs(x.points).length||4)), skill:SKILLS[x.skill]?x.skill:"explain", used:false} : null; }).filter(Boolean);
+    c.combos=[...(c.combos||[]).filter(x=>!x.used).slice(-6), ...add];
+    saveCourse(c); return add;
+  } finally{ comboBusy=false; }
+}
+function prefetchCombos(c){ if(S.sample && comboReady(c) && freshCombos(c).length<1 && !comboBusy) genCombos(c,3).catch(()=>{}); }
+async function startCombined(){
+  const c=S.cur; if(!c) return;
+  if(freshCombos(c).length<4){
+    if(!S.sample){ toast("Combined tests need the server connection"); return; }
+    S.view="loading"; window.scrollTo(0,0); bar("");
+    main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Setting your combined test</h3></div><p class="small muted">Writing case questions that mix what you've learned. About 30 seconds.</p></div>`;
+    try{ await genCombos(c, 4); }catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't set the test</strong><span>${esc(aiErr(e))}</span></div><button class="btn ghost" id="back">Back</button></div>`; $("back").onclick=()=>go("map"); return; }
+  }
+  const qs=freshCombos(c).slice(0,4); if(!qs.length){ toast("Practise a few more concepts first"); go("map"); return; }
+  const steps=qs.map(x=>({t:"combo", combo:x.id, cid:x.uses[0]}));
+  LS = {c, steps, i:0, touched:new Set(), count:{}, retry:{}, fresh:new Set(), snap:Object.fromEntries([...new Set(qs.flatMap(x=>x.uses))].map(id=>[id,c.concepts[id].rung])), xp:0, right:0, total:0, pending:null, q:null,
+        mock:{end:Date.now()+steps.length*240000, marks:0, total:0, missed:[], combined:true}};
+  LS.mock.timer = setInterval(()=>{ if(!LS||!LS.mock) return; const left=LS.mock.end-Date.now(), el=$("mockT");
+    if(el) el.textContent = left>0 ? `${Math.floor(left/60000)}:${String(Math.floor(left/1000)%60).padStart(2,"0")}` : "0:00";
+    if(left<=0){ toast("Time's up"); finishLesson(); } }, 1000);
+  L("combined_start",{course:c.title, data:{questions:steps.length}});
+  S.view="lesson"; renderStep();
+}
+function renderCombo(st){
+  const c=LS.c, x=(c.combos||[]).find(q=>q.id===st.combo) || freshCombos(c)[0];
+  if(!x){ LS.i++; return renderStep(); }
+  x.used=true; st.combo=x.id;
+  const ks=x.uses.map(id=>c.concepts[id]).filter(Boolean), k=ks.slice().sort((a,b)=>a.rung-b.rung)[0];
+  const top=Math.max(...ks.map(q=>conceptStage(c,q).stage));
+  LS.q={k, type:"combo", eff:Math.max(1,Math.min(5,k.rung+1)), x, text:x.q, stretch:false, hint:0, undo:null, xp:0, done:false};
+  const chips = ks.map(q=>{ const s=conceptStage(c,q); return `<span class="bchip"><b>${esc(q.name)}</b>${s.field?`<small>${esc(s.field)}</small>`:""}</span>`; }).join(`<span class="bplus" aria-hidden="true">+</span>`);
+  main.innerHTML = head()+`<div class="card pop"><div class="row" style="gap:8px"><span class="combotag">${stageName(Math.max(3,top))} · Combine</span><span class="marktag">${x.marks} marks</span></div>
+    <div class="brings"><span class="label">Brings together</span><div class="bchips">${chips}</div></div>
+    <div class="prompt combo">${gloss(x.q)}</div><p class="small muted">Use the ideas together. A few clear sentences, with working if there are numbers.</p>
+    <label class="small" for="cin" style="font-weight:700">Your answer</label><textarea id="cin" placeholder="Explain your reasoning…"></textarea><button class="linkbtn" id="cskip" type="button" style="align-self:flex-start">Skip this one</button><div id="fb"></div></div>`;
+  bar(`<button class="btn block" id="cgo">Check my answer</button>`);
+  wireQuit();
+  $("cskip").onclick=()=>{ LS.i++; renderStep(); };
+  const doCheck=async()=>{
+    const txt=$("cin").value.trim(); if(txt.length<20){ toast("Write a little more first"); return; }
+    $("cin").disabled=true; $("cskip").hidden=true;
+    bar(`<button class="btn block" disabled><span class="spinner"></span> Marking your answer…</button>`);
+    try{
+      const r = await S.sample.json(`Mark a learner's answer to a question that combines several concepts. Be fair but rigorous: reward answers that connect the ideas correctly, not ones that treat them separately.
+CONCEPTS COMBINED: ${ks.map(q=>`${q.name}: ${q.summary}`).join(" | ")}
+QUESTION: ${x.q}
+MARK SCHEME (one mark per point clearly made, out of ${x.marks}): ${x.points.join("; ")}
+LEARNER: ${levelText(c.level)}${isExam(c)?`; mark like a ${c.exam.label} examiner`:c.uni?`; mark like a first-year university examiner (${c.uni})`:""}
+LEARNER'S ANSWER: ${txt}
+Return ONLY JSON: {"marks_awarded": number, "score": 0-100, "good": one short sentence on what they connected well, "missing": one short sentence on the link or point they missed (empty if none), "better": a strong answer in under 80 words}`, {modelTier:"default", cache:false});
+      if(!LS) return;
+      const got=Math.max(0,Math.min(x.marks, parseInt(r.marks_awarded)||0)), pass=got/x.marks>=.6;
+      LS.q.marksAwarded=got;
+      answered(pass?"right":got>0?"helped":"wrong", {title:`${got}/${x.marks} marks`, partial:!pass&&got>0, noAnsBox:true, extra:`${r.good?`<p class="small">✓ ${esc(r.good)}</p>`:""}${r.missing?`<p class="small">✕ ${esc(r.missing)}</p>`:""}${r.better?`<div class="vans"><span class="label">A strong answer</span><span style="font-weight:400">${esc(r.better)}</span></div>`:""}`});
+      if(pass) ks.filter(q=>q!==k).forEach(q=>{ if(q.rung<5 && q.rung>=3){ q.rung=Math.min(5,q.rung+1); } });
+    }catch(e){ $("cin").disabled=false; $("cskip").hidden=false; toast(aiErr(e)); bar(`<button class="btn block" id="cgo2">Try again</button>`); $("cgo2").onclick=doCheck; }
+  };
+  $("cgo").onclick=doCheck;
+}
+function skillOf(q){ const s=q&&q.x&&q.x.skill; if(SKILLS[s]) return s; if(q.type==="connect"||q.type==="combo") return "explain"; if(q.type==="apply" && /\d/.test(q.text||"")) return "calc"; return null; }
+function trackSkill(q, out){ const sk=skillOf(q); if(!sk) return; const P=S.profile; P.skills=P.skills||{}; const s=P.skills[sk]||(P.skills[sk]={n:0,ok:0}); s.n++; s.ok+= out==="right"?1:out==="helped"?.5:0; saveProfile(); }
+
+/* Path screen */
+function stepHead(c, i){ const t=c.path&&c.path.steps&&c.path.steps[i]; return {title:(t&&t.title)||(i===0?"Start here":`Step ${i+1}`), why:(t&&t.why)||"", uses:(t&&t.uses)||[]}; }
+function usesChips(c, ids){ const ks=ids.map(id=>c.concepts[id]).filter(Boolean); return ks.length ? `<span class="uses"><span>Uses</span>${ks.map(k=>`<span class="uchip${k.rung>=4?" ok":""}">${k.rung>=4?CHECK(11):""}${esc(k.name)}</span>`).join("")}</span>` : ""; }
+function tileHtml(c, m, nx, sel){
+  const f=fieldInfo(c,m,nx);
+  const stat = f.state==="here" ? `<span class="tstat here">You're here</span>` : f.state==="done" ? `<span class="tstat done">${CHECK(12)} ${esc(stageName(f.st))} done</span>` : f.state==="progress" ? `<span class="tstat">${esc(stageName(f.st))} · ${f.p}%</span>` : f.blockedBy ? `<span class="tstat after">Best after ${esc(f.blockedBy.title)}</span>` : `<span class="tstat after">Ready to start</span>`;
+  return `<button type="button" class="ptile s-${f.state}${f.blockedBy?" later":""}${sel?" sel":""}" data-m="${esc(m.id)}"><span class="ttop"><span class="fico">${fieldIcon(c,m,20)}</span>${f.ks.length&&f.state!=="done"?`<span class="tring">${miniRing(f.p,30)}</span>`:""}</span><span class="tname">${esc(m.title)}</span>${stat}</button>`;
+}
+function pathHeader(c, wide){
+  const nx=nextUp(c), steps=pathSteps(c), cur=Math.max(0, steps.findIndex(s=>s.some(m=>nx.field&&m.id===nx.field.id)));
+  const sub = hasMap(c) ? `Step ${cur+1} of ${steps.length}` : `${order(c).length} concepts`;
+  const nf=nx.plan.fresh.length, nr=nx.plan.extra?0:nx.plan.reviews;
+  const what=[nx.field?nx.field.title:nx.k?nx.k.name:"Practice", nr?`${nr} to review`:"", nf?`${nf} new`:""].filter(Boolean).join(" · ");
+  return `<div class="phead"><button type="button" class="cswitch" id="cSwitch" aria-label="Switch course"><span class="cring">${ring(progress(c),44)}</span><span class="col" style="min-width:0;gap:0"><b>${esc(c.title)}</b><span class="small muted">${sub}</span></span>${svgI('<path d="M6 9l6 6 6-6"/>',20)}</button>
+    ${wide?`<button type="button" class="btn" id="pGo">${svgI('<path d="M8 5v14l11-7z" fill="currentColor"/>',18)} Next: ${esc(what)}</button>`:`<button type="button" class="playbtn" id="pGo" aria-label="Start next lesson: ${esc(what)}">${svgI('<path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>',26)}</button>`}</div>
+    ${wide?"":`<p class="small muted pnext">Next: <b>${esc(what)}</b></p>`}`;
+}
+function testsHtml(c){
+  const ready=comboReady(c);
+  let h=`<section class="panel tests"><h2>Check your level</h2>
+    <button type="button" class="testrow" id="combBtn"${ready&&!isLang(c)?"":" disabled"}><span class="tico dark">${svgI('<circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="12" cy="17" r="3"/><path d="M9 9l2 5M15 9l-2 5"/>',22)}</span><span class="col" style="gap:2px;min-width:0"><b>Combined test</b><span class="small muted">${isLang(c)?"Not available for language courses yet":ready?"4 case questions that mix fields, marked like an exam":"Unlocks once you can recall concepts from two units"}</span></span></button>`;
+  if(isExam(c)){ const e=c.exam, sy=e.syllabus, pc=pacing(c);
+    h+=`<button type="button" class="testrow" id="mockBtn"><span class="tico good">${ICON.exam}</span><span class="col" style="gap:2px;min-width:0"><b>${esc(e.label)} mock test</b><span class="small muted">10 questions · 15 min${pc&&pc.days>0?` · ${pc.days} days to the exam`:""}</span></span></button>
+      ${sy?`<p class="tiny muted">Built from the official SEAB syllabus${sy.code?" "+esc(sy.code):""}${sy.year?" ("+esc(sy.year)+")":""}. <a href="${esc(sy.source_url)}" target="_blank" rel="noopener">Open the syllabus</a>${pc&&pc.days>0?`. ${pc.remain} concepts left, about ${pc.perDay} new a day, leaving two weeks to revise.`:""}</p>`:""}`; }
+  else if(c.uni) h+=`<button type="button" class="testrow" id="mockBtn"><span class="tico">${ICON.uni}</span><span class="col" style="gap:2px;min-width:0"><b>University-style test</b><span class="small muted">${esc(c.uni)} · 10 questions marked against a mark scheme</span></span></button>`;
+  return h+`</section>`;
+}
+function pathStepsPhone(c, nx){
+  const steps=pathSteps(c);
+  return `<div class="rail">${steps.map((mods,i)=>{ const ss=stepState(c,mods,nx), hd=stepHead(c,i);
+    const node = ss==="done" ? `<span class="pnode done">${CHECK(16)}</span>` : `<span class="pnode ${ss}">${i+1}</span>`;
+    return `<section class="pstep ${ss}"><div class="pcol">${node}<span class="pline"></span></div><div class="pbody"><h3>Step ${i+1} · ${esc(hd.title)}</h3>
+      ${i>0&&hd.why?`<div class="why ${ss==="ahead"?"ahead":""}"><span class="whyh">${LINKI()} Why this comes next</span><span>${esc(hd.why)}</span>${usesChips(c,hd.uses)}</div>`:i===0&&hd.why?`<p class="small muted">${esc(hd.why)}</p>`:""}
+      <div class="ptiles">${mods.map(m=>tileHtml(c,m,nx)).join("")}</div></div></section>`; }).join("")}</div>`;
+}
+function pathStepsWide(c, nx, sel){
+  const steps=pathSteps(c);
+  return `<div class="hwrap" id="hwrap"><svg class="hlinks" id="hlinks" aria-hidden="true"></svg><div class="hpath" style="grid-template-columns:repeat(${steps.length},minmax(160px,1fr))">${steps.map((mods,i)=>{ const ss=stepState(c,mods,nx), hd=stepHead(c,i);
+    return `<div class="hcol ${ss}"><div class="hhead"><span class="hlabel">Step ${i+1}${ss==="done"?" · done":ss==="now"?" · now":""}</span><b>${esc(hd.title)}</b>${hd.why?`<span class="small hwhy">${esc(hd.why)}</span>`:""}</div>${mods.map(m=>tileHtml(c,m,nx,m.id===sel)).join("")}</div>`; }).join("")}</div></div>
+    <div class="legend"><span><i class="ln good"></i>Done link</span><span><i class="ln acc"></i>Builds on, in progress</span><span><i class="ln"></i>Still ahead</span></div>`;
+}
+function drawLinks(c){
+  const wrap=$("hwrap"), svg=$("hlinks"); if(!wrap||!svg) return;
+  const W=wrap.scrollWidth, H=wrap.scrollHeight, base=wrap.getBoundingClientRect(), sx=wrap.scrollLeft, nx=nextUp(c);
+  svg.setAttribute("width",W); svg.setAttribute("height",H); svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const rect=id=>{ const el=wrap.querySelector(`.ptile[data-m="${CSS.escape(id)}"]`); if(!el) return null; const r=el.getBoundingClientRect(); return {x1:r.left-base.left+sx, x2:r.right-base.left+sx, y:r.top-base.top+r.height/2}; };
+  let d="";
+  c.modules.forEach(m=>(m.needs||[]).forEach(nid=>{ const a=rect(nid), b=rect(m.id); if(!a||!b||a.x2>=b.x1) return;
+    const fa=fieldInfo(c,fieldOf(c,nid),nx).state, fb=fieldInfo(c,m,nx).state, cls = fa==="done"&&(fb==="done") ? "good" : fa==="done"||fb==="here"||fb==="progress" ? "acc" : "";
+    const mx=(a.x2+b.x1)/2; d+=`<path class="${cls}" d="M${a.x2.toFixed(1)} ${a.y.toFixed(1)}C${mx.toFixed(1)} ${a.y.toFixed(1)} ${mx.toFixed(1)} ${b.y.toFixed(1)} ${b.x1.toFixed(1)} ${b.y.toFixed(1)}"/>`; }));
+  svg.innerHTML=d;
+}
+function renderPath(){
   let c=S.cur; if(!c){ c=courseList().find(x=>!x.example)||null; S.cur=c; }
-  if(!c){ main.innerHTML=`<div class="screen"><div class="tophead"><h1>Map</h1></div><section class="panel"><b>No course yet</b><p class="small muted">Create a course and its map appears here: every field, how they connect, and where you are.</p><button class="btn block" id="mNew" type="button">Create a course</button></section></div>${navHtml("map")}`; wireNav(); $("mNew").onclick=()=>startNew(); return; }
-  const mode=S.mapMode||"map", p=progress(c);
-  const headHtml=`<div class="maphead"><button type="button" class="iconbtn" id="mBack" aria-label="Back to Today">${ICON.back}</button><div class="col" style="flex:1;min-width:0;gap:0"><b class="mtitle">${esc(c.title)}</b><span class="small muted">${hasMap(c)?`${c.modules.length} fields · `:""}${order(c).length} concepts · ${p}% climbed</span></div>${mode==="map"?`<button type="button" class="btn sm" id="mGo">Start</button>`:""}</div>
-    <div class="seg2" role="tablist"><button type="button" role="tab" data-mode="map" class="${mode==="map"?"on":""}" aria-selected="${mode==="map"}">Map</button><button type="button" role="tab" data-mode="progress" class="${mode==="progress"?"on":""}" aria-selected="${mode==="progress"}">Progress</button></div>`;
-  if(mode==="progress"){
-    renderCourseBody();
-    main.insertAdjacentHTML("afterbegin", headHtml);
-    const old=$("back"); if(old && old.parentElement) old.parentElement.remove();
-    main.insertAdjacentHTML("beforeend", navHtml("map"));
-  } else if(!hasMap(c)){
-    main.innerHTML = headHtml + `<section class="panel"><b>Grow this into a full course</b><p class="small muted">Map out the whole subject as fields you can keep expanding, wider and deeper, for as long as you like. Your progress stays.</p><button class="btn block" id="mapBtn" type="button"${S.sample&&!c.example?"":" disabled"}>Map out the full subject</button>${c.example?`<p class="tiny muted">The example course stays small. Create your own course to get a full map.</p>`:""}</section>
-      <section class="panel"><h2>Concepts</h2>${c.units.map(u=>`<div class="unit"><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`).join("")}</section>` + navHtml("map");
-    const mb=$("mapBtn"); if(mb) mb.onclick=async()=>{ mb.disabled=true; mb.innerHTML='<span class="spinner"></span> Mapping the whole subject…'; try{ await planMap(c); toast("Course map ready"); renderMapTab(); }catch(e){ toast(aiErr(e)); mb.disabled=false; mb.textContent="Map out the full subject"; } };
+  if(!c){ main.innerHTML=`<div class="screen"><div class="tophead"><h1>Path</h1></div><section class="panel"><b>No course yet</b><p class="small muted">Create a course and its learning path appears here: each step, why it comes next, and where you are.</p><button class="btn block" id="mNew" type="button">Create a course</button></section></div>${navHtml("map")}`; wireNav(); $("mNew").onclick=()=>startNew(); return; }
+  const wide=isWide(), nx=nextUp(c);
+  if(!hasMap(c)){
+    main.innerHTML = `<div class="screen path">${pathHeader(c, wide)}<section class="panel"><b>Grow this into a full path</b><p class="small muted">Map out the whole subject as fields in steps, each building on the last, that you can keep expanding for as long as you like. Your progress stays.</p><button class="btn block" id="mapBtn" type="button"${S.sample&&!c.example?"":" disabled"}>Map out the full subject</button></section>
+      <section class="panel"><h2>Concepts</h2>${c.units.map(u=>`<div class="unit"><h3>${esc(u.title)}</h3>${u.concepts.filter(id=>c.concepts[id]).map(id=>stopHtml(c.concepts[id])).join("")}</div>`).join("")}</section>${testsHtml(c)}${delHtml(c)}</div>${navHtml("map")}`;
+    const mb=$("mapBtn"); if(mb) mb.onclick=async()=>{ mb.disabled=true; mb.innerHTML='<span class="spinner"></span> Mapping the whole subject…'; try{ await planMap(c); toast("Your path is ready"); renderPath(); }catch(e){ toast(aiErr(e)); mb.disabled=false; mb.textContent="Map out the full subject"; } };
     main.querySelectorAll(".stop").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.id]));
+  } else if(wide){
+    if(!S.selField || !fieldOf(c,S.selField)) S.selField=(nx.field&&nx.field.id)||c.modules[0].id;
+    const m=fieldOf(c,S.selField);
+    main.innerHTML = `<div class="screen path wide">${pathHeader(c, true)}<div class="pgrid"><div class="pmain">${pathStepsWide(c,nx,m.id)}
+      <button type="button" class="addf" id="addF">${ICON.plus} Add a field</button>${testsHtml(c)}${delHtml(c)}</div><aside class="pside" id="pside">${fieldDetailHtml(c,m,true)}</aside></div></div>${navHtml("map")}`;
+    requestAnimationFrame(()=>drawLinks(c)); const hw=$("hwrap"); if(hw) hw.onscroll=()=>{};
+    wireFieldDetail(c, m, $("pside"));
   } else {
-    const nx=nextUp(c); if(!S.selField || !c.modules.some(m=>m.id===S.selField)) S.selField=(nx.field&&nx.field.id)||c.modules[0].id;
-    const mm=mindMapSvg(c, S.selField), m=c.modules.find(x=>x.id===S.selField);
-    main.innerHTML = headHtml + `<div class="mm" id="mm" data-span="${Math.round(mm.span)}"><svg width="100%" height="100%" role="img" aria-label="Mind map of ${esc(c.title)}: ${c.modules.length} fields"><g id="mmg">${mm.svg}</g></svg>
-        <div class="mmzoom"><button type="button" class="iconbtn sm" data-z="in" aria-label="Zoom in">+</button><button type="button" class="iconbtn sm" data-z="out" aria-label="Zoom out">−</button><button type="button" class="iconbtn sm" data-z="fit" aria-label="Fit map">⤢</button></div>
-        <button type="button" class="mmadd" id="mmAdd" aria-label="Add a field">${ICON.plus}</button></div>
-      <div class="legend"><span><i style="background:var(--good)"></i>Mastered</span><span><i style="background:var(--accent)"></i>Learning</span><span><i style="background:var(--warn)"></i>Review due</span><span><i style="background:var(--dot)"></i>Not yet</span><span><i class="dash"></i>Builds on</span></div>
-      ${fieldPanel(c, m)}` + navHtml("map");
-    wireMindMap(c, $("mm"), id=>{ S.selField=id; L("field_open",{course:c.title, data:{field:(c.modules.find(x=>x.id===id)||{}).title}}); renderMapTab(); requestAnimationFrame(()=>{ const d=$("dock"); if(d) d.scrollIntoView({block:"nearest",behavior:"smooth"}); }); });
-    wireDock(c);
-    $("mmAdd").onclick=()=>addFieldSheet(c);
-    $("mGo").onclick=()=>startLesson();
-    ensureFieldLinks(c);
+    main.innerHTML = `<div class="screen path">${pathHeader(c, false)}${pathStepsPhone(c,nx)}<button type="button" class="addf" id="addF">${ICON.plus} Add a field</button>${testsHtml(c)}${delHtml(c)}</div>${navHtml("map")}`;
   }
   wireNav();
-  $("mBack").onclick=()=>go("today");
-  main.querySelectorAll(".seg2 button").forEach(b=>b.onclick=()=>{ S.mapMode=b.dataset.mode; renderMapTab(); window.scrollTo(0,0); });
+  $("cSwitch").onclick=()=>courseSwitchSheet();
+  $("pGo").onclick=()=>startLesson();
+  main.querySelectorAll(".ptile").forEach(b=>b.onclick=()=>{ S.selField=b.dataset.m; L("field_open",{course:c.title, data:{field:(fieldOf(c,b.dataset.m)||{}).title}}); if(isWide()) renderPath(); else { S.view="field"; window.scrollTo(0,0); render(); } });
+  const af=$("addF"); if(af) af.onclick=()=>addFieldSheet(c);
+  const cb=$("combBtn"); if(cb) cb.onclick=()=>startCombined();
+  const mk=$("mockBtn"); if(mk) mk.onclick=()=>startMock();
+  wireDel(c);
+  ensurePathText(c); prefetchCombos(c);
 }
-function wireDock(c){
-  const dock=$("dock"); if(!dock) return;
-  dock.querySelectorAll(".stop").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.id]));
-  dock.querySelectorAll("[data-act]").forEach(b=>{ if(!S.sample){ b.disabled=true; return; }
-    b.onclick=async()=>{ const m=c.modules.find(x=>x.id===S.selField), act=b.dataset.act, st=modStage(c,m);
-      dock.querySelectorAll("button").forEach(x=>x.disabled=true); b.innerHTML=`<span class="spinner"></span> ${act==="deeper"?`Writing ${esc(stageName(st+1))}…`:act==="more"?"Adding more…":"Starting this field…"}`;
+function delHtml(c){ return c.example?"":`<div class="row"><button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`; }
+function wireDel(c){ const del=$("del"); if(del) del.onclick=()=>{ $("confirm").innerHTML=`<div class="fb no"><strong>Delete "${esc(c.title)}" and all its progress?</strong><div class="row"><button class="btn sm" id="yes">Delete</button><button class="btn ghost sm" id="no">Cancel</button></div></div>`; $("yes").onclick=async()=>{ await deleteCourse(c.id); S.cur=null; go("today"); toast("Course deleted"); }; $("no").onclick=()=>$("confirm").innerHTML=""; }; }
+function courseSwitchSheet(){
+  const list=courseList(); if(!list.length) list.push(makeExample());
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="Switch course"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>Your courses</h2><button class="x" aria-label="Close">✕</button></div>
+    <div class="col" style="gap:8px">${list.map(c=>{ const n=nextUp(c), due=dueCount(c), on=S.cur&&S.cur.id===c.id;
+      const sub = isExam(c)&&pacing(c)&&pacing(c).days>0 ? `${due?due+" to review · ":""}exam in ${pacing(c).days} days` : n.field ? `Next: ${n.field.title}` : n.k ? `Next: ${n.k.name}` : due ? `${due} to review` : "Caught up";
+      return `<button type="button" class="swrow${on?" on":""}" data-id="${esc(c.id)}">${miniRing(progress(c),40)}<span class="col" style="flex:1;min-width:0;gap:2px"><b>${esc(c.title)}</b><span class="small muted">${esc(sub)}</span></span>${on?`<span class="swtick" aria-label="Current course">${CHECK(18)}</span>`:""}</button>`; }).join("")}
+    <button type="button" class="swrow new" id="swNew">${ICON.plus}<b>New course</b></button></div></div>`;
+  const close=()=>bg.remove(); bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close; document.body.appendChild(bg);
+  bg.querySelectorAll(".swrow[data-id]").forEach(b=>b.onclick=()=>{ close(); S.cur=S.courses[b.dataset.id]||makeExample(); S.selField=null; L("course_switch",{course:S.cur.title}); go("map"); });
+  bg.querySelector("#swNew").onclick=()=>{ close(); startNew(); };
+}
+
+/* field page (phone) and side panel (computer) */
+function stairSvg(c, m){
+  const st=modStage(c,m), top=Math.max(4,st+1), from=Math.max(1,top-4), n=top-from+1, W=334, gap=8, bw=(W-gap*(n-1))/n;
+  let bars="", labels=[];
+  for(let i=0;i<n;i++){ const s=from+i, ks=modUnits(c,m).filter(u=>(u.stage||1)===s).flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean);
+    const pct=ks.length?ks.reduce((t,k)=>t+Math.min(4,k.rung),0)/(ks.length*4):0, h=22+i*(64/Math.max(1,n-1)), x=i*(bw+gap), y=90-h;
+    const done=ks.length&&ks.filter(k=>k.rung>=4).length/ks.length>=.8, cur=s===st&&!done, future=!ks.length;
+    if(future) bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="6" class="st-f"/>`;
+    else if(done) bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="6" class="st-d"/><path d="M${(x+bw/2-8).toFixed(1)} ${(y+h/2).toFixed(1)}l5 5 9-10" class="st-ck"/>`;
+    else { bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="6" class="st-b"/><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(6,bw*pct).toFixed(1)}" height="${h.toFixed(1)}" rx="6" class="st-p"/>${cur?`<text x="${(x+bw/2).toFixed(1)}" y="${(y+h/2+5).toFixed(1)}" text-anchor="middle" class="st-t${pct<.5?" dk":""}">${Math.round(pct*100)}%</text><circle cx="${(x+bw/2).toFixed(1)}" cy="${(y-12).toFixed(1)}" r="7" class="st-me"/>`:""}`; }
+    labels.push(`<span class="${done?"d":cur?"c":""}">${esc(stageName(s))}</span>`); }
+  return `<svg class="stair" viewBox="0 -24 ${W} 116" role="img" aria-label="Your climb in this field: now at ${esc(stageName(Math.max(1,st)))}">${bars}</svg><div class="stairl" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${labels.join("")}</div>`;
+}
+function conceptPill(k){ const now=Date.now(); return k.rung>=5?`<span class="cpill m">Mastered</span>`:k.rung>0&&k.due<=now?`<span class="cpill r">Review today</span>`:k.rung>0?`<span class="cpill p">Practising</span>`:`<span class="cpill n">New</span>`; }
+function fieldDetailHtml(c, m, panel){
+  const nx=nextUp(c), f=fieldInfo(c,m,nx), steps=pathSteps(c), si=steps.findIndex(s=>s.includes(m)), hd=stepHead(c,Math.max(0,si));
+  const needs=(m.needs||[]).map(id=>fieldOf(c,id)).filter(Boolean), leads=c.modules.filter(x=>(x.needs||[]).includes(m.id));
+  const fchip=x=>`<button type="button" class="fchip ${fieldInfo(c,x,nx).state}" data-go="${esc(x.id)}">${esc(x.title)}</button>`;
+  const links=`<div class="flinks"><div class="fcolx">${needs.length?needs.map(fchip).join(""):`<span class="fnone">Starting point</span>`}</div><span class="farr" aria-hidden="true">→</span><span class="fme">This field</span><span class="farr" aria-hidden="true">→</span><div class="fcolx">${leads.length?leads.map(fchip).join(""):`<span class="fnone">${si===steps.length-1?"End of path":"Widens the course"}</span>`}</div></div><div class="fcap"><span>Builds on</span><span>Leads to</span></div>`;
+  const st=f.st, curUnits=modUnits(c,m).filter(u=>(u.stage||1)===st), bridgeU=st>1 && modUnits(c,m).find(u=>(u.stage||1)===st && u.bridge);
+  const why = bridgeU ? {h:`Why ${stageName(st)} comes next`, t:bridgeU.bridge} : hd.why ? {h:si>0?"Why this field is here":"Why start here", t:hd.why} : null;
+  const cds=curUnits.flatMap(u=>u.canDo||[]);
+  const kNow=curUnits.flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean), kEarlier=modUnits(c,m).filter(u=>(u.stage||1)<st).flatMap(u=>u.concepts).map(id=>c.concepts[id]).filter(Boolean);
+  const cdIcon=s=>s==="earned"?`<span class="cdi e" role="img" aria-label="Earned">${CHECK(14)}</span>`:s==="progress"?`<span class="cdi p" role="img" aria-label="Practising"></span>`:`<span class="cdi n" role="img" aria-label="Not started"></span>`;
+  return `${panel?"":`<div class="fhead"><button type="button" class="iconbtn" id="fBack" aria-label="Back to path">${ICON.back}</button><span class="fico big">${fieldIcon(c,m,22)}</span><span class="col" style="min-width:0;gap:0"><h1>${esc(m.title)}</h1><span class="small muted">Step ${si+1} · ${esc(c.title)}</span></span></div>`}
+    ${panel?`<div class="fhead"><span class="fico big">${fieldIcon(c,m,22)}</span><span class="col" style="min-width:0;gap:0"><h2>${esc(m.title)}</h2><span class="small muted">Step ${si+1}${needs.length?` · builds on ${esc(needs.map(x=>x.title).join(", "))}`:""}</span></span></div>`:""}
+    ${m.desc?`<p class="small muted">${esc(m.desc)}</p>`:""}
+    ${panel?"":`<section class="fcard">${links}</section>`}
+    ${f.ks.length?`<section class="fcard"><span class="label">Your climb</span>${stairSvg(c,m)}</section>`:""}
+    ${why?`<section class="why"><span class="whyh">${LINKI()} ${esc(why.h)}</span><span>${esc(why.t)}</span>${si>0&&!bridgeU?usesChips(c,hd.uses):""}</section>`:""}
+    ${cds.length?`<section class="fcard"><span class="label">At ${esc(stageName(st))} you'll be able to</span>${cds.map(cd=>{ const s=canDoState(c,cd); return `<div class="cdrow">${cdIcon(s.st)}<span>${esc(cd.t)}</span></div>`; }).join("")}</section>`:""}
+    ${kNow.length?`<section class="fcard"><span class="label">Concepts at ${esc(stageName(st))}</span>${kNow.map(k=>`<button type="button" class="crow2" data-k="${esc(k.id)}"><span>${esc(k.name)}</span>${conceptPill(k)}</button>`).join("")}
+      ${kEarlier.length?`<details class="clist"><summary>Earlier stages · ${kEarlier.length} concept${kEarlier.length===1?"":"s"}</summary>${kEarlier.map(k=>`<button type="button" class="crow2" data-k="${esc(k.id)}"><span>${esc(k.name)}</span>${conceptPill(k)}</button>`).join("")}</details>`:""}</section>`:""}
+    <div class="factions">${f.ks.length?`<button class="btn block" data-act="practise" type="button">Practise ${esc(m.title)}</button>
+      <div class="fact"><button class="btn soft" data-act="more" type="button">More at this level</button><button class="btn soft" data-act="deeper" type="button">Unlock ${esc(stageName(st+1))}</button></div>
+      ${stageReady(c,m)?"":`<p class="tiny muted">Tip: get most ${esc(stageName(st))} concepts to level 3 first for the best results, but it's your call.</p>`}`
+      : `${f.blockedBy?`<p class="small muted">Works best after <b>${esc(f.blockedBy.title)}</b>, but you can start it now.</p>`:""}<button class="btn block" data-act="open" type="button">Start this field</button>`}</div>`;
+}
+function wireFieldDetail(c, m, root){
+  if(!root) return;
+  root.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>sheet(c, c.concepts[b.dataset.k]));
+  root.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{ S.selField=b.dataset.go; render(); window.scrollTo(0,0); });
+  const fb=root.querySelector("#fBack"); if(fb) fb.onclick=()=>go("map");
+  root.querySelectorAll("[data-act]").forEach(b=>{
+    const act=b.dataset.act;
+    if(act==="practise"){ b.onclick=()=>startLesson({only:new Set(modCons(c,m).map(k=>k.id)), field:m.title}); return; }
+    if(!S.sample){ b.disabled=true; return; }
+    b.onclick=async()=>{ const st=modStage(c,m);
+      root.querySelectorAll(".factions button").forEach(x=>x.disabled=true); b.innerHTML=`<span class="spinner"></span> ${act==="deeper"?`Writing ${esc(stageName(st+1))}…`:act==="more"?"Adding more…":"Starting this field…"}`;
       try{ await expandField(c, m, act); toast(act==="deeper"?`${m.title}: ${stageName(st+1)} added. Your next lesson starts it.`:"Added. Your next lesson starts it."); prefetch(c); }
       catch(e){ toast(aiErr(e)); }
-      renderMapTab(); }; });
+      render(); }; });
 }
+function renderFieldPage(){
+  const c=S.cur, m=c&&fieldOf(c,S.selField);
+  if(!c||!m||isWide()){ S.view="map"; return renderPath(); }
+  main.innerHTML=`<div class="screen fpage">${fieldDetailHtml(c,m,false)}</div>${navHtml("map")}`;
+  wireNav(); wireFieldDetail(c, m, main);
+}
+
+/* You: skills */
+const BADGE = ["#1D8757","#7A4DD8","#C2410C","#2A55E5","#0F766E","#B4235A"];
+function allCanDos(){
+  const out=[]; courseList().filter(c=>!c.example).forEach((c,ci)=>c.units.forEach(u=>(u.canDo||[]).forEach(cd=>{ const s=canDoState(c,cd); out.push({c, ci, u, cd, s, field:(fieldOf(c,u.mod)||{}).title||"", stage:u.stage||1}); })));
+  return out;
+}
+function badgeHtml(x, big){
+  const col=BADGE[x.ci%BADGE.length], e=x.s.st==="earned";
+  const hex=`<svg width="${big?44:40}" height="${big?48:44}" viewBox="0 0 44 48" aria-hidden="true"><path d="M22 2l19 11v22L22 46 3 35V13z" fill="${e?col:"var(--raise)"}"/>${e?`<path d="M14 24l6 6 11-12" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`:x.s.st==="progress"?`<path d="M22 2l19 11v22L22 46" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round" opacity="${(0.35+0.65*(1-x.s.left/Math.max(1,x.s.total))).toFixed(2)}"/>`:""}</svg>`;
+  const sub = e ? `${x.field?esc(x.field)+" · ":""}${esc(stageName(x.stage))}` : x.s.st==="progress" ? `<span class="acc">${x.s.left} concept${x.s.left>1?"s":""} to go</span>` : "Not started";
+  return `<div class="badge${e?"":" off"}">${hex}<b>${esc(x.cd.t)}</b><span>${sub}</span></div>`;
+}
+function radarSvg(sk){
+  const keys=Object.keys(SKILLS), n=keys.length, cx=110, cy=104, R=78, pt=(i,r)=>{ const a=-Math.PI/2+i*2*Math.PI/n; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
+  const poly=r=>keys.map((_,i)=>pt(i,r).map(v=>v.toFixed(1)).join(",")).join(" ");
+  const val=k=>{ const s=sk[k]; return s&&s.n ? s.ok/s.n : 0; };
+  const pts=keys.map((k,i)=>pt(i, R*Math.max(.04,val(k))));
+  const lab=keys.map((k,i)=>{ const [x,y]=pt(i,R+14), s=sk[k], a=Math.abs(x-cx)<6?"middle":x>cx?"start":"end"; return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="${a}" class="rl">${esc(SKILLS[k])}<tspan class="rv"> ${s&&s.n?Math.round(val(k)*100)+"%":"–"}</tspan></text>`; }).join("");
+  return `<svg class="radar" viewBox="-70 0 360 214" role="img" aria-label="Thinking skills: ${keys.map(k=>`${SKILLS[k]} ${sk[k]&&sk[k].n?Math.round(val(k)*100)+"%":"no answers yet"}`).join(", ")}">
+    <polygon points="${poly(R)}" class="rg1"/><polygon points="${poly(R/2)}" class="rg2"/>${keys.map((_,i)=>{ const [x,y]=pt(i,R); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" class="rg2"/>`; }).join("")}
+    <polygon points="${pts.map(p=>p.map(v=>v.toFixed(1)).join(",")).join(" ")}" class="rv1"/>${pts.map(([x,y])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" class="rd"/>`).join("")}${lab}</svg>`;
+}
+function skillsSheet(){
+  const all=allCanDos(), groups={};
+  all.forEach(x=>{ (groups[x.c.id]=groups[x.c.id]||{c:x.c, items:[]}).items.push(x); });
+  const bg=document.createElement("div"); bg.className="sheet-bg";
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="All skills"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>All skills</h2><button class="x" aria-label="Close">✕</button></div>
+    <p class="small muted">A skill is earned when you can apply every concept behind it (level 4).</p>
+    ${Object.values(groups).map(g=>`<h3>${esc(g.c.title)}</h3><div class="col" style="gap:6px">${g.items.sort((a,b)=>({earned:0,progress:1,new:2}[a.s.st]-{earned:0,progress:1,new:2}[b.s.st])).map(x=>`<div class="cdrow">${x.s.st==="earned"?`<span class="cdi e">${CHECK(14)}</span>`:x.s.st==="progress"?`<span class="cdi p"></span>`:`<span class="cdi n"></span>`}<span class="col" style="gap:0;min-width:0"><span>${esc(x.cd.t)}</span><span class="tiny muted">${esc(x.field)} · ${esc(stageName(x.stage))}${x.s.st==="progress"?` · ${x.s.left} to go`:""}</span></span></div>`).join("")}</div>`).join("") || `<p class="small muted">No skills yet.</p>`}</div>`;
+  const close=()=>bg.remove(); bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close; document.body.appendChild(bg);
+}
+function skillsHtml(){
+  const all=allCanDos(), earned=all.filter(x=>x.s.st==="earned"), near=all.filter(x=>x.s.st==="progress").sort((a,b)=>a.s.left-b.s.left);
+  const show=[...earned.slice(-6).reverse(), ...near].slice(0,6), sk=S.profile.skills||{}, answered=Object.values(sk).reduce((s,x)=>s+(x.n||0),0);
+  return `<div class="row" style="justify-content:space-between"><h2>Skills earned · ${earned.length}</h2>${all.length?`<button type="button" class="linkbtn" id="allSkills">See all</button>`:""}</div>
+    ${show.length?`<div class="badges">${show.map(x=>badgeHtml(x)).join("")}</div>`:`<section class="panel"><p class="small muted">Skills appear as you learn: each one is something you can actually do, like “work out a voyage's daily earnings”. Practise a few lessons and your first ones show up here.</p></section>`}
+    <h2>Thinking skills</h2>
+    <section class="panel radarp">${answered>=3?radarSvg(sk):`<p class="small muted">Your thinking skills chart (calculations, reading data, trade-offs, spotting flaws, explaining, predicting) fills in as you answer apply and explain questions.</p>`}</section>`;
+}
+
 function addFieldSheet(c){
   const sugg=(c.angles||[]).filter(a=>!c.modules.some(m=>norm(m.title)===norm(a))).slice(0,6);
   const bg=document.createElement("div"); bg.className="sheet-bg";
@@ -1762,7 +2151,7 @@ function addFieldSheet(c){
     <button class="linkbtn" id="fsSuggest" type="button" style="align-self:flex-start">Suggest more fields</button></div>`;
   const close=()=>bg.remove(); bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close; document.body.appendChild(bg);
   const add=async(title, el)=>{ bg.querySelectorAll("button,input").forEach(x=>x.disabled=true); if(el) el.innerHTML=`<span class="spinner"></span> Adding…`;
-    try{ const m=await addField(c,title); S.selField=m.id; close(); toast(`${title} added. Your next lesson starts it.`); prefetch(c); renderMapTab(); }catch(e){ toast(aiErr(e)); close(); } };
+    try{ const m=await addField(c,title); S.selField=m.id; close(); toast(`${title} added. Your next lesson starts it.`); prefetch(c); render(); }catch(e){ toast(aiErr(e)); close(); } };
   bg.querySelectorAll("#fsChips .chip").forEach(b=>b.onclick=()=>add(sugg[+b.dataset.i], b));
   bg.querySelector("#fsForm").onsubmit=e=>{ e.preventDefault(); const v=bg.querySelector("#fsIn").value.trim(); if(v) add(v, bg.querySelector("#fsForm button")); };
   const sb=bg.querySelector("#fsSuggest"); sb.onclick=async()=>{ sb.disabled=true; sb.textContent="Thinking of more fields…"; try{ await suggestFields(c); close(); addFieldSheet(c); }catch(e){ toast(aiErr(e)); sb.disabled=false; sb.textContent="Suggest more fields"; } };
@@ -1771,7 +2160,7 @@ function addFieldSheet(c){
 
 function go(v){ v=VIEW_ALIAS[v]||v; S.view=v; bar(""); main.classList.remove("lesson"); window.scrollTo(0,0); render(); }
 function bar(html){ let b=$("abar"); if(!b){ b=document.createElement("div"); b.id="abar"; b.className="actionbar"; document.body.appendChild(b); } b.innerHTML=html?`<div class="abin">${html}</div>`:""; b.hidden=!html; if(html) requestAnimationFrame(()=>document.documentElement.style.setProperty("--abar-h", b.offsetHeight+"px")); }
-function render(){ S.view=VIEW_ALIAS[S.view]||S.view; ({today:renderToday, courses:renderCourses, you:renderYou, new:renderNew, map:renderMapTab})[S.view]?.(); }
+function render(){ S.view=VIEW_ALIAS[S.view]||S.view; ({today:renderToday, courses:renderCourses, you:renderYou, new:renderNew, map:renderPath, field:renderFieldPage})[S.view]?.(); }
 $("homeBtn").onclick = ()=>{ if(LS) quitLesson(true); else go("home"); };
 
 function renderHome(){
@@ -1898,7 +2287,7 @@ function unitLabel(c,u,n){
   if(u.angle) return `Branch · ${esc(u.angle)}`;
   return `Unit ${n}`;
 }
-function renderCourse(){ S.view="map"; renderMapTab(); }
+function renderCourse(){ S.view="map"; renderPath(); }
 function renderCourseBody(){
   const c=S.cur; if(!c){ go("home"); return; }
   const p=progress(c), plan=buildLesson(c), nf=plan.fresh.length, nr=plan.extra?0:plan.reviews;
@@ -2044,9 +2433,11 @@ function sheet(c, k){
 }
 
 /* ---------- lesson flow ---------- */
-async function startLesson(){
+async function startLesson(opts){
+  opts = opts && opts.only ? opts : {};
   bar(""); main.classList.remove("lesson");
-  const c=S.cur, plan=buildLesson(c);
+  const c=S.cur, plan=buildLesson(c, opts.only);
+  if(!opts.only && plan.steps.length && comboReady(c) && freshCombos(c).length){ const x=freshCombos(c)[0]; plan.steps.push({t:"combo", combo:x.id, cid:x.uses[0]}); }
   if(!plan.steps.length){ toast("Nothing to practise yet"); return; }
   const missing = S.sample ? plan.all.filter(id=>needsBank(c.concepts[id])) : plan.all.filter(id=>!c.concepts[id].bank);
   const teachNeed = S.sample && !isLang(c) ? plan.fresh.filter(id=>needsTeach(c.concepts[id])) : [];
@@ -2055,11 +2446,11 @@ async function startLesson(){
     S.view="loading"; window.scrollTo(0,0);
     main.innerHTML=`<div class="card"><div class="row"><div class="spinner"></div><h3>Preparing your lesson</h3></div><p class="small muted">Writing ${teachNeed.length?"mini-lessons, diagrams and ":""}questions. About 20 to 40 seconds.</p></div>`;
     try{ await Promise.all([ensureBanks(c, missing), ensureTeach(c, teachNeed).catch(()=>{})]); }
-    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't prepare the lesson</strong>${(L("lesson_prep_failed",{course:c.title}),"")}<span>${esc(aiErr(e))}</span></div><div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="back">Back</button></div></div>`; $("retry").onclick=startLesson; $("back").onclick=()=>go("course"); return; }
+    catch(e){ main.innerHTML=`<div class="card"><div class="fb no"><strong>Couldn't prepare the lesson</strong>${(L("lesson_prep_failed",{course:c.title}),"")}<span>${esc(aiErr(e))}</span></div><div class="row"><button class="btn" id="retry">Try again</button><button class="btn ghost" id="back">Back</button></div></div>`; $("retry").onclick=()=>startLesson(opts); $("back").onclick=()=>go("course"); return; }
   }
   if(c.example) saveCourse(c);
   LS = {c, steps:plan.steps, i:0, touched:new Set(), count:{}, retry:{}, fresh:new Set(plan.fresh), snap:Object.fromEntries(plan.all.map(id=>[id,c.concepts[id].rung])), xp:0, right:0, total:0, pending:null, q:null};
-  L("lesson_start",{course:c.title, data:{steps:plan.steps.length, newConcepts:plan.fresh.map(id=>c.concepts[id].name), reviews:plan.reviews, extra:plan.extra, accuracy:accuracy(c)}});
+  L("lesson_start",{course:c.title, data:{field:opts.field||null, combo:plan.steps.some(x=>x.t==="combo"), steps:plan.steps.length, newConcepts:plan.fresh.map(id=>c.concepts[id].name), reviews:plan.reviews, extra:plan.extra, accuracy:accuracy(c)}});
   S.view="lesson"; renderStep(); prefetch(c);
 }
 function quitLesson(home){
@@ -2081,6 +2472,7 @@ function shortWhy(k){ return String(k.summary||"").split(/(?<=[.!?])\s+/)[0]; }
 function renderStep(){
   window.scrollTo(0,0); main.classList.add("lesson");
   const st=LS.steps[LS.i]; if(!st) return finishLesson();
+  if(st.t==="combo") return renderCombo(st);
   const k=LS.c.concepts[st.cid];
   if(!k||!k.bank){ LS.i++; return renderStep(); }
   normBank(k.bank);
@@ -2342,6 +2734,7 @@ function answered(out, o){
   if(LS.mock){ const mk=(q.x&&q.x.marks)||(q.eff>=4?2:1); LS.mock.total+=mk; LS.mock.marks += q.marksAwarded!=null ? q.marksAwarded : out==="right"?mk : out==="helped"?Math.floor(mk/2) : 0; if(out!=="right") LS.mock.missed.push(k.name); }
   L("answer",{course:LS.c.title, concept:k.name, data:{type:q.type, level:q.eff, stretch:q.stretch, hints:q.hint, question:q.text, answer:o.answer||null, typed:q.typed||null, outcome:out, partial:!!o.partial, note:o.note||null, rungBefore:before, rungAfter:k.rung, writer:k.writer||null}});
   LS.total++; if(out==="right") LS.right++;
+  trackSkill(q, out);
   q.xp = xpFor(out,q.eff); LS.xp += q.xp;
   LS.pending = {cid:k.id, out};
   const vh = verdictHead(out,o,q);
@@ -2412,14 +2805,14 @@ function finishLesson(){
   const xp=LS.xp+bonus, s=S.profile.streak;
   LS=null; S.view="done"; window.scrollTo(0,0);
   const mpct = mock && mock.total ? Math.round(mock.marks/mock.total*100) : 0;
-  main.innerHTML = `<div class="card pop"><span class="label">${mock?"Mock test complete":"Lesson complete"}</span><h1>${mock?`${mock.marks}/${mock.total} marks`:pct>=85?"Strong climb":pct>=60?"Solid progress":"Good effort"}</h1>
+  main.innerHTML = `<div class="card pop"><span class="label">${mock?(mock.combined?"Combined test complete":"Mock test complete"):"Lesson complete"}</span><h1>${mock?`${mock.marks}/${mock.total} marks`:pct>=85?"Strong climb":pct>=60?"Solid progress":"Good effort"}</h1>
     ${mock?`<p class="small">${mpct}% of marks. ${mock.missed.length?`Worth revising: ${esc([...new Set(mock.missed)].join(", "))}. These come back sooner in your lessons.`:"Nothing dropped. Keep your lessons going to stay sharp."}</p>`:""}
     <div class="stats"><div><b>${mock?mpct:pct}%</b><span>${mock?"of marks":"correct"}</span></div><div><b>+${xp}</b><span>XP</span></div><div><b>${s}</b><span>day streak</span></div></div>
     ${pace?`<p class="small">${pace}</p>`:""}
     <span class="label">Levelled up</span>
     ${climbed.length?`<div class="climbed">${climbed.map(x=>`<div><span style="min-width:0"><b>${esc(x.k.name)}</b><br><span class="small muted">Level ${x.from} → ${x.k.rung} · ${LVN[x.k.rung]}</span></span>${pips(x.k.rung)}</div>`).join("")}</div>`:`<p class="small muted">No level-ups this time. Missed concepts come back sooner, which is exactly how they stick.</p>`}
     <p class="small muted">${nw?`${nw} new concept${nw>1?"s":""} waiting. `:""}${nextDue?`Next review due ${ago(nextDue-now)}.`:""}</p>
-    <div class="row"><button class="btn" id="again" style="flex:1">Next lesson</button><button class="btn ghost" id="toCourse" style="flex:1">Course map</button></div></div>`;
+    <div class="row"><button class="btn" id="again" style="flex:1">Next lesson</button><button class="btn ghost" id="toCourse" style="flex:1">Your path</button></div></div>`;
   $("again").onclick=()=>startLesson(); $("toCourse").onclick=()=>go("course");
 }
 
@@ -2457,11 +2850,11 @@ async function boot(){
 function fitScreen(){
   try{
     const touch = matchMedia("(pointer:coarse)").matches, w = window.innerWidth;
-    const z = touch && w>=600 && w<1100 ? Math.min(1.4, Math.max(1, (w-32)/560)) : 1;
+    const z = touch && w>=600 && w<1024 ? Math.min(1.4, Math.max(1, (w-32)/560)) : 1;
     document.documentElement.style.zoom = z===1 ? "" : z.toFixed(3);
   }catch(e){}
 }
-fitScreen(); window.addEventListener("resize", ()=>{ clearTimeout(fitScreen.t); fitScreen.t=setTimeout(fitScreen,150); });
+fitScreen(); let wasWide=isWide(); window.addEventListener("resize", ()=>{ clearTimeout(fitScreen.t); fitScreen.t=setTimeout(()=>{ fitScreen(); const w=isWide(); if(w!==wasWide){ wasWide=w; if(S.view==="map"||S.view==="field") render(); } else if(S.view==="map" && S.cur) drawLinks(S.cur); },150); });
 boot();
 })();
 </script>
