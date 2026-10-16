@@ -55,7 +55,7 @@
     const r = await fetch("/api/sample", {
       method: "POST",
       headers: { "content-type": "application/json", "x-climb-device": DEVICE },
-      body: JSON.stringify({ prompt: text, json: !!wantJson, modelTier: opts.modelTier || "default", model: opts.model || null, images }),
+      body: JSON.stringify({ prompt: text, json: !!wantJson, modelTier: opts.modelTier || "default", model: opts.model || null, images, nocache: opts.cache === false }),
       signal: opts.signal,
     });
     const d = await r.json().catch(() => ({}));
@@ -75,7 +75,39 @@
   sample.json = async (prompt, opts) => (await call(prompt, opts, true)).data;
   sample.limits = async () => ({ images: true });
 
-  window.claude = { use: async (name) => (name === "sample" ? sample : null) };
+  // ---- accounts (Google sign-in via this site's server) ----
+  const mePromise = fetch("/api/me", { credentials: "same-origin" }).then((r) => r.json()).catch(() => ({ auth: false, user: null }));
+  const api = async (method, path, body) => {
+    const r = await fetch(path, { method, credentials: "same-origin", headers: body !== undefined ? { "content-type": "application/json" } : {}, body: body !== undefined ? JSON.stringify(body) : undefined });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(d.message || "Save failed"); e.code = d.code || "error"; throw e; }
+    return d;
+  };
+  // Minimal document-store adapter the app already speaks: one profile doc plus a "courses" collection per user.
+  const db = {
+    doc: () => ({
+      get: async () => { const d = await api("GET", "/api/data/profile"); return { exists: !!d.profile, data: () => d.profile }; },
+      set: (obj) => api("PUT", "/api/data/profile", obj),
+      collection: () => ({
+        get: async () => { const d = await api("GET", "/api/data/courses"); return { docs: d.courses.map((x) => ({ id: x.id, data: () => x.data })) }; },
+        doc: (id) => ({ set: (obj) => api("PUT", "/api/data/courses/" + encodeURIComponent(id), obj), delete: () => api("DELETE", "/api/data/courses/" + encodeURIComponent(id)) }),
+      }),
+    }),
+  };
+  const user = { id: async () => { const m = await mePromise; return m.user ? m.user.id : null; } };
+  window.climbAuth = {
+    me: () => mePromise,
+    signIn: () => { location.href = "/auth/google/start"; },
+    signOut: async () => { try { await fetch("/auth/logout", { method: "POST", credentials: "same-origin" }); } catch (e) {} try { localStorage.removeItem("climb_courses"); localStorage.removeItem("climb_profile"); } catch (e) {} location.href = "/"; },
+  };
+
+  window.claude = { use: async (name) => {
+    if (name === "sample") return sample;
+    const m = await mePromise;
+    if (name === "db") return m.user ? db : null;
+    if (name === "user") return m.user ? user : null;
+    return null;
+  } };
 
   // Official syllabus lookup (SEAB, Singapore). Cached on the server after the first lookup.
   window.climbSyllabus = async (exam, subject, year) => {

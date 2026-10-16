@@ -10,6 +10,16 @@ Learn any topic through short, visual lessons that start easy and get harder as 
 - `public/syllabi.json` holds ready-made, checked summaries of 28 official syllabuses (PSLE, SEC G3 2027, A-Level 2027), each linking to its official PDF. Refreshed twice a year.
 - Protection: only this site's pages may call the API, each visitor is limited to 20 Claude requests per minute, prompts and replies are size-capped, and only Climb's four allowed models can be used. The real ceiling on cost is the spending limit you set in the Claude Console.
 
+## Accounts (Google sign-in)
+
+Optional for learners. Signed-in users get courses synced across devices (D1 tables `users`, `sessions`, `courses`, `profiles`) and a higher daily AI limit (`usage` table; defaults 400 requests/day signed in, 60 for guests, override with the `QUOTA_USER` / `QUOTA_GUEST` variables). Needs Worker secrets `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from a Google Cloud OAuth client (type: Web application) whose authorised redirect URI is `https://<your-site>/auth/google/callback`.
+
+## Saving tokens
+
+- The house style guide is the server's system prompt and is sent with prompt caching.
+- Shared library: identical generation requests (same course outline, lesson, question set, term definition for the same syllabus) are answered from the D1 `gen_cache` table instead of calling Claude. Requests with personal notes or photos are never cached.
+- Multiple choice, true/false, fill-the-gap, near-exact typed answers and numeric answers are marked in the app with no AI call.
+
 ## Set up (one time)
 
 1. **Claude Console** (platform.claude.com): add billing, set a monthly spend limit, create a workspace called `Climb` with its own spend limit, and create an API key in it.
