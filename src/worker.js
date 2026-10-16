@@ -215,7 +215,9 @@ function cookies(request) {
   return out;
 }
 const cookie = (name, value, maxAge) => `${name}=${encodeURIComponent(value)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
-const authReady = (env) => !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.LOGS);
+// Sign-in works with the client ID alone (Google's button + ID-token verification). The secret only enables the optional redirect flow.
+const authReady = (env) => !!(env.GOOGLE_CLIENT_ID && env.LOGS);
+const redirectReady = (env) => !!(authReady(env) && env.GOOGLE_CLIENT_SECRET);
 const sameOrigin = (request) => { const o = request.headers.get("origin"); return !o || new URL(o).host === new URL(request.url).host; };
 
 async function currentUser(request, env) {
@@ -228,7 +230,7 @@ async function currentUser(request, env) {
 }
 
 async function authStart(request, env) {
-  if (!authReady(env)) return new Response("Google sign-in isn't set up yet.", { status: 503 });
+  if (!redirectReady(env)) return new Response(null, { status: 302, headers: { location: "/?signin=unavailable" } });
   const url = new URL(request.url), state = randToken(16);
   const g = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   g.search = new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, redirect_uri: `${url.origin}/auth/google/callback`, response_type: "code", scope: "openid email profile", state, prompt: "select_account" }).toString();
@@ -237,7 +239,7 @@ async function authStart(request, env) {
 
 async function authCallback(request, env) {
   const url = new URL(request.url), back = (q) => new Response(null, { status: 302, headers: { location: "/" + (q || ""), "set-cookie": cookie("climb_oauth", "", 0) } });
-  if (!authReady(env)) return back("?signin=unavailable");
+  if (!redirectReady(env)) return back("?signin=unavailable");
   const code = url.searchParams.get("code"), state = url.searchParams.get("state");
   if (!code || !state || state !== cookies(request).climb_oauth) return back("?signin=failed");
   const r = await fetch("https://oauth2.googleapis.com/token", {
@@ -249,16 +251,49 @@ async function authCallback(request, env) {
   // The ID token came straight from Google's token endpoint over TLS in exchange for our secret, so its claims can be read directly.
   let c; try { c = JSON.parse(atob(t.id_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))); } catch { return back("?signin=failed"); }
   if (c.aud !== env.GOOGLE_CLIENT_ID || !["accounts.google.com", "https://accounts.google.com"].includes(c.iss) || c.exp * 1000 < Date.now() || !c.sub) return back("?signin=failed");
+  const h = new Headers({ location: "/?signin=ok" });
+  h.append("set-cookie", await startSession(env, c));
+  h.append("set-cookie", cookie("climb_oauth", "", 0));
+  return new Response(null, { status: 302, headers: h });
+}
+
+async function startSession(env, c) {
   const uid = "g:" + c.sub, ts = now();
   await env.LOGS.prepare("INSERT INTO users (id, email, name, picture, created, last_seen) VALUES (?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET email=excluded.email, name=excluded.name, picture=excluded.picture, last_seen=excluded.last_seen")
     .bind(uid, clip(c.email, 200), clip(c.name || c.given_name || "", 120), clip(c.picture || "", 500), ts, ts).run();
   const tok = randToken();
   await env.LOGS.prepare("INSERT INTO sessions (token_hash, user_id, created, expires) VALUES (?,?,?,?)")
     .bind(await sha256(tok), uid, ts, new Date(Date.now() + SESSION_DAYS * 864e5).toISOString()).run();
-  const h = new Headers({ location: "/?signin=ok" });
-  h.append("set-cookie", cookie("climb_sess", tok, SESSION_DAYS * 86400));
-  h.append("set-cookie", cookie("climb_oauth", "", 0));
-  return new Response(null, { status: 302, headers: h });
+  return cookie("climb_sess", tok, SESSION_DAYS * 86400);
+}
+
+// Google's sign-in button posts an ID token here; we verify its RS256 signature against Google's public keys.
+let JWKS = { at: 0, keys: [] };
+const b64urlBytes = (t) => Uint8Array.from(atob(t.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((t.length + 3) % 4)), (ch) => ch.charCodeAt(0));
+async function googleKeys(force) {
+  if (!force && JWKS.keys.length && Date.now() - JWKS.at < 3600e3) return JWKS.keys;
+  const r = await fetch("https://www.googleapis.com/oauth2/v3/certs");
+  const d = await r.json(); JWKS = { at: Date.now(), keys: d.keys || [] }; return JWKS.keys;
+}
+async function verifyGoogleIdToken(env, token) {
+  const parts = String(token || "").split("."); if (parts.length !== 3) return null;
+  let head, claims; try { head = JSON.parse(new TextDecoder().decode(b64urlBytes(parts[0]))); claims = JSON.parse(new TextDecoder().decode(b64urlBytes(parts[1]))); } catch { return null; }
+  if (head.alg !== "RS256") return null;
+  let jwk = (await googleKeys()).find((k) => k.kid === head.kid); if (!jwk) jwk = (await googleKeys(true)).find((k) => k.kid === head.kid); if (!jwk) return null;
+  const key = await crypto.subtle.importKey("jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+  const ok = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, b64urlBytes(parts[2]), enc.encode(parts[0] + "." + parts[1]));
+  if (!ok) return null;
+  if (claims.aud !== env.GOOGLE_CLIENT_ID || !["accounts.google.com", "https://accounts.google.com"].includes(claims.iss) || claims.exp * 1000 < Date.now() || !claims.sub) return null;
+  if (claims.email && claims.email_verified === false) return null;
+  return claims;
+}
+async function authToken(request, env) {
+  if (request.method !== "POST" || !sameOrigin(request)) return json({ code: "forbidden" }, 403);
+  if (!authReady(env)) return json({ code: "unavailable", message: "Sign-in isn't set up yet" }, 503);
+  let b; try { b = await request.json(); } catch { return json({ code: "bad_request" }, 400); }
+  const claims = await verifyGoogleIdToken(env, b.credential).catch(() => null);
+  if (!claims) return json({ code: "invalid", message: "Couldn't verify the Google sign-in" }, 401);
+  return new Response(JSON.stringify({ ok: true }), { headers: { "content-type": "application/json", "set-cookie": await startSession(env, claims) } });
 }
 
 async function authLogout(request, env) {
@@ -270,7 +305,7 @@ async function authLogout(request, env) {
 
 async function handleMe(request, env) {
   const user = await currentUser(request, env);
-  return json({ auth: authReady(env), user });
+  return json({ auth: authReady(env), clientId: authReady(env) ? env.GOOGLE_CLIENT_ID : null, redirect: redirectReady(env), user });
 }
 
 // Per-day AI request quota: signed-in users by account, guests by IP. Returns null when allowed, or an error response.
@@ -417,6 +452,7 @@ export default {
     if (url.pathname === "/auth/google/start") return authStart(request, env);
     if (url.pathname === "/auth/google/callback") return authCallback(request, env);
     if (url.pathname === "/auth/logout") return authLogout(request, env);
+    if (url.pathname === "/auth/google/token") return authToken(request, env);
     if (url.pathname === "/api/me") return handleMe(request, env);
     if (url.pathname.startsWith("/api/data/")) return handleData(request, env, url.pathname);
     return env.ASSETS.fetch(request);

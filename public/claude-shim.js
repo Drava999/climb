@@ -98,6 +98,20 @@
   window.climbAuth = {
     me: () => mePromise,
     signIn: () => { location.href = "/auth/google/start"; },
+    // Google's own button gives the page a signed ID token; the server verifies it (no client secret needed).
+    signInWithToken: async (credential) => {
+      const r = await fetch("/auth/google/token", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: JSON.stringify({ credential }) });
+      location.href = r.ok ? "/?signin=ok" : "/?signin=failed";
+    },
+    renderButton: (el, clientId, dark) => new Promise((resolve) => {
+      const go = () => { try {
+        window.google.accounts.id.initialize({ client_id: clientId, callback: (resp) => window.climbAuth.signInWithToken(resp.credential), ux_mode: "popup", auto_select: false });
+        window.google.accounts.id.renderButton(el, { type: "standard", theme: dark ? "filled_black" : "outline", size: "large", text: "signin_with", shape: "pill", width: Math.min(400, el.clientWidth || 320) });
+        resolve(true);
+      } catch (e) { resolve(false); } };
+      if (window.google && window.google.accounts && window.google.accounts.id) return go();
+      const sc = document.createElement("script"); sc.src = "https://accounts.google.com/gsi/client"; sc.async = true; sc.onload = go; sc.onerror = () => resolve(false); document.head.appendChild(sc);
+    }),
     signOut: async () => { try { await fetch("/auth/logout", { method: "POST", credentials: "same-origin" }); } catch (e) {} try { localStorage.removeItem("climb_courses"); localStorage.removeItem("climb_profile"); } catch (e) {} location.href = "/"; },
   };
 
