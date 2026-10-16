@@ -666,6 +666,10 @@ line.ds,polyline.ds,path.ds{fill:none}
 .tll{font:800 15px/1.3 var(--ui);background:var(--surface);border-radius:12px;padding:8px 12px}
 .tl.on .tll{background:var(--accent-soft)}.tl.on .tld{background:var(--accent)}
 .tl.hid .tll,.tl.hid .tlw{color:var(--accent-text)}
+.tapq .cm,.tapq .mk,.tapq .tl{cursor:pointer}
+.tapq .cm circle{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
+.tapq .mk{background:var(--surface);border-color:var(--ink);width:32px;height:32px}
+.tapq .tl .tll{color:var(--muted)}
 @media (min-width:1024px){
   .tabbar{background:var(--raise);border-right:0;width:224px}
   .tabbar::before{content:"Climb";font:900 24px var(--ui)}
@@ -2996,16 +3000,33 @@ function renderLabelQ(ch, k){
   const t=cands[Math.floor(Math.random()*cands.length)], ans=items[t].label;
   let note=items[t].note;
   ans.split(/\s+/).filter(w=>w.length>3).forEach(w=>{ note=note.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"); });
+  const tapMode=["curve","scale","diagram","timeline"].includes(v.type);
+  const reveal=(ok)=>{ $("vbox").innerHTML=visualHtml(v,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), v);
+    const el=$("vbox").querySelector(`[data-i="${t}"]`); if(el) el.dispatchEvent(new Event("click"));
+    answered(ok?"right":"wrong", {answer:ans, showAns:true, why:ok?"":items[t].note, canGuess:ok}); };
+  if(tapMode){
+    const what = v.type==="curve" ? "point on the graph" : v.type==="timeline" ? "event on the timeline" : v.type==="scale" ? "spot on the scale" : "part of the picture";
+    main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">Tap the ${what} this describes.</div><div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div><div id="vbox" class="tapq"></div><div id="fb"></div></div>`;
+    wireQuit();
+    const box=$("vbox");
+    if(v.type==="diagram") box.innerHTML=`<div class="gbox">${diagramSvg(v,{pick:true, allParts:true})}</div>`;
+    else { box.innerHTML=visualHtml(v,{still:true, noTitle:true});
+      box.querySelectorAll(".vlegend,.vnote").forEach(x=>x.remove());
+      box.querySelectorAll(".cm text,.mk").forEach(x=>{ x.textContent=""; });
+      box.querySelectorAll(".tll").forEach(x=>{ x.textContent="?"; }); }
+    let locked=false;
+    const go=el=>{ if(locked) return; locked=true; const ok=+el.dataset.i===t; if(!ok) LS.q.typed=items[+el.dataset.i]&&items[+el.dataset.i].label; reveal(ok); };
+    box.querySelectorAll("[data-i]").forEach(el=>{ el.classList.add("tappable"); el.setAttribute("tabindex","0"); el.setAttribute("role","button"); el.setAttribute("aria-label","Choose this one"); el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
+    return;
+  }
   const opts=shuffle([ans, ...shuffle(items.map(x=>x.label).filter(l=>l!==ans)).slice(0,3)]);
-  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">Which part of this picture does this describe?</div><div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div><div id="vbox">${visualHtml(v,{still:true})}</div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fb"></div></div>`;
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: which part does this describe?</div><div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
   wireQuit();
   main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{
     const ok=opts[+btn.dataset.i]===ans;
     main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); });
     if(!ok) btn.classList.add("no");
-    $("vbox").innerHTML=visualHtml(v,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), v);
-    const el=$("vbox").querySelector(`[data-i="${t}"]`); if(el) el.dispatchEvent(new Event("click"));
-    answered(ok?"right":"wrong", {answer:ans, why:items[t].note, canGuess:ok, noAnsBox:ok});
+    reveal(ok);
   });
 }
 function renderOrderQ(ch, k){
