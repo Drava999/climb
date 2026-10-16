@@ -24,5 +24,7 @@
   "d1_databases": [
     { "binding": "LOGS", "database_name": "climb-logs", "database_id": "5e5301bc-1be2-49c8-9904-eec6d78d4ecc" }
   ],
+  // Public Google OAuth client ID (not a secret). GOOGLE_CLIENT_SECRET is set as a Worker secret in the dashboard.
+  "vars": { "GOOGLE_CLIENT_ID": "851794840006-439b29ol7ngaicjm0ojtpc97ko6g8eec.apps.googleusercontent.com" },
   "observability": { "enabled": true }
 }
