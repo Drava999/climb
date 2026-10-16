@@ -4,8 +4,8 @@
   "description": "Learn any topic through short, visual lessons that get harder as you improve.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F3F5F2",
-  "theme_color": "#2A55E5",
+  "background_color": "#F7F4EF",
+  "theme_color": "#F7F4EF",
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
