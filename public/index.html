@@ -953,7 +953,7 @@ const refreshing = new Set();
 function maybeRefresh(c, k, type){
   if(!S.sample || refreshing.has(k.id) || !k.bank) return;
   const used = k.used||{}, list = k.bank[type]||[];
-  if(list.length && list.every(x=>(used[qkey(type,x)]||0)>=1)){
+  if(list.length && list.filter(x=>!(used[qkey(type,x)]||0)).length<=1){ // top up while one fresh question is still left, so learners never see repeats
     refreshing.add(k.id);
     genBank(c, [k.id], true, type).catch(()=>{}).finally(()=>refreshing.delete(k.id));
   }
