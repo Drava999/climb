@@ -26,5 +26,8 @@
   ],
   // Public Google OAuth client ID (not a secret). GOOGLE_CLIENT_SECRET is set as a Worker secret in the dashboard.
   "vars": { "GOOGLE_CLIENT_ID": "851794840006-439b29ol7ngaicjm0ojtpc97ko6g8eec.apps.googleusercontent.com" },
+  // Run the server near Singapore. Anthropic's API rejects requests sent from some regions (e.g. Hong Kong),
+  // which happened when Cloudflare served Singapore users from its Hong Kong data centre.
+  "placement": { "region": "aws:ap-southeast-1" },
   "observability": { "enabled": true }
 }
