@@ -123,6 +123,14 @@
     return null;
   } };
 
+  // Official NUS / NTU module information. Cached on the server.
+  window.climbModule = async (uni, code, hint) => {
+    const r = await fetch("/api/module", { method: "POST", headers: { "content-type": "application/json", "x-climb-device": DEVICE }, body: JSON.stringify({ uni, code, hint }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(d.message || "Module lookup failed"); e.code = d.code || "error"; throw e; }
+    return d;
+  };
+
   // Official syllabus lookup (SEAB, Singapore). Cached on the server after the first lookup.
   window.climbSyllabus = async (exam, subject, year) => {
     const r = await fetch("/api/syllabus", {

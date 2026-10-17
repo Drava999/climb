@@ -22,14 +22,14 @@ CLIMB HOUSE STYLE (apply to everything you write unless the request says otherwi
 - Foundations: one idea at a time. What it is, why it works, a concrete example, the common misconception.
 - Intermediate: how ideas interact. Cause and effect across two or three factors, applying the idea to a new realistic situation, reading a simple table or chart, the standard tools and documents of the field.
 - Advanced: second-order effects and chains of consequences, which factor matters most, where the rule breaks down, trade-offs, spotting the flaw in a plausible argument, short case analysis.
-- Expert and Frontier: professional judgement with incomplete information, real case studies, competing explanations, critiquing expert claims, predicting novel situations, recent developments and open questions.
+- Expert and Frontier: professional judgement with incomplete information, real case studies, competing explanations, critiquing expert claims, predicting novel situations, developments up to your knowledge (state the year; frame anything after it as uncertain) and open questions.
 Later questions must demand clearly deeper reasoning than earlier ones. Never stay at definition level beyond Foundations.
 
 7. HARD SKILLS AND THINKING MOVES. Every question trains one thinking move: recognise, explain (why or how), apply (to a new situation), analyse (chains of effects, which factor matters most, limits, spot the flaw) or judge (decide with trade-offs and incomplete information, predict, argue a position). Mix the moves; from Intermediate up most questions should explain, analyse or judge. Teach the practical skills a professional actually uses (reading documents, contracts, tables and charts, procedures, estimation), but calculations are a tool, not the goal: in subjects that are not mainly mathematical, at most about one question in three may need a calculation, and every calculation must end in an interpretation or decision ("so which should the owner choose, and why?"). Mainly mathematical subjects (maths, physics, accounting, statistics) may use more, and in pure maths "find" and "show that" questions are fine.
 
 8. EXAM AND UNIVERSITY STYLE. If the request names an exam or a university course, match its question style and command words (State, Explain, Calculate, Evaluate, Discuss), give marks that match the depth asked, and write mark-scheme points one per mark. University style means first-year module rigour: precise definitions, standard frameworks and models, calculations with working, and "discuss/evaluate" questions that reward structure and evidence.
 
-9. NUMBERS. When an answer is a number, make it unambiguous: state units, the rounding expected, and keep figures realistic for the field. Show working in explanations.
+9. NUMBERS. When an answer is a number, make it unambiguous: state units, the rounding expected, use invented figures only in clearly hypothetical scenarios ("a ship burns 30 t a day"); real-world figures, dates and thresholds must be ones you are sure of, otherwise test the mechanism instead. Show working in explanations.
 
 10. QUESTION CRAFT. Multiple-choice distractors are plausible, similar in length and style to the right answer, and each reflects a real misconception; never "all of the above". True/false statements are subtly false when false, never trivially. Fill-the-gap removes the key term, not a filler word. Recall questions have exactly one clear correct answer (with a few acceptable wordings). Scenarios are realistic for the field and vary in setting. Open questions name exactly what a strong answer must cover. Every question tests a different angle: mechanism, example, misconception, edge case, comparison, cause and effect, numbers.
 
@@ -52,7 +52,7 @@ async function callClaude(env, model, content, maxTokens) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model, max_tokens: maxTokens, system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }], messages: [{ role: "user", content }] }),
+    body: JSON.stringify({ model, max_tokens: maxTokens, system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }, { type: "text", text: `Today is ${new Date().toISOString().slice(0,10)}. For anything that changes over time (rules in force, prices, indices, routes, ratifications), say "as of <year>", prefer settled, well-documented facts, and never present proposed or pending rules as in force.` }], messages: [{ role: "user", content }] }),
   });
   const d = await r.json().catch(() => ({}));
   if (!r.ok) return { ok: false, status: r.status, message: (d.error && d.error.message) || "Claude API error" };
@@ -135,6 +135,57 @@ async function claudeWithTools(env, body) {
   const text = (last.content || []).filter((x) => x.type === "text").map((x) => x.text).join("");
   const searches = (last.usage && last.usage.server_tool_use) || {};
   return { ok: true, text, truncated: last.stop_reason === "max_tokens", searches };
+}
+
+// ---------- university module lookup (NUS via NUSMods' public data; NTU and fallback via official pages) ----------
+const MOD_DOMAINS = ["nus.edu.sg", "www.nus.edu.sg", "nusmods.com", "api.nusmods.com", "ntu.edu.sg", "www.ntu.edu.sg", "wis.ntu.edu.sg", "www.wis.ntu.edu.sg"];
+const acadYears = () => { const d = new Date(), y = d.getUTCFullYear(), s = d.getUTCMonth() >= 6 ? y : y - 1; return [`${s}-${s + 1}`, `${s - 1}-${s}`]; };
+async function handleModule(request, env, ctx) {
+  if (request.method !== "POST") return json({ code: "method" }, 405);
+  if (!sameOrigin(request)) return json({ code: "forbidden", message: "Not allowed" }, 403);
+  const ip = request.headers.get("cf-connecting-ip") || "anon";
+  if (env.RL_BURST) { const { success } = await env.RL_BURST.limit({ key: ip }); if (!success) return json({ code: "rate_limited", message: "Too many requests. Wait a minute and try again." }, 429); }
+  const b = await request.json().catch(() => ({}));
+  const uni = String(b.uni || "").toLowerCase() === "ntu" ? "ntu" : String(b.uni || "").toLowerCase() === "nus" ? "nus" : null;
+  const code = String(b.code || "").toUpperCase().replace(/\s+/g, "");
+  if (!uni || !/^[A-Z]{2,4}\d{4}[A-Z]{0,2}$/.test(code)) return json({ code: "bad_request", message: "Give NUS or NTU and a module code." }, 400);
+  const key = `module|${uni}|${code}`;
+  if (env.LOGS) {
+    const row = await env.LOGS.prepare("SELECT ts, json FROM syllabi WHERE key = ?").bind(key).first().catch(() => null);
+    if (row && Date.now() - Date.parse(row.ts) < SYL_TTL_DAYS * 864e5) { try { return json({ cached: true, module: JSON.parse(row.json) }); } catch {} }
+  }
+  const save = (data) => { if (env.LOGS) ctx.waitUntil(env.LOGS.prepare("INSERT OR REPLACE INTO syllabi (key, ts, exam, subject, year, source, json) VALUES (?,?,?,?,?,?,?)").bind(key, now(), uni.toUpperCase(), String(data.title || code), String(data.year || ""), String(data.source_url || ""), JSON.stringify(data)).run().catch(() => {})); };
+  if (uni === "nus") { // NUSMods publishes NUS's official module data as open JSON: no AI cost
+    for (const ay of acadYears()) {
+      const r = await fetch(`https://api.nusmods.com/v2/${ay}/modules/${code}.json`).catch(() => null);
+      if (!r || !r.ok) continue;
+      const m = await r.json().catch(() => null); if (!m || !m.moduleCode) continue;
+      const data = { found: true, uni: "NUS", code: m.moduleCode, title: m.title, year: ay, credits: m.moduleCredit, faculty: m.faculty, department: m.department,
+        description: String(m.description || "").slice(0, 2500), prerequisites: String(m.prerequisite || "").slice(0, 400), workload: m.workload || null,
+        source_url: `https://nusmods.com/courses/${m.moduleCode}`, topics: [], assessment: [] };
+      save(data); return json({ cached: false, module: data });
+    }
+  }
+  if (!env.ANTHROPIC_API_KEY) return json({ code: "not_configured", message: "The site isn't connected to Claude yet." }, 500);
+  const prompt = `Find the official ${uni.toUpperCase()} course/module "${code}"${b.hint ? ` (the learner described it as: ${String(b.hint).slice(0, 120)})` : ""}.
+Use only official ${uni === "nus" ? "NUS (nus.edu.sg, nusmods.com)" : "NTU (ntu.edu.sg, wis.ntu.edu.sg course content pages)"} sources. Read the course description and, if published, the course outline (topics, learning outcomes, assessment components and weightings).
+Return ONLY JSON: {"found": true, "uni": "${uni.toUpperCase()}", "code": "", "title": "", "year": "academic year shown", "credits": "", "description": "official description, max 120 words, paraphrased", "prerequisites": "", "topics": ["up to 14 topics or weekly themes in order"], "assessment": [{"component": "", "weight": ""}], "source_url": "the official page URL"}
+If you cannot find it, return {"found": false, "reason": "why"}.`;
+  const res = await claudeWithTools(env, {
+    model: "claude-sonnet-5-5", max_tokens: 6000,
+    system: "You research official Singapore university course information accurately. Only use information from the official pages you open; never invent topics or weightings.",
+    messages: [{ role: "user", content: prompt }],
+    tools: [
+      { type: "web_search_20250305", name: "web_search", max_uses: 3, allowed_domains: MOD_DOMAINS, user_location: { type: "approximate", country: "SG", timezone: "Asia/Singapore" } },
+      { type: "web_fetch_20250910", name: "web_fetch", max_uses: 3, allowed_domains: MOD_DOMAINS },
+    ],
+  });
+  if (!res.ok) return json({ code: "upstream", message: res.message }, 502);
+  let data; try { data = parseJson(res.text); } catch { return json({ code: "bad_json", message: "Couldn't read the module page" }, 502); }
+  logGeneration(env, ctx, { device: request.headers.get("x-climb-device") || null, purpose: "module", model: "claude-sonnet-5-5", tier: "default", ms: 0, prompt, ok: !!(data && data.found), status: data && data.found ? 200 : "not_found", reply: res.text });
+  if (!data || !data.found) return json({ code: "not_found", message: (data && data.reason) || "No official module page found" }, 404);
+  if (!/^https:\/\/([a-z0-9-]+\.)*(nus\.edu\.sg|nusmods\.com|ntu\.edu\.sg)\//i.test(String(data.source_url || ""))) return json({ code: "not_found", message: "Couldn't confirm an official source" }, 404);
+  save(data); return json({ cached: false, module: data });
 }
 
 async function handleSyllabus(request, env, ctx) {
@@ -452,6 +503,7 @@ export default {
     if (url.pathname === "/api/sample") return handleSample(request, env, ctx);
     if (url.pathname === "/api/log") return handleLog(request, env, ctx);
     if (url.pathname === "/api/syllabus") return handleSyllabus(request, env, ctx);
+    if (url.pathname === "/api/module") return handleModule(request, env, ctx);
     if (url.pathname === "/api/health") return json({ ok: true, claude: !!env.ANTHROPIC_API_KEY, auth: authReady(env) });
     if (url.pathname === "/auth/google/start") return authStart(request, env);
     if (url.pathname === "/auth/google/callback") return authCallback(request, env);
