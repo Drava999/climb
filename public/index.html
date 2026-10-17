@@ -1031,7 +1031,7 @@ ${isExam(c)?examQuestionText(c):c.uni?uniQuestionText(c):""}`;
   items.forEach(it=>addTerms(c, it&&it.terms));
   cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i];
     if(onlyType){ if(!it||!k.bank) return; const add={}; BANK_KEYS.forEach(t=>add[t]=t===onlyType?arrOf(it[t]).map(CLEAN[t]).filter(Boolean):[]); mergeBank(k.bank, add); k.writer=writer; return; }
-    const b=cleanBank(it); if(!b) return; if(refresh && k.bank) mergeBank(k.bank,b); else { b.v=2; k.bank=b; k.used={}; k.last=null; } k.writer=writer; });
+    const b=cleanBank(it); if(!b) return; if(refresh && k.bank) mergeBank(k.bank,b); else { b.v=2; k.bank=b; k.used={}; k.last=null; k.qv=QSTYLE; } k.writer=writer; });
   saveCourse(c);
 }
 const needsBank = k => k && (!k.bank || (k.bank.v!==2 && k.rung===0 && !k.seen));
@@ -1882,7 +1882,7 @@ Return ONLY JSON: {"items":[{"name": concept name exactly as given, "sentences":
     const translate = arrOf(it.translate).map(tx).filter(x=>x&&x.m);
     if(!sentences.length && !respond.length) return;
     k.lang = {sentences, dialogue, respond, translate};
-    k.bank = {v:2, mcq:[], tf:[], cloze:[], recall:[], apply:[], connect:[], langOnly:true};
+    k.bank = {v:2, mcq:[], tf:[], cloze:[], recall:[], apply:[], connect:[], langOnly:true}; k.qv=QSTYLE;
     k.writer = writer;
   });
   saveCourse(c);
@@ -2598,8 +2598,33 @@ function renderPath(){
   wireDel(c);
   ensurePathText(c); prefetchCombos(c);
 }
-function delHtml(c){ return c.example?"":`<div class="row"><button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`; }
-function wireDel(c){ const del=$("del"); if(del) del.onclick=()=>{ $("confirm").innerHTML=`<div class="fb no"><strong>Delete "${esc(c.title)}" and all its progress?</strong><div class="row"><button class="btn sm" id="yes">Delete</button><button class="btn ghost sm" id="no">Cancel</button></div></div>`; $("yes").onclick=async()=>{ await deleteCourse(c.id); S.cur=null; go("today"); toast("Course deleted"); }; $("no").onclick=()=>$("confirm").innerHTML=""; }; }
+function delHtml(c){ return c.example?"":`<div class="row">${S.sample?`<button class="btn ghost sm" id="refQ">Refresh questions</button>`:""}<button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`; }
+/* Rewrite every concept's practice questions in the current style. Progress (levels, review dates) is kept. */
+const QSTYLE = 9; // bump when the question style changes, so "Refresh questions" knows what is out of date
+const staleIds = c => order(c).filter(id=>c.concepts[id] && c.concepts[id].bank && c.concepts[id].qv!==QSTYLE);
+async function refreshQuestions(c, onProgress){
+  const ids = staleIds(c);
+  const gen = isLang(c) ? genLangBank : genBank, batches=[]; for(let i=0;i<ids.length;i+=2) batches.push(ids.slice(i,i+2));
+  let done=0, failed=0, next=0;
+  const worker = async()=>{ while(next<batches.length){ const b=batches[next++], before=b.map(id=>c.concepts[id].bank);
+    try{ await gen(c, b); }catch(e){} b.forEach((id,i)=>{ if(c.concepts[id].bank===before[i]) failed++; else c.concepts[id].qv=QSTYLE; }); // a concept only counts once its bank was actually replaced
+    done+=b.length; onProgress(done, ids.length); } };
+  await Promise.all([worker(), worker()]);
+  c.combos = (c.combos||[]).filter(x=>x.used); // unused combined questions are rewritten in the new style when next needed
+  c.refreshed = Date.now(); saveCourse(c);
+  L("questions_refreshed",{course:c.title, data:{concepts:ids.length, failed}});
+  return {total:ids.length, failed};
+}
+function wireDel(c){
+  const rq=$("refQ"); if(rq) rq.onclick=()=>{ const n=staleIds(c).length;
+    if(!n){ toast("All questions are already in the newest style"); return; }
+    $("confirm").innerHTML=`<div class="fb info"><strong>Rewrite all ${n} concepts' practice questions in the newest style?</strong><span class="small">Your levels and review dates stay. Takes about ${Math.max(1,Math.round(n/8))} minute${n>8?"s":""} and costs roughly US$${(n*0.012).toFixed(2)} in AI use.</span><div class="row"><button class="btn sm" id="rqGo">Refresh</button><button class="btn ghost sm" id="rqNo">Cancel</button></div></div>`;
+    $("rqNo").onclick=()=>$("confirm").innerHTML="";
+    $("rqGo").onclick=async()=>{ $("confirm").innerHTML=`<div class="fb info"><div class="row"><span class="spinner"></span><strong id="rqP">Rewriting questions… 0/${n}</strong></div><span class="small muted">You can keep using Climb; this finishes in the background.</span></div>`;
+      const r = await refreshQuestions(c, (d,t)=>{ const el=$("rqP"); if(el) el.textContent=`Rewriting questions… ${d}/${t}`; });
+      const box=$("confirm"); if(box) box.innerHTML=`<div class="fb ${r.failed?"no":"ok"}"><strong>${r.failed?`Refreshed ${r.total-r.failed} of ${r.total}. Try again for the rest.`:`All ${r.total} concepts have fresh questions.`}</strong></div>`;
+      toast(r.failed?"Some questions couldn't be refreshed":"Questions refreshed"); }; };
+  const del=$("del"); if(del) del.onclick=()=>{ $("confirm").innerHTML=`<div class="fb no"><strong>Delete "${esc(c.title)}" and all its progress?</strong><div class="row"><button class="btn sm" id="yes">Delete</button><button class="btn ghost sm" id="no">Cancel</button></div></div>`; $("yes").onclick=async()=>{ await deleteCourse(c.id); S.cur=null; go("today"); toast("Course deleted"); }; $("no").onclick=()=>$("confirm").innerHTML=""; }; }
 function courseSwitchSheet(){
   const list=courseList(); if(!list.length) list.push(makeExample());
   const bg=document.createElement("div"); bg.className="sheet-bg";
