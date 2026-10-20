@@ -689,6 +689,34 @@ line.ds,polyline.ds,path.ds{fill:none}
 .tn.ok .tnb{fill:var(--good-soft);stroke:var(--good);stroke-width:2.5}.tn.no .tnb{fill:var(--bad-soft);stroke:var(--bad);stroke-width:2.5}
 .tn:focus-visible .tnb{stroke:var(--accent-text);stroke-width:3}
 @media (prefers-reduced-motion:reduce){.tnb,.tne,.tnl,.tn{transition:none}}
+.vann{padding:6px;min-width:0}
+.ant{white-space:pre-wrap;overflow-wrap:anywhere;font:800 19px/1.75 var(--ui);color:var(--ink);padding:12px 10px;min-width:0;max-width:100%;tab-size:4}
+.ant.big{font-size:28px;line-height:1.6;text-align:center}
+.ant.mono{font:600 15px/2.1 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;background:var(--raise);border-radius:12px}
+.ant.mono.big{font-size:28px;font-weight:700;text-align:center}
+.anm{position:relative;border-radius:6px;padding:1px 2px;text-decoration:underline dotted 2px var(--muted);text-underline-offset:5px;-webkit-box-decoration-break:clone;box-decoration-break:clone;cursor:pointer;outline:none}
+.anm[role=button]:focus-visible{box-shadow:0 0 0 3px var(--accent-text)}
+.anm.on{text-decoration-style:solid;text-decoration-thickness:3px}
+.anm.on.green{background:color-mix(in srgb,var(--g2) 32%,transparent);text-decoration-color:var(--g2)}
+.anm.on.blue{background:color-mix(in srgb,var(--g3) 32%,transparent);text-decoration-color:var(--g3)}
+.anm.on.pink{background:color-mix(in srgb,var(--g4) 32%,transparent);text-decoration-color:var(--g4)}
+.anm.sel{box-shadow:0 0 0 2px var(--ink)}
+.anm.no{background:var(--bad-soft);text-decoration:underline solid 3px var(--bad)}
+.anb{position:absolute;top:-14px;right:-10px;display:grid;place-items:center;min-width:15px;height:15px;padding:0 3px;border-radius:8px;font:900 9.5px/1 var(--ui);color:var(--surface);background:var(--muted);pointer-events:none}
+.anb.green{background:var(--g2)}.anb.blue{background:var(--g3)}.anb.pink{background:var(--g4)}
+.ansub{margin:-2px 10px 10px;font-style:italic;overflow-wrap:anywhere}
+.tapq .anm{text-decoration:underline solid 2.5px var(--muted)}
+.vvenn{padding:6px}
+.vvs{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.vvs.pick{cursor:pointer}
+.vvu{fill:none;stroke:var(--line);stroke-width:1.5}
+.vvc{stroke:none}.vvc.green{fill:color-mix(in srgb,var(--g2) 14%,transparent)}.vvc.blue{fill:color-mix(in srgb,var(--g3) 14%,transparent)}.vvc.pink{fill:color-mix(in srgb,var(--g4) 14%,transparent)}
+.vvc.on.green{fill:color-mix(in srgb,var(--g2) 36%,transparent)}.vvc.on.blue{fill:color-mix(in srgb,var(--g3) 36%,transparent)}.vvc.on.pink{fill:color-mix(in srgb,var(--g4) 36%,transparent)}
+.vvo{fill:none;stroke-width:2}.vvo.on{stroke-width:3.5}.vvo.green{stroke:var(--g2)}.vvo.blue{stroke:var(--g3)}.vvo.pink{stroke:var(--g4)}
+.vvr{pointer-events:none}.vvr.on{fill:color-mix(in srgb,var(--accent) 50%,transparent)}.vvr.ok{fill:color-mix(in srgb,var(--good) 45%,transparent)}.vvr.no{fill:color-mix(in srgb,var(--bad) 40%,transparent)}
+.vvl{font:900 13px var(--ui)}.vvl.green{fill:var(--g2)}.vvl.blue{fill:var(--g3)}.vvl.pink{fill:var(--g4)}
+.vvi{cursor:pointer;outline:none}.vvi rect{fill:transparent}.vvi text{font:800 12px var(--ui);fill:var(--ink);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.vvi.dim text{fill:var(--muted)}.vvi.sel rect{fill:var(--surface);stroke:var(--ink);stroke-width:2}.vvi:focus-visible rect{stroke:var(--accent-text);stroke-width:3}
 .vgrid{overflow-x:auto;max-width:100%;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .vgt{border-collapse:separate;border-spacing:3px;margin:0 auto;font:800 14px/1.2 var(--ui);font-variant-numeric:tabular-nums;color:var(--ink)}
 .vgt th{font:800 13px/1.2 var(--ui);color:var(--muted);padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -1114,6 +1142,8 @@ function cleanVisual0(v){
   if(v.type==="timeline") return cleanTimeline(v);
   if(v.type==="tree") return cleanTree(v);
   if(v.type==="network") return cleanNet(v);
+  if(v.type==="annotate") return cleanAnnot(v);
+  if(v.type==="venn") return cleanVenn(v);
   if(v.type==="grid") return cleanGrid(v);
   if(v.type==="candles") return cleanCandles(v);
   if(v.type==="frames") return cleanFrames(v);
@@ -1166,6 +1196,8 @@ For each concept return (pitch everything at the concept's STAGE):
   "timeline" (events or stages in time order: 3-7 items, each {"label","when": what to display, e.g. "1914" or "Day 3","t": a number used for spacing, e.g. the year,"note"}),
   "tree" (USE THIS for a branching hierarchy read from the top down: probability trees, decision trees, classification or identification keys, family trees, org charts. 3-15 nodes, at most 4 levels below the single top node, at most 8 end boxes. Each node {"id","label": max 4 words,"parent": its parent's id ("" for the top node),"edge": optional label on the branch from its parent, max 10 characters, e.g. "0.3", "1/2", "Yes", "Has wings","note"}. For a probability tree, every branch's "edge" is its probability as a decimal or fraction (the branches leaving one node add up to 1) and each end box names the outcome and its probability, e.g. "Rain, late 0.06"; for a key or decision tree, the edges are the answers ("Yes"/"No"). "steps": 2-5 steps teaching how to read it, e.g. first one branch, then following a path, then multiplying along it; each {"text": one plain sentence,"show":[ids of nodes whose path from the top is highlighted]}. Shape: {"type":"tree","title":"","caption":"","nodes":[{"id":"","label":"","parent":"","edge":"","note":""}],"steps":[{"text":"","show":[]}]}),
   "network" (USE THIS when several things affect each other along more than one path, so a single chain cannot show it: food webs, cause-and-effect maps with several causes and effects, computer networks, supply chains, trade links. Use "flow" instead for one path from start to end, and "cycle" for one loop. 3-9 nodes {"id","label","note","x","y"} with x and y from 0 to 100 (0,0 is top-left) placing linked nodes near each other so few links cross (in a food web, plants at the bottom, top predators at the top). 2-14 links {"from": node id,"to": node id,"label": max 2 words, e.g. "eaten by", "raises","arrow": true}; arrows point the way the effect, energy or goods flow; "arrow": false for a two-way link such as a cable. "steps": 2-5 steps, each {"text": one plain sentence,"show":[node ids and links written "from>to"]}. Shape: {"type":"network","title":"","caption":"","nodes":[{"id":"","label":"","note":"","x":50,"y":50}],"links":[{"from":"","to":"","label":"","arrow":true}],"steps":[{"text":"","show":[]}]}),
+  "annotate" (USE THIS when the learner must read a short piece of text closely and know what each part means: a formula ("F = m × a", "PV = nRT"), 1-6 lines of code, a sentence in the language being learned, a line of a poem, a chemical equation, an order ticket. "text": the exact text, max 200 characters, "\\n" for new lines and spaces for code indentation; "mono": true for code and formulas; "sub": optional one line shown under it, e.g. the pinyin or a translation. "marks": 2-6 parts to explain, {"id","label": what that part is or does, max 4 words,"note","span": the EXACT characters of that part copied from "text" (its first occurrence is used; add "nth": 2 for the second one),"tone":"green","pink" or "blue"}; spans must not overlap. "steps": 2-5 steps reading it part by part, each {"text": one plain sentence,"show":[ids of the marks highlighted]}. Shape: {"type":"annotate","title":"","caption":"","text":"","mono":true,"sub":"","marks":[{"id":"","label":"","note":"","span":"","tone":"green"}],"steps":[{"text":"","show":[]}]}),
+  "venn" (2-3 overlapping groups where what belongs to BOTH matters: mammals and animals that fly, prime and even numbers, causes two wars shared. Use "compare" instead when things are simply different side by side with nothing in common. "sets": 2-3 groups {"id": a short id like "a","label": max 4 words}; "items": 4-10 real examples {"label": max 3 words,"in":[ids of EVERY set it belongs to; [] if none],"note": why it goes there}, covering the overlaps and each set on its own; "steps": 2-4 steps {"text": one plain sentence,"show":[set ids, overlap keys like "a&b", or "none" for outside all]}. Shape: {"type":"venn","title":"","caption":"","sets":[{"id":"","label":""}],"items":[{"label":"","in":[],"note":""}],"steps":[{"text":"","show":[]}]}),
   "grid" (USE THIS for anything READ AS A TABLE OF VALUES: footprint or order-flow charts, order books, Punnett squares, truth tables, matrices, times tables, timetables, contingency tables, periodic-table blocks. 3-10 rows and 1-5 columns of realistic example values (never placeholders like "x" or "..."); each cell is a short string, max 12 characters, e.g. "120 x 45", "Bb", "1". "cols": the column headers; each row {"label": its row header, e.g. a price,"cells": one string per column}. "marks": 1-4 groups of cells to point out, {"id","label","note","cells":[[row,col],...] counted from 0 (the top-left value cell is [0,0]; headers are not counted),"tone":"green","pink" or "blue"}. "steps": 2-5 steps teaching HOW TO READ it: first what one cell means, then what to compare, then what a highlighted pattern means; each {"text": one plain sentence,"show":[ids of the marks highlighted at this step]}),
   "candles" (USE THIS for trading, stocks, futures, forex or crypto and any price chart read as candles: candlestick patterns, support and resistance, gaps, breakouts, trends, imbalance or supply and demand zones. Choose it over "graph" or "curve" whenever the learner must read real price bars, not a smooth economics or maths line. 12-30 candles in time order, oldest first, with realistic prices for the instrument (e.g. ES futures near 5400 move in 0.25 steps) that tell ONE clear story; each {"o": open,"h": high,"l": low,"c": close} with h at least max(o,c) and l at most min(o,c), each opening near the previous close. Optional "volume": one number per candle. "unit": e.g. "pts" or "$". "marks": 1-4 things to point out: {"id","label","note","kind":"level","y": a price} (a horizontal line, e.g. support), {"id","label","note","kind":"zone","y1","y2": a price range,"from","to": candle indexes counted from 0} (a shaded box), {"id","label","note","kind":"candle","index":[candle indexes]} (outlines those candles) or {"id","label","note","kind":"arrow","at": a candle index,"dir":"up" or "down"}; optional "tone": "blue", "pink" or "green". "steps": 2-5 steps teaching HOW TO READ it: first what one candle means (a "candle" mark on ONE candle, saying it opened, went high and low, then closed), then the pattern; each {"text": one plain sentence,"show":[ids of the marks shown at this step]}. Shape: {"type":"candles","title":"","caption":"","unit":"","candles":[{"o":0,"h":0,"l":0,"c":0}],"volume":[],"marks":[{"id":"","label":"","note":"","kind":"zone","y1":0,"y2":0,"from":0,"to":0}],"steps":[{"text":"","show":[]}]}),
   "frames" (a before → after storyboard of 2-4 panels showing ONE thing CHANGING: an order book before and after a big order, a reaction, a cell dividing, a sentence being rewritten, a market before and after news. Use it when the change itself is the lesson; use "flow" for a list of steps and "diagram" for one structure. Each frame {"label": what is true in this panel, max 4 words, never just "Before", "After" or "Step 1","note": one plain sentence on what changed and why, max 25 words} plus EITHER "shapes": drawn exactly like "diagram" shapes (canvas 100 wide, about 70 tall; keep the same layout in every frame so the change stands out) OR "rows": a mini table of 1-8 rows, each 1-4 short strings (max 12 characters), same columns in every frame, with optional shared "cols": column headers; the app highlights cells that changed. Shape: {"type":"frames","title":"","caption":"","cols":[""],"frames":[{"label":"","note":"","rows":[[""]]}]}),
@@ -1322,7 +1354,7 @@ function cycleSvg(steps, hide){
     return `<g class="cn${i===hide?" hid":""}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden step":st.label)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>${lines.map((l,j)=>`<text x="${x.toFixed(1)}" y="${(ty+j*14).toFixed(1)}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`; }).join("");
   return `<svg class="vcycle" viewBox="0 0 320 300" role="img" aria-label="Cycle diagram"><defs><marker id="cyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>${arcs}${nodes}</svg>`;
 }
-const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : v.type==="tree"||v.type==="network" ? v.nodes : v.type==="grid" ? v.marks : v.type==="candles" ? v.marks : v.type==="frames" ? v.frames : (v.steps || v.parts || v.marks || v.items || []);
+const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : v.type==="tree"||v.type==="network" ? v.nodes : v.type==="annotate" ? v.marks : v.type==="venn" ? v.items : v.type==="grid" ? v.marks : v.type==="candles" ? v.marks : v.type==="frames" ? v.frames : (v.steps || v.parts || v.marks || v.items || []);
 function curveSvg(v, hide){
   const X0=46, X1=306, Y0=16, Y1=168, W=X1-X0, H=Y1-Y0, px=x=>X0+W*x/100, py=y=>Y1-H*y/100;
   const pts=v.points.map(([x,y])=>[px(x),py(y)]);
@@ -1342,6 +1374,8 @@ function visualHtml(v, o){
   if(v.type==="diagram") return diagramHtml(v, o);
   if(v.type==="timeline") return timelineHtml(v, o);
   if(v.type==="tree"||v.type==="network") return tnHtml(v, o);
+  if(v.type==="annotate") return annotHtml(v, o);
+  if(v.type==="venn") return vennHtml(v, o);
   if(v.type==="grid") return gridHtml(v, o);
   if(v.type==="candles") return candlesHtml(v, o);
   if(v.type==="frames") return framesHtml(v, o);
@@ -1741,6 +1775,137 @@ function renderNetQ(ch, k){
     answered(ok?"right":"wrong", {answer:q.ans.map(a=>by[a].label).join(" or "), noAnsBox:ok, why:ls.map(lab).join(", then "), extra:ok?"":`<p class="small">You tapped: <b>${esc(v.nodes[i].label)}</b></p>`}); };
   $("dq").querySelectorAll("[data-i]").forEach(el=>{ el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
 }
+/* ---------- annotated text (formulas, code, sentences read part by part) and venn diagrams (2-3 overlapping sets) ---------- */
+const ANW=/[\p{L}\p{N}_]/u, ATONE=["green","blue","pink"];
+const onTap=(el,f)=>{ el.onclick=f; el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); f(); } }; };
+const vStepNav=(root,v,i)=>{ const st=root.querySelector(".gstep"); if(!st||v.steps.length<2) return; st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; };
+const vStepsHtml=v=>v.steps.length?`<div class="gstep"><p class="gtext">${gloss(v.steps[0].text)}</p>${v.steps.length>1?`<div class="gnav"><span class="small muted">1 of ${v.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div>`:"";
+function cleanAnnot(v){
+  const T=x=>String(x==null?"":x).trim(), text=String(v.text==null?"":v.text).replace(/\r/g,"").replace(/\t/g,"    ").replace(/^\n+|\s+$/g,"").slice(0,240); if(!text.trim()) return null;
+  const used=[], hit=(a,b)=>used.some(([x,y])=>a<y&&b>x), seen=new Set();
+  const marks=arrOf(v.marks).map((m,i)=>{ if(used.length>=6||!m||!m.label||m.span==null) return null; const span=String(m.span).replace(/\r/g,""); if(!span.trim()) return null;
+    const at=[]; for(let p=text.indexOf(span); p>=0&&at.length<40; p=text.indexOf(span,p+1)) at.push(p);
+    const free=at.filter(p=>!hit(p,p+span.length)), wb=p=>!(ANW.test(span[0])&&ANW.test(text[p-1]||""))&&!(ANW.test(span[span.length-1])&&ANW.test(text[p+span.length]||""));
+    const n=parseInt(m.nth), p=n>=1&&free.includes(at[n-1])?at[n-1]:free.find(wb)??free[0], id=T(m.id||("m"+i)).slice(0,14);
+    if(p==null||seen.has(id)) return null; seen.add(id); used.push([p,p+span.length]);
+    return {id, label:T(m.label).slice(0,40), note:T(m.note).slice(0,180), span, at:p, tone:ATONE.includes(T(m.tone))?T(m.tone):""}; }).filter(Boolean).sort((a,b)=>a.at-b.at);
+  if(!marks.length) return null;
+  marks.forEach((m,i)=>{ if(!m.tone) m.tone=ATONE[i%3]; });
+  const ids=new Set(marks.map(m=>m.id));
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>ids.has(x))}:null).filter(Boolean).slice(0,6);
+  return {type:"annotate", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), text, sub:T(v.sub).slice(0,200), mono:v.mono===true||v.mono==="true", marks, steps};
+}
+function annText(v, o){
+  o=o||{}; const vis=o.show?new Set(o.show):null; let h="", p=0;
+  v.marks.forEach((m,i)=>{ const on=!o.pick&&(!vis||vis.has(m.id)||o.sel===i), st=o.mark&&o.mark[m.id]||"";
+    h+=esc(v.text.slice(p,m.at))+`<span class="anm${on?" on "+m.tone:""}${o.sel===i?" sel":""}${st?" "+st:""}" data-i="${i}"${o.still?"":` role="button" tabindex="0"${o.pick?` aria-label="${esc(m.span)}"`:""}`}>${esc(m.span)}${on&&!o.still?`<sup class="anb ${m.tone}" aria-hidden="true">${i+1}</sup>`:""}</span>`; p=m.at+m.span.length; });
+  return `<div class="ant${v.mono?" mono":""}${v.text.length<=30&&!v.text.includes("\n")?" big":""}">${h+esc(v.text.slice(p))}</div>${v.sub?`<p class="ansub small muted">${esc(v.sub)}</p>`:""}`;
+}
+function annotHtml(v, o){
+  o=o||{}; const H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`;
+  if(o.still) return `<div class="vis">${H}<div class="gbox vann">${annText(v,{still:true})}</div></div>`;
+  return `<div class="vis">${H}<div class="gbox vann">${annText(v,{show:v.steps.length?v.steps[0].show:null})}</div>${vStepsHtml(v)}
+    <div class="vlegend">${v.marks.map((m,i)=>`<button type="button" class="vnode" data-i="${i}"><span class="n ${m.tone}">${i+1}</span><span>${esc(m.label)}</span></button>`).join("")}</div><div class="vnote" aria-live="polite">${esc(o.hint||"Tap a highlighted part to see what it means.")}</div></div>`;
+}
+function wireAnnot(root, v){
+  const box=root.querySelector(".vann"); if(!box) return; let i=0, sel=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"";
+  const shown=()=>v.steps.length?v.steps[i].show:null;
+  const say=ms=>{ if(note) note.innerHTML=ms.length?ms.map(m=>`<b>${esc(m.label)}</b>${m.note?" · "+gloss(m.note):""}`).join("<br>"):hint; };
+  const draw=()=>{ box.innerHTML=annText(v,{show:shown(), sel}); box.querySelectorAll(".anm").forEach(el=>onTap(el,()=>pick(+el.dataset.i))); };
+  const pick=j=>{ sel=j; root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===j)); say([v.marks[j]]); draw(); const el=box.querySelector(`.anm[data-i="${j}"]`); if(el&&root.contains(document.activeElement)&&document.activeElement.closest(".vann")) el.focus(); };
+  const step=()=>{ sel=null; root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.remove("on")); vStepNav(root,v,i); const s=shown(); say(s?v.marks.filter(m=>s.includes(m.id)):[]); draw(); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
+  step();
+}
+function renderAnnotQ(ch, k){
+  const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.marks.length; const t=k.dAsk, m=v.marks[t], what=v.mono?(v.text.includes("\n")?"code":"formula"):"text";
+  LS.q.text=`Tap the part that means: ${m.label}`; LS.q.x={q:"annotate", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: tap the part of the ${what} that means “${esc(m.label)}”.</div><div class="gbox vann tapq" id="dq">${annText(v,{pick:true})}</div><p class="small muted">Tap an underlined part.</p><div id="fb"></div></div>`;
+  wireQuit(); let locked=false;
+  const go=el=>{ if(locked) return; locked=true; const i=+el.dataset.i, ok=i===t;
+    $("dq").innerHTML=annText(v,{still:true, show:[m.id], mark:ok?{}:{[v.marks[i].id]:"no"}});
+    answered(ok?"right":"wrong", {answer:`${m.span.trim()} · ${m.label}`, why:m.note, noAnsBox:ok, extra:ok?"":`<p class="small">You tapped: <b>${esc(v.marks[i].span.trim())}</b> · ${esc(v.marks[i].label)}</p>`}); };
+  $("dq").querySelectorAll(".anm").forEach(el=>onTap(el,()=>go(el)));
+}
+const vKey=(v,ins)=>v.sets.map(s=>s.id).filter(id=>ins.includes(id)).join("&")||"none";
+function vRegion(v,K){ const L=K==="none"?[]:K.split("&").map(id=>(v.sets.find(s=>s.id===id)||{}).label), n=v.sets.length;
+  return !L.length?"Outside all the circles":L.length===1?`Only ${L[0]}`:L.length===n?(n===2?`Both ${L[0]} and ${L[1]}`:`All three: ${L[0]}, ${L[1]} and ${L[2]}`):`${L[0]} and ${L[1]} only`; }
+function cleanVenn(v){
+  const T=x=>String(x==null?"":x).trim(), seen=new Set();
+  const sets=arrOf(v.sets).map((s,i)=>{ if(seen.size>=3||!s||!s.label) return null; const id=T(s.id||("s"+i)).replace(/[&\s]/g,"").slice(0,14)||("s"+i); if(seen.has(id)) return null; seen.add(id); return {id, label:T(s.label).slice(0,32)}; }).filter(Boolean);
+  if(sets.length<2) return null; const vv={sets};
+  const items=arrOf(v.items).map(x=>x&&x.label?{label:T(x.label).slice(0,24), in:[...new Set(strs(x.in).map(T))].filter(id=>seen.has(id)), note:T(x.note).slice(0,180)}:null).filter(Boolean).slice(0,12);
+  items.forEach(x=>{ x.in=sets.map(s=>s.id).filter(id=>x.in.includes(id)); });
+  if(items.length<3) return null;
+  const sk=x=>{ x=T(x); if(seen.has(x)) return x; if(/^(none|outside|neither)$/i.test(x)) return "none"; const ps=x.split(/\s*[&+,∩]\s*/).filter(Boolean); return ps.length>1&&ps.every(p=>seen.has(p))?vKey(vv,ps):null; };
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:[...new Set(strs(st.show).map(sk).filter(Boolean))]}:null).filter(Boolean).slice(0,6);
+  return {type:"venn", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), sets, items, steps};
+}
+const vWrap=s=>{ const ls=[""]; String(s).split(/\s+/).forEach(w=>{ const l=ls[ls.length-1]; if(l&&(l+" "+w).length>19) ls.push(w); else ls[ls.length-1]=(l?l+" ":"")+w; }); if(ls.length>2){ ls.length=2; ls[1]=ls[1].slice(0,18)+"…"; } return ls; };
+function vennGeo(v){
+  const n=v.sets.length, ln=v.sets.map(s=>vWrap(s.label).length), top=Math.max(ln[0],ln[1])*15+12, R0=top+2;
+  const C=n===2?[[116,R0+98,88],[204,R0+98,88]]:[[104,R0+96,86],[216,R0+96,86],[160,R0+192,86]];
+  const R=[4,R0,316,(n===2?R0+196:R0+288)+30];
+  return {C, R, H:R[3]+(n===3?ln[2]*15+12:6)};
+}
+function vennPlace(v, g){
+  const {C,R}=g, ids=v.sets.map(s=>s.id), key=(x,y)=>ids.filter((_,i)=>(x-C[i][0])**2+(y-C[i][1])**2<=C[i][2]**2).join("&")||"none";
+  const cl=(x,y)=>Math.min(x-R[0],R[2]-x,y-R[1],R[3]-y,...C.map(([cx,cy,r])=>Math.abs(Math.hypot(x-cx,y-cy)-r)));
+  const by={}; for(let x=R[0]+4;x<R[2];x+=4) for(let y=R[1]+4;y<R[3];y+=4){ const k=key(x,y); (by[k]=by[k]||[]).push([x,y,cl(x,y)]); }
+  Object.values(by).forEach(a=>a.sort((p,q)=>q[2]-p[2]));
+  const put=[], ov=(a,b)=>a[0]<b[0]+b[2]+3&&b[0]<a[0]+a[2]+3&&a[1]<b[1]+b[3]+3&&b[1]<a[1]+a[3]+3;
+  const fit=(r,K)=>r[0]<R[0]||r[0]+r[2]>R[2]?0:[[0,0],[.5,0],[1,0],[0,.5],[1,.5],[0,1],[.5,1],[1,1],[.25,0],[.75,0],[.25,1],[.75,1]].filter(([a,b])=>key(r[0]+a*r[2],r[1]+b*r[3])===K).length, free=r=>!put.some(q=>ov(r,q));
+  return v.items.map(it=>{ const K=vKey(v,it.in), cs=(by[K]||[]).slice(0,500); let p=null, best=-1, s=1;
+    for(const z of [1,.84]){ const w=Math.min(170,it.label.length*6.5+6)*z, h=16*z; for(const c of cs){ const r=[c[0]-w/2,c[1]-h/2,w,h]; if(!free(r)) continue; const f=fit(r,K); if(f===12){ p=c; s=z; best=99; break; } if(f>best){ best=f; p=c; s=z; } } if(best===99) break; }
+    p=p||cs[0]||[(R[0]+R[2])/2,R[3]-14]; const w=Math.min(170,it.label.length*6.5+6)*s, h=16*s;
+    put.push([p[0]-w/2,p[1]-h/2,w,h]); return {x:p[0], y:p[1], w, h, s, K}; });
+}
+let VN=0;
+function vennSvg(v, o){
+  o=o||{}; const g=o.geo||vennGeo(v), {C,R}=g, u="vn"+(++VN), ids=v.sets.map(s=>s.id), vis=o.show&&o.show.length?new Set(o.show):null, P=o.pos||vennPlace(v,g), mk=o.mark||{};
+  const cir=([x,y,r],a)=>`<circle cx="${x}" cy="${y}" r="${r}" ${a}/>`, box=a=>`<rect x="${R[0]}" y="${R[1]}" width="${R[2]-R[0]}" height="${R[3]-R[1]}" rx="14" ${a}/>`;
+  const reg=(K,cls)=>{ const inn=K==="none"?[]:K.split("&").map(id=>ids.indexOf(id)).filter(i=>i>=0), out=ids.map((_,i)=>i).filter(i=>!inn.includes(i)), id=`${u}m${inn.join("")||"n"}${cls}`;
+    let b=box(`class="vvr ${cls}" mask="url(#${id})"`); inn.forEach(i=>{ b=`<g clip-path="url(#${u}c${i})">${b}</g>`; });
+    return `<mask id="${id}">${box('fill="#fff"')}${out.map(i=>cir(C[i],'fill="#000"')).join("")}</mask>${b}`; };
+  const regs=[...(vis?[...vis].filter(x=>!ids.includes(x)).map(K=>reg(K.replace(/^=/,""),"on")):[]), ...Object.keys(mk).map(K=>reg(K,mk[K]))].join("");
+  const lit=it=>!vis||it.in.some(id=>vis.has(id))||vis.has(vKey(v,it.in))||vis.has("="+vKey(v,it.in));
+  const lbl=v.sets.map((s,i)=>{ const ls=vWrap(s.label), x=i===0?R[0]+4:i===1?R[2]-4:160, an=i===0?"start":i===1?"end":"middle", y0=i<2?R[1]-6-(ls.length-1)*15:R[3]+17;
+    return `<text class="vvl ${ATONE[i]}" text-anchor="${an}">${ls.map((l,j)=>`<tspan x="${x}" y="${y0+j*15}">${esc(l)}</tspan>`).join("")}</text>`; }).join("");
+  const its=v.items.map((it,i)=>{ if(i===o.skip) return ""; const p=P[i];
+    return `<g class="vvi${o.selI===i?" sel":""}${lit(it)||o.selI===i?"":" dim"}" data-i="${i}"${o.pick||o.still?"":` tabindex="0" role="button" aria-label="${esc(it.label)}: ${esc(vRegion(v,p.K))}"`}><rect x="${(p.x-p.w/2-4).toFixed(1)}" y="${(p.y-p.h/2-3).toFixed(1)}" width="${(p.w+8).toFixed(1)}" height="${p.h+6}" rx="11"/><text x="${p.x.toFixed(1)}" y="${(p.y+4.2*p.s).toFixed(1)}" text-anchor="middle"${p.s<1?` style="font-size:${(12*p.s).toFixed(1)}px"`:""}>${esc(it.label)}</text></g>`; }).join("");
+  return `<svg class="vvs${o.pick?" pick":""}" viewBox="0 0 320 ${g.H}" role="img" aria-label="${esc(v.title||"Venn diagram")}: ${esc(v.sets.map(s=>s.label).join(", "))}"><defs>${C.map((c,i)=>`<clipPath id="${u}c${i}">${cir(c,"")}</clipPath>`).join("")}</defs>${box('class="vvu"')}${C.map((c,i)=>cir(c,`class="vvc ${ATONE[i]}${vis&&vis.has(ids[i])?" on":""}"`)).join("")}${regs}${C.map((c,i)=>cir(c,`class="vvo ${ATONE[i]}${vis&&vis.has(ids[i])?" on":""}"`)).join("")}${lbl}${its}</svg>`;
+}
+function vennHtml(v, o){
+  o=o||{}; const H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`;
+  if(o.still) return `<div class="vis">${H}<div class="gbox vvenn">${vennSvg(v,{still:true})}</div></div>`;
+  return `<div class="vis">${H}<div class="gbox vvenn">${vennSvg(v,{show:v.steps.length?v.steps[0].show:null})}</div>${vStepsHtml(v)}
+    <div class="vlegend">${v.sets.map((s,i)=>`<button type="button" class="vnode" data-i="${i}"><span class="n ${ATONE[i]}">${i+1}</span><span>${esc(s.label)}</span></button>`).join("")}</div><div class="vnote" aria-live="polite">${esc(o.hint||"Tap an item or a group to see why it goes there.")}</div></div>`;
+}
+function wireVenn(root, v){
+  const box=root.querySelector(".vvenn"); if(!box) return; let i=0, sel=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"", geo=vennGeo(v), pos=vennPlace(v,geo);
+  const shown=()=>sel?(sel.s!=null?[v.sets[sel.s].id]:["="+pos[sel.i].K]):v.steps.length?v.steps[i].show:null;
+  const say=h=>{ if(note) note.innerHTML=h||hint; };
+  const draw=()=>{ box.innerHTML=vennSvg(v,{show:shown(), selI:sel&&sel.i, geo, pos}); box.querySelectorAll(".vvi").forEach(el=>onTap(el,()=>pickI(+el.dataset.i))); };
+  const legend=j=>root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===j));
+  const pickI=j=>{ const it=v.items[j]; sel={i:j}; legend(-1); say(`<b>${esc(it.label)}</b> · <span class="muted">${esc(vRegion(v,pos[j].K))}</span>${it.note?" · "+gloss(it.note):""}`); draw(); const el=box.querySelector(`.vvi[data-i="${j}"]`); if(el) el.focus({preventScroll:true}); };
+  const pickS=j=>{ const s=v.sets[j], xs=v.items.filter(x=>x.in.includes(s.id)).map(x=>x.label); sel={s:j}; legend(j); say(`<b>${esc(s.label)}</b> · ${xs.length?esc(xs.join(", ")):"Nothing here yet"}`); draw(); };
+  const step=()=>{ sel=null; legend(-1); vStepNav(root,v,i); say(""); draw(); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pickS(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
+  step();
+}
+function renderVennQ(ch, k){
+  const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.items.length; const t=k.dAsk, it=v.items[t], geo=vennGeo(v), pos=vennPlace(v,geo), K=pos[t].K;
+  LS.q.text=`Where does ${it.label} belong?`; LS.q.x={q:"venn", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: where does “${esc(it.label)}” belong? Tap its region.</div><div class="gbox vvenn tapq" id="dq">${vennSvg(v,{pick:true, skip:t, geo, pos})}</div><p class="small muted">Tap inside one circle, an overlap, or outside them all.</p><div id="fb"></div></div>`;
+  wireQuit(); let locked=false; const {C,R}=geo;
+  const go=K2=>{ if(locked) return; locked=true; const ok=K2===K;
+    $("dq").innerHTML=vennSvg(v,{still:true, selI:t, geo, pos, mark:{[K]:"ok", ...(ok?{}:{[K2]:"no"})}});
+    answered(ok?"right":"wrong", {answer:vRegion(v,K), why:it.note, noAnsBox:ok, extra:ok?"":`<p class="small">You tapped: <b>${esc(vRegion(v,K2))}</b></p>`}); };
+  const svg=$("dq").querySelector("svg"); svg.addEventListener("click", e=>{ const m=svg.getScreenCTM(); if(!m) return; const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse());
+    if(p.x<R[0]||p.x>R[2]||p.y<R[1]||p.y>R[3]) return; go(v.sets.map(s=>s.id).filter((_,i)=>(p.x-C[i][0])**2+(p.y-C[i][1])**2<=C[i][2]**2).join("&")||"none"); });
+}
 /* ---------- grids: tables of values read cell by cell (footprint charts, order books, Punnett squares, truth tables) ---------- */
 const GTONE=["green","blue","pink"];
 function cleanGrid(v){
@@ -1912,6 +2077,7 @@ function wireFrames(root, v){
 }
 function labelPic(v, t){
   if(v.type==="candles") return {q:"what does the highlighted part show?", html:`<div class="gbox qgrid">${candleSvg(v,{still:true, show:[v.marks[t].id], sel:t})}</div>`};
+  if(v.type==="annotate") return {q:"what does the highlighted part mean?", html:`<div class="gbox vann qgrid">${annText(v,{still:true, show:[v.marks[t].id]})}</div>`};
   if(v.type==="frames") return {q:"which stage is this?", html:`<div class="gbox qgrid"><div class="frb">${frameBody(v,t,"q"+(++FRN))}</div></div>`};
   return null;
 }
@@ -1940,6 +2106,8 @@ function wireVisual(root, v){
   if(v&&v.type==="graph") return wireGraph(root, v);
   if(v&&v.type==="diagram") return wireDiagram(root, v);
   if(v&&(v.type==="tree"||v.type==="network")) return wireTN(root, v);
+  if(v&&v.type==="annotate") return wireAnnot(root, v);
+  if(v&&v.type==="venn") return wireVenn(root, v);
   if(v&&v.type==="grid") return wireGrid(root, v);
   if(v&&v.type==="candles") return wireCandles(root, v);
   if(v&&v.type==="frames") return wireFrames(root, v);
@@ -2129,6 +2297,8 @@ function visualType(k,L){
   if(v.type==="candles"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="frames"){ if(L===1 && v.frames.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.frames.length>=3&&!v.frames.some(f=>FRSEQ.test(f.label)) ? "order" : null; }
   if(v.type==="timeline"){ if(L===1 && v.items.filter(x=>x.note&&x.note.length>8).length>=1) return "label"; return L>=2&&L<=3 ? "order" : null; }
+  if(v.type==="annotate"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length>=2&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="venn") return L>=2&&L<=3&&k.lastVq!=="dtap" ? "dtap" : null;
   if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
   return null;
@@ -3516,7 +3686,7 @@ function renderStep(){
   else if(type==="graph") renderGraphQ(ch, k);
   else if(type==="dtap"&&k.teach.visual.type==="candles") renderCandleQ(ch, k);
   else if(type==="dtap"&&["tree","network"].includes(k.teach.visual.type)) (k.teach.visual.type==="tree"?renderTreeQ:renderNetQ)(ch, k);
-  else if(type==="dtap") (k.teach.visual.type==="grid"?renderGridQ:renderDiagramQ)(ch, k);
+  else if(type==="dtap") ({grid:renderGridQ, annotate:renderAnnotQ, venn:renderVennQ}[k.teach.visual.type]||renderDiagramQ)(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
   else if(type==="sort") renderSortQ(ch, k);
