@@ -169,6 +169,8 @@ main.lesson{padding-bottom:100px}
 .tdots i.on{background:var(--accent);width:20px}
 .eli5{font:600 21px/1.45 var(--ui);letter-spacing:-.005em;text-wrap:pretty}
 .buildchip{display:inline-flex;gap:6px;align-items:center;font:700 13px var(--ui);color:var(--accent-text);background:var(--accent-soft);padding:4px 10px;border-radius:999px;align-self:flex-start}
+button.buildchip{border:0;min-height:32px;text-align:left}button.buildchip .chev{transition:transform 200ms var(--ease-out)}button.buildchip[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.recap{min-width:0}.recap .vis,.sheet .vis{min-width:0;max-width:100%}
 .vis{display:flex;flex-direction:column;gap:12px}
 .vflow{display:flex;flex-direction:column;gap:2px}
 .vnode{display:flex;gap:10px;align-items:center;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);text-align:left;font:700 15px/1.3 var(--ui);width:100%}
@@ -670,6 +672,20 @@ line.ds,polyline.ds,path.ds{fill:none}
 .tll{font:800 15px/1.3 var(--ui);background:var(--surface);border-radius:12px;padding:8px 12px}
 .tl.on .tll{background:var(--accent-soft)}.tl.on .tld{background:var(--accent)}
 .tl.hid .tll,.tl.hid .tlw{color:var(--accent-text)}
+.vgrid{overflow-x:auto;max-width:100%;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.vgt{border-collapse:separate;border-spacing:3px;margin:0 auto;font:800 14px/1.2 var(--ui);font-variant-numeric:tabular-nums;color:var(--ink)}
+.vgt th{font:800 13px/1.2 var(--ui);color:var(--muted);padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vgt thead th{text-align:center}.vgt tbody th{text-align:right}.vgt thead td{background:none;min-width:0}
+.vgt td{background:var(--raise);border-radius:8px;padding:0;text-align:center;white-space:nowrap;min-width:52px}
+.vgt td>*{display:block;padding:11px 9px}
+.vgt td>button{width:100%;border:0;background:none;border-radius:8px;font:inherit;color:inherit;cursor:pointer}
+.vgt td>button:focus-visible{outline:3px solid var(--accent-text);outline-offset:-3px}
+.vgt td.on.green{background:color-mix(in srgb,var(--g2) 28%,var(--surface));box-shadow:inset 0 0 0 2px var(--g2)}
+.vgt td.on.blue{background:color-mix(in srgb,var(--g3) 26%,var(--surface));box-shadow:inset 0 0 0 2px var(--g3)}
+.vgt td.on.pink{background:color-mix(in srgb,var(--g4) 26%,var(--surface));box-shadow:inset 0 0 0 2px var(--g4)}
+.vgt td.on.sel{box-shadow:inset 0 0 0 3px var(--ink)}
+.vgt td.no{background:var(--bad-soft);box-shadow:inset 0 0 0 2px var(--bad)}
+.vnode .n.green{background:var(--g2);color:var(--surface)}.vnode .n.blue{background:var(--g3);color:var(--surface)}.vnode .n.pink{background:var(--g4);color:var(--surface)}
 .tapq .cm,.tapq .mk,.tapq .tl{cursor:pointer}
 .tapq .cm circle{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
 .tapq .mk{background:var(--surface);border-color:var(--ink);width:32px;height:32px}
@@ -1056,6 +1072,7 @@ function cleanVisual0(v){
   if(v.type==="graph") return cleanGraph(v);
   if(v.type==="diagram") return cleanDiagram(v);
   if(v.type==="timeline") return cleanTimeline(v);
+  if(v.type==="grid") return cleanGrid(v);
   if(v.type==="curve"){
     const T = x => String(x==null?"":x).trim();
     const points = arrOf(v.points).map(p=>Array.isArray(p)?[+p[0],+p[1]]:p&&typeof p==="object"?[+p.x,+p.y]:null).filter(p=>p&&isFinite(p[0])&&isFinite(p[1])).map(p=>[Math.max(0,Math.min(100,p[0])),Math.max(0,Math.min(100,p[1]))]).sort((a,b)=>a[0]-b[0]);
@@ -1103,12 +1120,14 @@ For each concept return (pitch everything at the concept's STAGE):
   "graph" (USE THIS for any real graph in economics, maths, physics, chemistry or biology where lines cross or shift, or areas matter: supply and demand, price controls, taxes, surplus, PPC, cost and revenue curves, AD/AS, externalities, straight lines and quadratics, distance- or speed-time, energy profiles, rate curves. Coordinates are in the axis units you set; keep everything inside the axes. Lines: straight {"id","label","from":[x,y],"to":[x,y]}, smooth {"id","label","points":[[x,y],...]} or a formula {"id","label","fn":"x^2-4","from_x":-3,"to_x":3}; a shifted line has "of": the original line's id; add "straight": true to a line given by points that has sharp kinks (e.g. AS flat, then rising, then vertical). Draw curves with the shape that is real for the field (e.g. a steep supply curve when capacity is fixed); derive cost curves from one total cost so MC cuts AC at its minimum (e.g. AC "400/x+10+0.25*x", MC "10+0.5*x"). Points: {"id","on":["D","S"]} (the app computes the exact crossing), {"id","on":["S1"],"x":30} (the point on a line at that x, e.g. the price producers keep under a tax) or {"id","at":[x,y]}, with "label" (e.g. "E1") and optional axis labels "px" (e.g. "P1") and "qx" (e.g. "Q1"). Areas: {"id","label","poly":[corners as point ids, "E1.y0" (on the y-axis level with E1), "E1.x0" (on the x-axis below E1), or [x,y]]}. "steps": 2-6 build-up steps, each {"text": one plain sentence saying what changed and why, "show": the ids that appear at this step}. "asks": 2-3 questions the app can mark: {"type":"point","q":"","answer":point id,"why":""}, {"type":"area","q":"","answer":area id,"why":""} (only with 2+ areas), {"type":"shift","q": a real-world event, then "Drag the curve.","line": line id,"to": the shifted line's id,"answer":"left" or "right","why":""}, {"type":"read","q":"What is the new price?","answer":"E2.y" or "E2.x","why":""}),
   "diagram" (a labelled picture of a thing's structure or a physical setup: a cell, the heart, a ship, a circuit, forces on an object, a geometry figure, a layout or map. Draw it with simple shapes on a canvas 100 wide and about 70 tall (x to the right, y DOWNWARDS): {"id","shape":"rect","x","y","w","h","r"} | {"id","shape":"circle","x","y","r"} | {"id","shape":"ellipse","x","y","rx","ry"} | {"id","shape":"line" or "arrow","x1","y1","x2","y2"} | {"id","shape":"polygon" or "polyline" or "curve","points":[[x,y],...]} | {"id","shape":"text","x","y","text"}; optional "fill": "soft", "part", "green", "blue", "pink", "dark" or "none", and "dash": true. Keep it simple, recognisable and correctly proportioned: 4-20 shapes. "parts": 3-7 parts to learn, each {"id","label","note","at":[x,y] a point ON that part}. Optional "steps": 2-5 build-up steps {"text","show":[shape and part ids]}),
   "timeline" (events or stages in time order: 3-7 items, each {"label","when": what to display, e.g. "1914" or "Day 3","t": a number used for spacing, e.g. the year,"note"}),
+  "grid" (USE THIS for anything READ AS A TABLE OF VALUES: footprint or order-flow charts, order books, Punnett squares, truth tables, matrices, times tables, timetables, contingency tables, periodic-table blocks. 3-10 rows and 1-5 columns of realistic example values (never placeholders like "x" or "..."); each cell is a short string, max 12 characters, e.g. "120 x 45", "Bb", "1". "cols": the column headers; each row {"label": its row header, e.g. a price,"cells": one string per column}. "marks": 1-4 groups of cells to point out, {"id","label","note","cells":[[row,col],...] counted from 0 (the top-left value cell is [0,0]; headers are not counted),"tone":"green","pink" or "blue"}. "steps": 2-5 steps teaching HOW TO READ it: first what one cell means, then what to compare, then what a highlighted pattern means; each {"text": one plain sentence,"show":[ids of the marks highlighted at this step]}),
   "curve" (a single shape rising or falling with nothing crossing it: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
   "bars" (comparing amounts: 2-6 bars; real values only if you are sure of them, otherwise made-up values with "(illustrative)" in the title),
   "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
+  If the concept is a chart, table or screen the learner must learn to read, the visual must show what it actually looks like, with example values, not just describe it.
   Every label must be plain words a beginner understands, e.g. "Highest point", not "Cmax". If a technical name matters, put it in the note: "Highest point (called Cmax)". Labels max 4 words. Notes max 18 words, saying what that part means in everyday terms.
   Every visual has "caption": one plain sentence telling the learner what the picture shows.
-  Shapes: {"type":"diagram","title":"","caption":"","shapes":[],"parts":[],"steps":[]} | {"type":"timeline","title":"","caption":"","items":[{"label":"","when":"","t":0,"note":""}]} | {"type":"graph","title":"","caption":"","x":"Quantity","y":"Price","xmin":0,"xmax":100,"ymin":0,"ymax":100,"unitx":"","unity":"","lines":[],"points":[],"areas":[],"steps":[],"asks":[]} | {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
+  Shapes: {"type":"diagram","title":"","caption":"","shapes":[],"parts":[],"steps":[]} | {"type":"timeline","title":"","caption":"","items":[{"label":"","when":"","t":0,"note":""}]} | {"type":"grid","title":"","caption":"","cols":[""],"rows":[{"label":"","cells":[""]}],"marks":[{"id":"","label":"","note":"","cells":[[0,0]],"tone":"green"}],"steps":[{"text":"","show":[]}]} | {"type":"graph","title":"","caption":"","x":"Quantity","y":"Price","xmin":0,"xmax":100,"ymin":0,"ymax":100,"unitx":"","unity":"","lines":[],"points":[],"areas":[],"steps":[],"asks":[]} | {"type":"curve","title":"","caption":"","x":"x-axis label","y":"y-axis label","points":[[0,0],[25,80],[100,10]],"marks":[{"label":"","x":0,"note":"","area":false}]} (set "area": true on a mark that refers to the whole area under the curve) | {"type":"bars","title":"","caption":"","unit":"","items":[{"label":"","value":0,"note":""}]} | {"type":"flow" or "cycle","title":"","caption":"","steps":[{"label":"","note":""}]} | {"type":"compare","title":"","caption":"","columns":[{"label":"","items":[""]}]} | {"type":"scale","title":"","caption":"","left":"","right":"","items":[{"label":"","pos":50,"note":""}]} | {"type":"parts","title":"","caption":"","center":"","parts":[{"label":"","note":""}]} | {"type":"stat","title":"","caption":"","value":"","label":"","note":""}
 - "simplest": Foundations only: the same idea in even simpler words, max 25 words, using the SAME anchor; "" at later stages.
 - "hook": a memory hook, max 20 words, built on the SAME anchor (no new analogy).
 - "takeaway": the one thing to remember, max 15 words.
@@ -1129,6 +1148,7 @@ function addTerms(c, terms){
   c.glossary = c.glossary || {};
   arrOf(terms).forEach(t=>{ if(t&&t.term&&t.def){ const term=String(t.term).trim().slice(0,40); if(term.length>=3) c.glossary[term.toLowerCase()]={term, def:String(t.def).slice(0,160)}; } });
 }
+const visOf = (c, name, not) => { const n=norm(name); if(!c||!n) return null; const id=order(c).find(id=>id!==not&&norm(c.concepts[id].name)===n), k=id&&c.concepts[id]; return k&&k.teach&&k.teach.visual?k:null; }; // course concept with a picture, by name
 function glossMap(c){
   const g={};
   if(!c) return g;
@@ -1191,8 +1211,10 @@ function termSheet(key, el){
   const body = x0 => x0.m||x0.r||kind==="lang"
     ? `<div class="wcard"><div class="lbig">${esc(x0.t||x0.term||term)}</div>${x0.r?`<div class="lr">${esc(x0.r)}</div>`:""}${say?`<div class="row" style="justify-content:center">${playBtn(x0.t||term)}${playBtn(x0.t||term,true)}</div>`:""}${x0.m?`<p class="eli5" style="font-size:19px;text-align:center">${esc(x0.m)}</p>`:""}</div>${x0.def&&x0.def!==x0.m?`<p class="read" style="font-size:16px">${esc(x0.def)}</p>`:""}${x0.example?`<div class="ex"><span class="label">Example</span><span>${esc(x0.example)}</span></div>`:""}`
     : `<p class="eli5" style="font-size:18px">${esc(x0.def)}</p>${x0.example?`<div class="ex"><span class="label">Example</span><span>${esc(x0.example)}</span></div>`:""}`;
+  const vk = kind!=="lang" && visOf(c, x&&x.term||term);
   bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(term)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${kind==="lang"?(isLang(c)?esc(c.language.name)+" word":"Word"):esc(x&&x.term||term)}</h2><button class="x" aria-label="Close">✕</button></div>
     <div id="tbody">${x?body(x):`<div class="row"><div class="spinner"></div><span class="muted">Looking it up…</span></div>`}</div>
+    ${vk?`<button class="btn soft sm" id="tvis" type="button" style="align-self:flex-start">See what it looks like</button><div id="tvisOut" class="recap"></div>`:""}
     ${S.sample?`<button class="linkbtn" id="tmore" type="button" style="align-self:flex-start"${x?"":" hidden"}>${kind==="lang"?"Explain how it's used":"Explain with an example"}</button><div id="tout"></div>`:""}</div>`;
   const close=()=>bg.remove();
   bg.onclick=e=>{ if(e.target===bg) close(); }; bg.querySelector(".x").onclick=close;
@@ -1202,6 +1224,7 @@ function termSheet(key, el){
     else explainTerm(c, term, where).then(r=>{ x=r; if(!bg.isConnected) return; bg.querySelector("#tbody").innerHTML=body(r); const tm=bg.querySelector("#tmore"); if(tm) tm.hidden=false; })
       .catch(e=>{ if(bg.isConnected) bg.querySelector("#tbody").innerHTML=`<p class="muted">${esc(aiErr(e))}</p>`; });
   }
+  const tv=bg.querySelector("#tvis"); if(tv) tv.onclick=()=>{ tv.remove(); L("help",{course:c.title, concept:vk.name, data:{kind:"term_visual", of:vk.name}}); const box=bg.querySelector("#tvisOut"); box.className="deep recap"; box.innerHTML=visualHtml(vk.teach.visual); wireVisual(box, vk.teach.visual); };
   const tm=bg.querySelector("#tmore"); if(tm) tm.onclick=()=>{ tm.remove(); const box=bg.querySelector("#tout"); box.className="deep"; box.innerHTML=`<div class="read" style="font-size:16px"></div>`;
     const lang=isLang(c);
     streamInto(box.firstElementChild, lang
@@ -1251,7 +1274,7 @@ function cycleSvg(steps, hide){
     return `<g class="cn${i===hide?" hid":""}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden step":st.label)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>${lines.map((l,j)=>`<text x="${x.toFixed(1)}" y="${(ty+j*14).toFixed(1)}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`; }).join("");
   return `<svg class="vcycle" viewBox="0 0 320 300" role="img" aria-label="Cycle diagram"><defs><marker id="cyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>${arcs}${nodes}</svg>`;
 }
-const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : (v.steps || v.parts || v.marks || v.items || []);
+const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : v.type==="grid" ? v.marks : (v.steps || v.parts || v.marks || v.items || []);
 function curveSvg(v, hide){
   const X0=46, X1=306, Y0=16, Y1=168, W=X1-X0, H=Y1-Y0, px=x=>X0+W*x/100, py=y=>Y1-H*y/100;
   const pts=v.points.map(([x,y])=>[px(x),py(y)]);
@@ -1270,6 +1293,7 @@ function visualHtml(v, o){
   if(v.type==="graph") return graphHtml(v, o);
   if(v.type==="diagram") return diagramHtml(v, o);
   if(v.type==="timeline") return timelineHtml(v, o);
+  if(v.type==="grid") return gridHtml(v, o);
   let body="";
   if(v.type==="flow") body=`<div class="vflow">${v.steps.map((st,i)=>`${i?'<div class="varrow" aria-hidden="true">↓</div>':""}<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i+1}</span><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div>`;
   else if(v.type==="cycle") body=cycleSvg(v.steps, hide);
@@ -1509,6 +1533,59 @@ function timelineHtml(v, o){
     return `<button type="button" class="tl${o.hide===i?" hid":""}" data-i="${i}" style="margin-top:${gap}px"><span class="tlw">${o.hide===i?"?":esc(x.when||"")}</span><span class="tld" aria-hidden="true"></span><span class="tll">${o.hide===i?"?":esc(x.label)}</span></button>`; }).join("");
   return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}<div class="vtime">${rows}</div>${o.still||o.hide!=null?"":`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap an event to see why it matters.")}</div>`}</div>`;
 }
+/* ---------- grids: tables of values read cell by cell (footprint charts, order books, Punnett squares, truth tables) ---------- */
+const GTONE=["green","blue","pink"];
+function cleanGrid(v){
+  const T=x=>String(x==null?"":x).trim();
+  const rows=arrOf(v.rows).map(r=>Array.isArray(r)?{label:"", cells:r}:r&&typeof r==="object"?{label:T(r.label).slice(0,20), cells:arrOf(r.cells)}:null).filter(Boolean).map(r=>({label:r.label, cells:r.cells.slice(0,5).map(x=>T(x).slice(0,14))})).filter(r=>r.cells.some(Boolean)).slice(0,10);
+  const nc=Math.max(0,...rows.map(r=>r.cells.length)); if(rows.length<2||!nc) return null;
+  rows.forEach(r=>{ while(r.cells.length<nc) r.cells.push(""); });
+  const cols=arrOf(v.cols).slice(0,nc).map(x=>T(x).slice(0,20)); while(cols.length<nc) cols.push("");
+  const okc=c=>Array.isArray(c)&&Number.isInteger(+c[0])&&Number.isInteger(+c[1])&&+c[0]>=0&&+c[0]<rows.length&&+c[1]>=0&&+c[1]<nc, seen=new Set();
+  const marks=arrOf(v.marks).map((m,i)=>{ if(!m||!m.label) return null; const id=T(m.id||("m"+i)).slice(0,14), cells=[...new Set(arrOf(m.cells).filter(okc).map(c=>`${+c[0]},${+c[1]}`))].slice(0,30).map(x=>x.split(",").map(Number));
+    if(!cells.length||seen.has(id)) return null; seen.add(id); return {id, label:T(m.label).slice(0,40), note:T(m.note).slice(0,180), cells, tone:GTONE.includes(T(m.tone))?T(m.tone):""}; }).filter(Boolean).slice(0,5);
+  marks.forEach((m,i)=>{ if(!m.tone) m.tone=GTONE[i%3]; });
+  const ids=new Set(marks.map(m=>m.id));
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>ids.has(x))}:null).filter(Boolean).slice(0,6);
+  return {type:"grid", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), cols, rows, marks, steps};
+}
+function gridTable(v, o){
+  o=o||{}; const vis=o.show?new Set(o.show):null, at={}, hasC=v.cols.some(Boolean), hasR=v.rows.some(r=>r.label), marked=new Set(v.marks.flatMap(m=>m.cells.map(c=>c.join(","))));
+  v.marks.forEach((m,i)=>{ if(vis&&!vis.has(m.id)&&o.sel!==i) return; m.cells.forEach(c=>{ const key=c.join(","); if(at[key]==null||o.sel===i) at[key]=i; }); });
+  return `<table class="vgt" aria-label="${esc(v.title||"Table")}">${hasC?`<thead><tr>${hasR?"<td></td>":""}${v.cols.map(c=>`<th scope="col">${esc(c)}</th>`).join("")}</tr></thead>`:""}<tbody>${v.rows.map((r,ri)=>`<tr>${hasR?`<th scope="row">${esc(r.label)}</th>`:""}${r.cells.map((x,ci)=>{ const key=ri+","+ci, i=at[key], m=i!=null?v.marks[i]:null, cls=[m?"on "+m.tone:"", m&&o.sel===i?"sel":"", o.mark&&o.mark[key]||""].filter(Boolean).join(" ");
+    return `<td${cls?` class="${cls}"`:""}>${o.pick||(!o.still&&marked.has(key))?`<button type="button" data-r="${ri}" data-c="${ci}"${o.pick?` aria-label="${esc([r.label,v.cols[ci],x].filter(Boolean).join(", "))}"`:""}>${esc(x)}</button>`:`<span>${esc(x)||"&nbsp;"}</span>`}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function gridHtml(v, o){
+  o=o||{}; const H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`;
+  if(o.still) return `<div class="vis">${H}<div class="gbox vgrid">${gridTable(v,{still:true})}</div></div>`;
+  return `<div class="vis">${H}<div class="gbox vgrid">${gridTable(v,{show:v.steps.length?v.steps[0].show:null})}</div>
+    ${v.steps.length?`<div class="gstep"><p class="gtext">${gloss(v.steps[0].text)}</p>${v.steps.length>1?`<div class="gnav"><span class="small muted">1 of ${v.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div>`:""}
+    ${v.marks.length?`<div class="vlegend">${v.marks.map((m,i)=>`<button type="button" class="vnode" data-i="${i}"><span class="n ${m.tone}">${i+1}</span><span>${esc(m.label)}</span></button>`).join("")}</div>`:""}<div class="vnote" aria-live="polite">${esc(o.hint||"Tap a coloured cell to see what it means.")}</div></div>`;
+}
+function wireGrid(root, v){
+  const box=root.querySelector(".vgrid"); if(!box) return; let i=0, sel=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"";
+  const shown=()=>v.steps.length?v.steps[i].show:null;
+  const say=ms=>{ if(note) note.innerHTML=ms.length?ms.map(m=>`<b>${esc(m.label)}</b>${m.note?" · "+gloss(m.note):""}`).join("<br>"):hint; };
+  const draw=()=>{ box.innerHTML=gridTable(v,{show:shown(), sel}); box.querySelectorAll("button[data-r]").forEach(b=>b.onclick=()=>{ const key=b.dataset.r+","+b.dataset.c, s=shown(), hits=v.marks.map((_,j)=>j).filter(j=>v.marks[j].cells.some(c=>c.join(",")===key));
+    const j=hits.find(j=>j!==sel&&(!s||s.includes(v.marks[j].id)))??hits.find(j=>j!==sel)??hits[0]; if(j!=null) pick(j); }); };
+  const pick=j=>{ sel=j; root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===j)); say([v.marks[j]]); draw(); };
+  const step=()=>{ sel=null; root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.remove("on")); const st=root.querySelector(".gstep");
+    if(st&&v.steps.length>1){ st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; }
+    const s=shown(); say(s?v.marks.filter(m=>s.includes(m.id)):[]); draw(); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
+  step();
+}
+function renderGridQ(ch, k){
+  const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.marks.length; const t=k.dAsk, m=v.marks[t], own=new Set(m.cells.map(c=>c.join(",")));
+  LS.q.text=`Tap a cell that shows: ${m.label}`; LS.q.x={q:"grid", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: tap a cell that shows ${esc(m.label.charAt(0).toLowerCase()+m.label.slice(1))}.</div><div class="gbox vgrid" id="dq">${gridTable(v,{pick:true, show:[]})}</div><div id="fb"></div></div>`;
+  wireQuit(); let locked=false;
+  const go=b=>{ if(locked) return; locked=true; const key=b.dataset.r+","+b.dataset.c, ok=own.has(key);
+    $("dq").innerHTML=gridTable(v,{still:true, show:[m.id], sel:t, mark:ok?{}:{[key]:"no"}});
+    answered(ok?"right":"wrong", {answer:m.label, why:m.note, noAnsBox:ok, extra:ok?"":`<p class="small">The right cells are now highlighted.</p>`}); };
+  $("dq").querySelectorAll("button[data-r]").forEach(b=>b.onclick=()=>go(b));
+}
 function renderDiagramQ(ch, k){
   const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.parts.length; const t=k.dAsk, part=v.parts[t];
   LS.q.text=`Tap the ${part.label}`; LS.q.x={q:"diagram", skill:"data"};
@@ -1523,6 +1600,7 @@ function renderDiagramQ(ch, k){
 function wireVisual(root, v){
   if(v&&v.type==="graph") return wireGraph(root, v);
   if(v&&v.type==="diagram") return wireDiagram(root, v);
+  if(v&&v.type==="grid") return wireGrid(root, v);
   const items=visItems(v), noteEl=root.querySelector(".vnote"); if(!noteEl) return;
   const sel=i=>{ root.querySelectorAll("[data-i]").forEach(el=>el.classList.toggle("on", +el.dataset.i===i)); root.querySelectorAll(".carea").forEach(a=>a.style.display=items[i]&&items[i].area?"":"none"); const it=items[i]; if(it) noteEl.innerHTML=`<b>${esc(it.label)}</b>${it.note?" · "+gloss(it.note):""}`; };
   root.querySelectorAll("[data-i]").forEach(el=>{ el.onclick=()=>sel(+el.dataset.i); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sel(+el.dataset.i); } }; });
@@ -1704,6 +1782,7 @@ function visualType(k,L){
   const v=k.teach&&k.teach.visual; if(!v) return null;
   if(v.type==="graph") return v.asks&&v.asks.length&&L>=2&&L<=4&&k.lastVq!=="graph" ? "graph" : null;
   if(v.type==="diagram"){ if(L===1 && v.parts.filter(x=>x.note&&x.note.length>8).length>=1 && v.parts.length>=3) return "label"; return L>=2&&L<=4&&v.parts.length>=3&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="grid"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="timeline"){ if(L===1 && v.items.filter(x=>x.note&&x.note.length>8).length>=1) return "label"; return L>=2&&L<=3 ? "order" : null; }
   if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
@@ -3090,7 +3169,7 @@ function renderStep(){
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
   else if(type==="chain") renderOrderQ(ch, {name:k.name, teach:{visual:{type:"flow", chain:true, title:x.q, why:x.why, steps:x.steps.map(label=>({label}))}}});
   else if(type==="graph") renderGraphQ(ch, k);
-  else if(type==="dtap") renderDiagramQ(ch, k);
+  else if(type==="dtap") (k.teach.visual.type==="grid"?renderGridQ:renderDiagramQ)(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
   else if(type==="sort") renderSortQ(ch, k);
@@ -3106,6 +3185,7 @@ function renderIntro(k){
   const cards=planOf(LS.c).cards.filter(x=>avail[x]);
   const LBL={predict:"Take a guess", idea:"The big idea", see:"See it", worked:"Worked example", mistakes:"Common mistakes", real:"The precise version", remember:"Remember this"};
   let idx=0, guessed=false;
+  const bk = t && t.builds && visOf(LS.c, t.buildsOn, k.id);
   const show=()=>{
     window.scrollTo(0,0);
     const kind=cards[idx], last=idx===cards.length-1;
@@ -3113,7 +3193,7 @@ function renderIntro(k){
     const dots=`<div class="tdots" aria-label="Card ${idx+1} of ${cards.length}">${cards.map((_,i)=>`<i class="${i===idx?"on":i<idx?"done":""}"></i>`).join("")}</div>`;
     let body="";
     if(kind==="predict"){ const p=t.predict; body=`<div class="prompt">${gloss(p.q)}</div><p class="small muted">Just guess. Guessing first helps it stick.</p><div class="opts">${p.options.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="pfb"></div>`; }
-    else if(kind==="idea") body=`${t&&t.builds?`<span class="buildchip">↳ Builds on ${esc(t.buildsOn||"what you've learned")}</span><p class="small muted">${gloss(t.builds)}</p>`:""}<p class="eli5">${gloss(t&&t.eli5||k.summary, k.name)}</p>${t&&t.chain?`<p class="small" style="font-weight:700">${gloss(t.chain, k.name)}</p>`:""}${S.sample||(t&&t.simplest)?`<button class="linkbtn" id="simpler" type="button" style="align-self:flex-start">Explain it even simpler</button><div id="simpOut"></div>`:""}`;
+    else if(kind==="idea") body=`${t&&t.builds?(bk?`<button type="button" class="buildchip" id="bchip" aria-expanded="false" aria-controls="recap">↳ Builds on ${esc(bk.name)} <span class="chev" aria-hidden="true">▾</span></button><div id="recap" class="deep recap" hidden></div>`:`<span class="buildchip">↳ Builds on ${esc(t.buildsOn||"what you've learned")}</span>`)+`<p class="small muted">${gloss(t.builds)}</p>`:""}<p class="eli5">${gloss(t&&t.eli5||k.summary, k.name)}</p>${t&&t.chain?`<p class="small" style="font-weight:700">${gloss(t.chain, k.name)}</p>`:""}${S.sample||(t&&t.simplest)?`<button class="linkbtn" id="simpler" type="button" style="align-self:flex-start">Explain it even simpler</button><div id="simpOut"></div>`:""}`;
     else if(kind==="see") body=visualHtml(t.visual);
     else if(kind==="worked") body=`<div class="vans"><span class="label">Problem</span><span style="font-weight:600">${gloss(t.worked.problem)}</span></div><ol class="wsteps">${t.worked.steps.map((x,i)=>`<li${i?" hidden":""}>${gloss(x)}</li>`).join("")}</ol>${t.worked.steps.length>1?`<button class="btn soft sm" id="wNext" type="button" style="align-self:flex-start">Show next step</button>`:""}<div id="wAns" class="hook"${t.worked.steps.length>1?" hidden":""}><span class="label">Answer</span><span>${gloss(t.worked.answer)}</span></div>`;
     else if(kind==="mistakes") body=`<ul class="kp">${t.mistakes.map(x=>`<li>${gloss(x)}</li>`).join("")}</ul>`;
@@ -3135,6 +3215,9 @@ function renderIntro(k){
     if(kind==="see") wireVisual(main, t.visual);
     const wn=$("wNext"); if(wn) wn.onclick=()=>{ const h=main.querySelector(".wsteps li[hidden]"); if(h) h.hidden=false; if(!main.querySelector(".wsteps li[hidden]")){ $("wAns").hidden=false; wn.remove(); } };
     const kb=$("kpBtn"); if(kb) kb.onclick=()=>{ $("kpList").hidden=false; kb.remove(); };
+    const bc=$("bchip"); if(bc) bc.onclick=()=>{ const box=$("recap"), open=box.hidden; box.hidden=!open; bc.setAttribute("aria-expanded", open);
+      if(open&&!box.firstChild){ const v=bk.teach.visual; box.innerHTML=`<span class="label">Quick recap</span><p class="small">${gloss((bk.teach.eli5||bk.summary||"").split(/(?<=[.!?])\s/)[0], bk.name)}</p>${visualHtml(v,{hint:"Tap a part to remind yourself."})}`; wireVisual(box, v); }
+      if(open) L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"recap_visual", of:bk.name}}); };
     const sp=$("simpler"); if(sp) sp.onclick=()=>{ sp.remove(); L("help",{course:LS&&LS.c.title, concept:k.name, data:{kind:"intro_simpler", prewritten:!!(t&&t.simplest)}}); const box=$("simpOut"); box.className="deep"; box.innerHTML=`<span class="label">Even simpler</span><div class="read" style="font-size:17px"></div>`; if(t&&t.simplest) box.lastElementChild.innerHTML=gloss(t.simplest); else streamInto(box.lastElementChild, simplerPrompt(LS&&LS.c, k)); };
   };
   show();
@@ -3152,7 +3235,7 @@ function renderLabelQ(ch, k){
   let note=items[t].note;
   ans.split(/\s+/).filter(w=>w.length>3).forEach(w=>{ note=note.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"); });
   const tapMode=["curve","scale","diagram","timeline"].includes(v.type);
-  const reveal=(ok)=>{ $("vbox").innerHTML=visualHtml(v,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), v);
+  const reveal=(ok)=>{ const qg=main.querySelector(".qgrid"); if(qg) qg.remove(); $("vbox").innerHTML=visualHtml(v,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), v);
     const el=$("vbox").querySelector(`[data-i="${t}"]`); if(el) el.dispatchEvent(new Event("click"));
     answered(ok?"right":"wrong", {answer:ans, showAns:true, why:ok?"":items[t].note, canGuess:ok}); };
   if(tapMode){
@@ -3170,8 +3253,9 @@ function renderLabelQ(ch, k){
     box.querySelectorAll("[data-i]").forEach(el=>{ el.classList.add("tappable"); el.setAttribute("tabindex","0"); el.setAttribute("role","button"); el.setAttribute("aria-label","Choose this one"); el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
     return;
   }
-  const opts=shuffle([ans, ...shuffle(items.map(x=>x.label).filter(l=>l!==ans)).slice(0,3)]);
-  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: which part does this describe?</div><div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
+  const gq=v.type==="grid", own=shuffle(items.map(x=>x.label).filter(l=>l!==ans));
+  const opts=shuffle([ans, ...(gq?[...new Set([...own, ...shuffle(labelPool(k, v, ans))])]:own).slice(0,3)]);
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: ${gq?"what do the highlighted cells show?":"which part does this describe?"}</div>${gq?`<div class="gbox vgrid qgrid">${gridTable(v,{still:true, show:[items[t].id]})}</div>`:`<div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div>`}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
   wireQuit();
   main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{
     const ok=opts[+btn.dataset.i]===ans;
