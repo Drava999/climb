@@ -672,6 +672,23 @@ line.ds,polyline.ds,path.ds{fill:none}
 .tll{font:800 15px/1.3 var(--ui);background:var(--surface);border-radius:12px;padding:8px 12px}
 .tl.on .tll{background:var(--accent-soft)}.tl.on .tld{background:var(--accent)}
 .tl.hid .tll,.tl.hid .tlw{color:var(--accent-text)}
+/* trees + networks */
+.vtn{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;overflow:visible}
+.tn{cursor:pointer;outline:none}
+.tnb{fill:var(--raise);stroke:var(--line);stroke-width:1.5;transition:fill 160ms var(--ease-out),stroke 160ms var(--ease-out)}
+.tnt{font:800 12px var(--ui);fill:var(--ink);pointer-events:none}
+.tne{fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.tnl{font:800 11.5px var(--ui);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round;pointer-events:none}
+.tne,.tnl,.tn{transition:opacity 160ms var(--ease-out)}
+.tapq .tn .tnb{fill:var(--surface);stroke:var(--ink)}
+.tn.on .tnb,.tn.src .tnb{fill:var(--accent-soft);stroke:var(--accent)}.tn.src .tnb{stroke-width:2.5}
+.tne.on{stroke:var(--accent-text);stroke-width:3}.tnl.on{fill:var(--accent-text)}
+.tn.dim,.tne.dim,.tnl.dim{opacity:.45}.tn.ok,.tn.no,.tn.src{opacity:1}
+.tn.sel .tnb{stroke:var(--ink);stroke-width:2.5}
+.tn.hid .tnb{stroke:var(--accent);stroke-dasharray:5 4;stroke-width:2}.tn.hid .tnt{fill:var(--accent-text);font-size:17px}
+.tn.ok .tnb{fill:var(--good-soft);stroke:var(--good);stroke-width:2.5}.tn.no .tnb{fill:var(--bad-soft);stroke:var(--bad);stroke-width:2.5}
+.tn:focus-visible .tnb{stroke:var(--accent-text);stroke-width:3}
+@media (prefers-reduced-motion:reduce){.tnb,.tne,.tnl,.tn{transition:none}}
 .vgrid{overflow-x:auto;max-width:100%;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .vgt{border-collapse:separate;border-spacing:3px;margin:0 auto;font:800 14px/1.2 var(--ui);font-variant-numeric:tabular-nums;color:var(--ink)}
 .vgt th{font:800 13px/1.2 var(--ui);color:var(--muted);padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -685,6 +702,29 @@ line.ds,polyline.ds,path.ds{fill:none}
 .vgt td.on.pink{background:color-mix(in srgb,var(--g4) 26%,var(--surface));box-shadow:inset 0 0 0 2px var(--g4)}
 .vgt td.on.sel{box-shadow:inset 0 0 0 3px var(--ink)}
 .vgt td.no{background:var(--bad-soft);box-shadow:inset 0 0 0 2px var(--bad)}
+.vcd{width:100%;max-width:480px;height:auto;display:block;margin:0 auto;overflow:visible;touch-action:manipulation}
+.cw{stroke-width:1.4}.cw.up{stroke:var(--good)}.cw.dn{stroke:var(--bad)}.cb.up,.cvol.up{fill:var(--good)}.cb.dn,.cvol.dn{fill:var(--bad)}.cvol{opacity:.4;stroke:none}
+.chit{fill:transparent;cursor:pointer;outline:none}.chit:focus-visible{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
+.cmk{--t:var(--g3);cursor:pointer}.cmk.green{--t:var(--g2)}.cmk.pink{--t:var(--g4)}
+.cml{stroke:var(--t);stroke-width:2;stroke-dasharray:6 4}.cmh{stroke:transparent;stroke-width:18}
+.cmz{fill:color-mix(in srgb,var(--t) 20%,transparent);stroke:var(--t);stroke-width:1.5}
+.cmc{fill:color-mix(in srgb,var(--t) 16%,transparent);stroke:var(--t);stroke-width:2}
+.cma{fill:var(--t);stroke:var(--surface);stroke-width:1}.cmzh{fill:transparent}
+.cmk.on .cml{stroke-width:3}.cmk.on .cmz{fill:color-mix(in srgb,var(--t) 32%,transparent);stroke-width:2.5}.cmk.on .cmc{stroke-width:3}
+.cbd circle{fill:var(--t);stroke:var(--surface);stroke-width:1.5}.cbd text{font:900 9.5px var(--ui);fill:var(--surface)}
+.cox{font:800 10.5px var(--ui);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;stroke-linejoin:round}.col{fill:none;stroke:var(--muted);stroke-width:1}
+.csel{fill:none;stroke:var(--ink);stroke-width:1.5}
+.ctap{stroke:var(--surface);stroke-width:2}.ctap.ok{fill:var(--good)}.ctap.no{fill:var(--bad)}
+.vfr{display:flex;align-items:stretch;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;position:relative;padding:4px 2px 6px}
+.fr{flex:1 0 0;min-width:150px;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px;background:var(--surface);border-radius:14px;padding:8px;box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer;transition:opacity 200ms var(--ease-out),box-shadow 200ms var(--ease-out)}
+.fr.on{box-shadow:inset 0 0 0 2.5px var(--accent)}.fr.dim{opacity:.45}.fr:focus-visible{outline:3px solid var(--accent-text);outline-offset:1px}
+.frl{display:flex;align-items:center;gap:7px;font:800 13.5px/1.25 var(--ui)}
+.frl .n{width:22px;height:22px;border-radius:50%;background:var(--raise);display:grid;place-items:center;font:600 11px var(--mono);flex:none}.fr.on .frl .n{background:var(--accent);color:var(--accent-ink)}
+.frar{flex:none;align-self:center;font:900 16px var(--ui);color:var(--muted)}
+.frb{flex:1;display:flex;align-items:center;justify-content:center;min-width:0}.frb .diag{max-width:100%}
+.vft{font-size:12.5px;border-spacing:2px}.vft th{font-size:11px;padding:2px 3px}.vft td{min-width:0}.vft td>*{padding:7px 6px}
+.vft td.chg{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+@media (prefers-reduced-motion:reduce){.fr{transition:none}}
 .vnode .n.green{background:var(--g2);color:var(--surface)}.vnode .n.blue{background:var(--g3);color:var(--surface)}.vnode .n.pink{background:var(--g4);color:var(--surface)}
 .tapq .cm,.tapq .mk,.tapq .tl{cursor:pointer}
 .tapq .cm circle{fill:var(--surface);stroke:var(--ink);stroke-width:2.5}
@@ -1072,7 +1112,11 @@ function cleanVisual0(v){
   if(v.type==="graph") return cleanGraph(v);
   if(v.type==="diagram") return cleanDiagram(v);
   if(v.type==="timeline") return cleanTimeline(v);
+  if(v.type==="tree") return cleanTree(v);
+  if(v.type==="network") return cleanNet(v);
   if(v.type==="grid") return cleanGrid(v);
+  if(v.type==="candles") return cleanCandles(v);
+  if(v.type==="frames") return cleanFrames(v);
   if(v.type==="curve"){
     const T = x => String(x==null?"":x).trim();
     const points = arrOf(v.points).map(p=>Array.isArray(p)?[+p[0],+p[1]]:p&&typeof p==="object"?[+p.x,+p.y]:null).filter(p=>p&&isFinite(p[0])&&isFinite(p[1])).map(p=>[Math.max(0,Math.min(100,p[0])),Math.max(0,Math.min(100,p[1]))]).sort((a,b)=>a[0]-b[0]);
@@ -1120,7 +1164,11 @@ For each concept return (pitch everything at the concept's STAGE):
   "graph" (USE THIS for any real graph in economics, maths, physics, chemistry or biology where lines cross or shift, or areas matter: supply and demand, price controls, taxes, surplus, PPC, cost and revenue curves, AD/AS, externalities, straight lines and quadratics, distance- or speed-time, energy profiles, rate curves. Coordinates are in the axis units you set; keep everything inside the axes. Lines: straight {"id","label","from":[x,y],"to":[x,y]}, smooth {"id","label","points":[[x,y],...]} or a formula {"id","label","fn":"x^2-4","from_x":-3,"to_x":3}; a shifted line has "of": the original line's id; add "straight": true to a line given by points that has sharp kinks (e.g. AS flat, then rising, then vertical). Draw curves with the shape that is real for the field (e.g. a steep supply curve when capacity is fixed); derive cost curves from one total cost so MC cuts AC at its minimum (e.g. AC "400/x+10+0.25*x", MC "10+0.5*x"). Points: {"id","on":["D","S"]} (the app computes the exact crossing), {"id","on":["S1"],"x":30} (the point on a line at that x, e.g. the price producers keep under a tax) or {"id","at":[x,y]}, with "label" (e.g. "E1") and optional axis labels "px" (e.g. "P1") and "qx" (e.g. "Q1"). Areas: {"id","label","poly":[corners as point ids, "E1.y0" (on the y-axis level with E1), "E1.x0" (on the x-axis below E1), or [x,y]]}. "steps": 2-6 build-up steps, each {"text": one plain sentence saying what changed and why, "show": the ids that appear at this step}. "asks": 2-3 questions the app can mark: {"type":"point","q":"","answer":point id,"why":""}, {"type":"area","q":"","answer":area id,"why":""} (only with 2+ areas), {"type":"shift","q": a real-world event, then "Drag the curve.","line": line id,"to": the shifted line's id,"answer":"left" or "right","why":""}, {"type":"read","q":"What is the new price?","answer":"E2.y" or "E2.x","why":""}),
   "diagram" (a labelled picture of a thing's structure or a physical setup: a cell, the heart, a ship, a circuit, forces on an object, a geometry figure, a layout or map. Draw it with simple shapes on a canvas 100 wide and about 70 tall (x to the right, y DOWNWARDS): {"id","shape":"rect","x","y","w","h","r"} | {"id","shape":"circle","x","y","r"} | {"id","shape":"ellipse","x","y","rx","ry"} | {"id","shape":"line" or "arrow","x1","y1","x2","y2"} | {"id","shape":"polygon" or "polyline" or "curve","points":[[x,y],...]} | {"id","shape":"text","x","y","text"}; optional "fill": "soft", "part", "green", "blue", "pink", "dark" or "none", and "dash": true. Keep it simple, recognisable and correctly proportioned: 4-20 shapes. "parts": 3-7 parts to learn, each {"id","label","note","at":[x,y] a point ON that part}. Optional "steps": 2-5 build-up steps {"text","show":[shape and part ids]}),
   "timeline" (events or stages in time order: 3-7 items, each {"label","when": what to display, e.g. "1914" or "Day 3","t": a number used for spacing, e.g. the year,"note"}),
+  "tree" (USE THIS for a branching hierarchy read from the top down: probability trees, decision trees, classification or identification keys, family trees, org charts. 3-15 nodes, at most 4 levels below the single top node, at most 8 end boxes. Each node {"id","label": max 4 words,"parent": its parent's id ("" for the top node),"edge": optional label on the branch from its parent, max 10 characters, e.g. "0.3", "1/2", "Yes", "Has wings","note"}. For a probability tree, every branch's "edge" is its probability as a decimal or fraction (the branches leaving one node add up to 1) and each end box names the outcome and its probability, e.g. "Rain, late 0.06"; for a key or decision tree, the edges are the answers ("Yes"/"No"). "steps": 2-5 steps teaching how to read it, e.g. first one branch, then following a path, then multiplying along it; each {"text": one plain sentence,"show":[ids of nodes whose path from the top is highlighted]}. Shape: {"type":"tree","title":"","caption":"","nodes":[{"id":"","label":"","parent":"","edge":"","note":""}],"steps":[{"text":"","show":[]}]}),
+  "network" (USE THIS when several things affect each other along more than one path, so a single chain cannot show it: food webs, cause-and-effect maps with several causes and effects, computer networks, supply chains, trade links. Use "flow" instead for one path from start to end, and "cycle" for one loop. 3-9 nodes {"id","label","note","x","y"} with x and y from 0 to 100 (0,0 is top-left) placing linked nodes near each other so few links cross (in a food web, plants at the bottom, top predators at the top). 2-14 links {"from": node id,"to": node id,"label": max 2 words, e.g. "eaten by", "raises","arrow": true}; arrows point the way the effect, energy or goods flow; "arrow": false for a two-way link such as a cable. "steps": 2-5 steps, each {"text": one plain sentence,"show":[node ids and links written "from>to"]}. Shape: {"type":"network","title":"","caption":"","nodes":[{"id":"","label":"","note":"","x":50,"y":50}],"links":[{"from":"","to":"","label":"","arrow":true}],"steps":[{"text":"","show":[]}]}),
   "grid" (USE THIS for anything READ AS A TABLE OF VALUES: footprint or order-flow charts, order books, Punnett squares, truth tables, matrices, times tables, timetables, contingency tables, periodic-table blocks. 3-10 rows and 1-5 columns of realistic example values (never placeholders like "x" or "..."); each cell is a short string, max 12 characters, e.g. "120 x 45", "Bb", "1". "cols": the column headers; each row {"label": its row header, e.g. a price,"cells": one string per column}. "marks": 1-4 groups of cells to point out, {"id","label","note","cells":[[row,col],...] counted from 0 (the top-left value cell is [0,0]; headers are not counted),"tone":"green","pink" or "blue"}. "steps": 2-5 steps teaching HOW TO READ it: first what one cell means, then what to compare, then what a highlighted pattern means; each {"text": one plain sentence,"show":[ids of the marks highlighted at this step]}),
+  "candles" (USE THIS for trading, stocks, futures, forex or crypto and any price chart read as candles: candlestick patterns, support and resistance, gaps, breakouts, trends, imbalance or supply and demand zones. Choose it over "graph" or "curve" whenever the learner must read real price bars, not a smooth economics or maths line. 12-30 candles in time order, oldest first, with realistic prices for the instrument (e.g. ES futures near 5400 move in 0.25 steps) that tell ONE clear story; each {"o": open,"h": high,"l": low,"c": close} with h at least max(o,c) and l at most min(o,c), each opening near the previous close. Optional "volume": one number per candle. "unit": e.g. "pts" or "$". "marks": 1-4 things to point out: {"id","label","note","kind":"level","y": a price} (a horizontal line, e.g. support), {"id","label","note","kind":"zone","y1","y2": a price range,"from","to": candle indexes counted from 0} (a shaded box), {"id","label","note","kind":"candle","index":[candle indexes]} (outlines those candles) or {"id","label","note","kind":"arrow","at": a candle index,"dir":"up" or "down"}; optional "tone": "blue", "pink" or "green". "steps": 2-5 steps teaching HOW TO READ it: first what one candle means (a "candle" mark on ONE candle, saying it opened, went high and low, then closed), then the pattern; each {"text": one plain sentence,"show":[ids of the marks shown at this step]}. Shape: {"type":"candles","title":"","caption":"","unit":"","candles":[{"o":0,"h":0,"l":0,"c":0}],"volume":[],"marks":[{"id":"","label":"","note":"","kind":"zone","y1":0,"y2":0,"from":0,"to":0}],"steps":[{"text":"","show":[]}]}),
+  "frames" (a before → after storyboard of 2-4 panels showing ONE thing CHANGING: an order book before and after a big order, a reaction, a cell dividing, a sentence being rewritten, a market before and after news. Use it when the change itself is the lesson; use "flow" for a list of steps and "diagram" for one structure. Each frame {"label": what is true in this panel, max 4 words, never just "Before", "After" or "Step 1","note": one plain sentence on what changed and why, max 25 words} plus EITHER "shapes": drawn exactly like "diagram" shapes (canvas 100 wide, about 70 tall; keep the same layout in every frame so the change stands out) OR "rows": a mini table of 1-8 rows, each 1-4 short strings (max 12 characters), same columns in every frame, with optional shared "cols": column headers; the app highlights cells that changed. Shape: {"type":"frames","title":"","caption":"","cols":[""],"frames":[{"label":"","note":"","rows":[[""]]}]}),
   "curve" (a single shape rising or falling with nothing crossing it: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
   "bars" (comparing amounts: 2-6 bars; real values only if you are sure of them, otherwise made-up values with "(illustrative)" in the title),
   "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
@@ -1274,7 +1322,7 @@ function cycleSvg(steps, hide){
     return `<g class="cn${i===hide?" hid":""}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(i===hide?"Hidden step":st.label)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>${lines.map((l,j)=>`<text x="${x.toFixed(1)}" y="${(ty+j*14).toFixed(1)}" text-anchor="middle">${esc(l)}</text>`).join("")}</g>`; }).join("");
   return `<svg class="vcycle" viewBox="0 0 320 300" role="img" aria-label="Cycle diagram"><defs><marker id="cyArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker></defs>${arcs}${nodes}</svg>`;
 }
-const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : v.type==="grid" ? v.marks : (v.steps || v.parts || v.marks || v.items || []);
+const visItems = v => v.type==="diagram" ? v.parts : v.type==="timeline" ? v.items : v.type==="tree"||v.type==="network" ? v.nodes : v.type==="grid" ? v.marks : v.type==="candles" ? v.marks : v.type==="frames" ? v.frames : (v.steps || v.parts || v.marks || v.items || []);
 function curveSvg(v, hide){
   const X0=46, X1=306, Y0=16, Y1=168, W=X1-X0, H=Y1-Y0, px=x=>X0+W*x/100, py=y=>Y1-H*y/100;
   const pts=v.points.map(([x,y])=>[px(x),py(y)]);
@@ -1293,7 +1341,10 @@ function visualHtml(v, o){
   if(v.type==="graph") return graphHtml(v, o);
   if(v.type==="diagram") return diagramHtml(v, o);
   if(v.type==="timeline") return timelineHtml(v, o);
+  if(v.type==="tree"||v.type==="network") return tnHtml(v, o);
   if(v.type==="grid") return gridHtml(v, o);
+  if(v.type==="candles") return candlesHtml(v, o);
+  if(v.type==="frames") return framesHtml(v, o);
   let body="";
   if(v.type==="flow") body=`<div class="vflow">${v.steps.map((st,i)=>`${i?'<div class="varrow" aria-hidden="true">↓</div>':""}<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i+1}</span><span>${i===hide?"?":esc(st.label)}</span></button>`).join("")}</div>`;
   else if(v.type==="cycle") body=cycleSvg(v.steps, hide);
@@ -1533,6 +1584,163 @@ function timelineHtml(v, o){
     return `<button type="button" class="tl${o.hide===i?" hid":""}" data-i="${i}" style="margin-top:${gap}px"><span class="tlw">${o.hide===i?"?":esc(x.when||"")}</span><span class="tld" aria-hidden="true"></span><span class="tll">${o.hide===i?"?":esc(x.label)}</span></button>`; }).join("");
   return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}<div class="vtime">${rows}</div>${o.still||o.hide!=null?"":`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap an event to see why it matters.")}</div>`}</div>`;
 }
+/* ---------- trees + networks: branching hierarchies read from the top (probability trees, keys, org charts) and nodes joined by labelled links (food webs, cause maps) ---------- */
+const tnWrap=(s,n)=>{ const L=[""]; String(s).split(/\s+/).filter(Boolean).forEach(w=>{ w=w.length>n?w.slice(0,n-1)+"…":w; const l=L[L.length-1]; if(l&&(l+" "+w).length>n) L.push(w); else L[L.length-1]=(l?l+" ":"")+w; }); if(L.length>2){ L.length=2; L[1]=L[1].slice(0,n-1)+"…"; } return L; };
+const tnSvg=v=>v.type==="tree"?treeSvg:netSvg, TNUM=/(\d*\.\d+|\d+)(\s*\/\s*\d+)?\s*%?/g;
+function cleanTree(v){
+  const T=x=>String(x==null?"":x).trim(), by={}, raw=[];
+  arrOf(v.nodes).forEach((n,i)=>{ if(!n||!T(n.label)) return; const id=T(n.id||("n"+i)).slice(0,24); if(by[id]) return; raw.push(by[id]={id, label:T(n.label).slice(0,40), parent:T(n.parent), edge:T(n.edge).slice(0,18), note:T(n.note).slice(0,180)}); });
+  const root=raw.find(n=>!n.parent||!by[n.parent]||n.parent===n.id); if(!root) return null; root.parent=""; root.edge="";
+  const kids={}; raw.forEach(n=>{ if(n!==root&&by[n.parent]) (kids[n.parent]=kids[n.parent]||[]).push(n); });
+  const nodes=[], q=[[root,0]]; while(q.length&&nodes.length<15){ const [n,d]=q.shift(); nodes.push(n); if(d<4) (kids[n.id]||[]).forEach(c=>q.push([c,d+1])); } // only nodes reachable from the top: cycles and orphans drop out
+  if(nodes.length<3) return null; const ids=new Set(nodes.map(n=>n.id));
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>ids.has(x))}:null).filter(Boolean).slice(0,6);
+  return {type:"tree", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), nodes, steps};
+}
+function treeLay(v){
+  const kids={}, P={}, dep={}; v.nodes.forEach(n=>kids[n.id]=[]); v.nodes.forEach(n=>{ if(n.parent&&kids[n.parent]) kids[n.parent].push(n.id); });
+  let lf=0; const walk=(id,d)=>{ dep[id]=d; const c=kids[id]; c.forEach(x=>walk(x,d+1)); P[id]=c.length?(P[c[0]]+P[c[c.length-1]])/2:lf++; }; walk(v.nodes[0].id,0);
+  const D=Math.max(...Object.values(dep)), W=340, tw=W/lf-8, lw=W/(D+1)*.7, lr=lw>tw*1.1, w=Math.min(120,lr?lw:tw), n=Math.max(5,Math.floor((w-10)/6.6)), at={}; // top-down unless left-to-right gives wider boxes
+  v.nodes.forEach(x=>{ const L=tnWrap(x.label,n); at[x.id]={x:lr?W/(D+1)*(dep[x.id]+.5):W/lf*(P[x.id]+.5), y:lr?25+P[x.id]*46:24+dep[x.id]*84, w, h:L.length>1?40:30, L}; });
+  return {at, kids, lr, W, H:lr?lf*46+4:D*84+48, n};
+}
+const tnNode=(n,i,p,L,cls,o)=>`<g class="${cls.replace(/\s+/g," ").trim()}" data-i="${i}"${o.still?"":` tabindex="0" role="button" aria-label="${esc(o.hide===i?"Hidden box":n.label)}"`}><rect x="${(p.x-p.w/2).toFixed(1)}" y="${(p.y-p.h/2).toFixed(1)}" width="${p.w.toFixed(1)}" height="${p.h}" rx="10" class="tnb"/>${L.map((l,j)=>`<text x="${p.x.toFixed(1)}" y="${(p.y+4.5+(j-(L.length-1)/2)*14).toFixed(1)}" text-anchor="middle" class="tnt">${esc(l)}</text>`).join("")}</g>`;
+function treeSvg(v, o){
+  o=o||{}; const Y=treeLay(v), at=Y.at, by={}, F=x=>x.toFixed(1); v.nodes.forEach(n=>by[n.id]=n);
+  const path=new Set(); [...(o.show||[]), ...(o.sel!=null&&v.nodes[o.sel]?[v.nodes[o.sel].id]:[])].forEach(id=>{ for(let x=by[id]; x&&!path.has(x.id); x=by[x.parent]) path.add(x.id); });
+  const lit=path.size>0, c=id=>lit?(path.has(id)?" on":" dim"):""; let E="", N="";
+  v.nodes.forEach((n,i)=>{ const p=at[n.id];
+    if(n.parent){ const q=at[n.parent], [x1,y1,x2,y2]=Y.lr?[q.x+q.w/2,q.y,p.x-p.w/2,p.y]:[q.x,q.y+q.h/2,p.x,p.y-p.h/2], t=Y.lr?.5:.6;
+      E+=`<line x1="${F(x1)}" y1="${F(y1)}" x2="${F(x2)}" y2="${F(y2)}" class="tne${c(n.id)}"/>`;
+      if(n.edge) N+=`<text x="${F(x1+(x2-x1)*t)}" y="${F(y1+(y2-y1)*t+4)}" text-anchor="middle" class="tnl${c(n.id)}">${esc(n.edge)}</text>`; }
+    const lab=o.hide===i?["?"]:o.mask&&!Y.kids[n.id].length?tnWrap(n.label.replace(TNUM,"?"),Y.n):p.L;
+    N+=tnNode(n, i, p, lab, ["tn", c(n.id), o.sel===i?"sel":"", o.hide===i?"hid":"", o.mark&&o.mark[n.id]||""].join(" "), o);
+  });
+  return `<svg class="vtn" viewBox="0 0 ${Y.W} ${Y.H}" role="img" aria-label="${esc(v.title||"Tree diagram")}">${E}${N}</svg>`;
+}
+function treeProb(v){ // exact branch products when every branch is a probability and each fork adds up to 1; else null
+  const g=(a,b)=>b?g(b,a%b):a, red=([a,b])=>{ const d=g(a,b)||1; return [a/d,b/d]; }, mul=(x,y)=>red([x[0]*y[0],x[1]*y[1]]), add=(x,y)=>red([x[0]*y[1]+y[0]*x[1],x[1]*y[1]]);
+  const pf=s=>{ s=String(s).replace(/^\s*p\s*=\s*/i,"").trim(); let m=s.match(/^(\d+)\s*\/\s*(\d+)$/); if(m) return +m[2]&&+m[1]<=+m[2]?red([+m[1],+m[2]]):null; m=s.match(/^(\d*)\.?(\d*)\s*(%?)$/); if(!m||!(m[1]+m[2])) return null; const r=red([+(m[1]+m[2]), 10**m[2].length*(m[3]?100:1)]); return r[0]<=r[1]?r:null; };
+  const by={}, val={}, kids={}; let frac=true; v.nodes.forEach(n=>{ by[n.id]=n; kids[n.id]=[]; });
+  for(const n of v.nodes.slice(1)){ const p=pf(n.edge); if(!p||!p[0]) return null; val[n.id]=p; if(!/\//.test(n.edge)) frac=false; kids[n.parent].push(n.id); }
+  for(const id in kids) if(kids[id].length&&Math.abs(kids[id].reduce((s,x)=>s+val[x][0]/val[x][1],0)-1)>1e-6) return null;
+  const P={}; v.nodes.forEach(n=>{ P[n.id]=n.parent?mul(P[n.parent],val[n.id]):[1,1]; });
+  const fmt=r=>frac?(r[1]===1?String(r[0]):r[0]+"/"+r[1]):String(+(r[0]/r[1]).toFixed(6)), chain=id=>{ const a=[]; for(let x=by[id]; x&&x.parent; x=by[x.parent]) a.unshift(x.id); return a; };
+  return {P, val, fmt, chain, add, red};
+}
+function cleanNet(v){
+  const T=x=>String(x==null?"":x).trim(), num=z=>z!==""&&z!=null&&isFinite(+z), cl=z=>Math.max(0,Math.min(100,+z)), ids=new Set(), nodes=[];
+  arrOf(v.nodes).forEach((n,i)=>{ if(!n||!T(n.label)||nodes.length>=9) return; const id=T(n.id||("n"+i)).slice(0,24); if(ids.has(id)) return; ids.add(id); nodes.push({id, label:T(n.label).slice(0,40), note:T(n.note).slice(0,180), ...(num(n.x)&&num(n.y)?{x:cl(n.x), y:cl(n.y)}:{})}); });
+  const seen=new Set(), links=arrOf(v.links).map(l=>{ if(!l) return null; const from=T(l.from), to=T(l.to), key=from+">"+to; if(!ids.has(from)||!ids.has(to)||from===to||seen.has(key)) return null; seen.add(key); return {id:T(l.id).slice(0,24)||key, from, to, label:T(l.label).slice(0,24), arrow:!(l.arrow===false||l.arrow==="false")}; }).filter(Boolean).slice(0,16);
+  if(nodes.length<3||links.length<2) return null;
+  const ok=new Set([...ids, ...links.map(l=>l.id), ...links.map(l=>l.from+">"+l.to)]);
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).map(T).filter(x=>ok.has(x))}:null).filter(Boolean).slice(0,6);
+  return {type:"network", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), nodes, links, steps};
+}
+function netLay(v){
+  const W=340, H=v.nodes.length>6?320:280, n=v.nodes.length, hint=v.nodes.every(x=>x.x!=null), at={};
+  v.nodes.forEach((d,i)=>{ const L=tnWrap(d.label,12), w=Math.max(54,Math.min(104,Math.max(...L.map(l=>l.length))*7+16)), a=-Math.PI/2+i*2*Math.PI/n;
+    at[d.id]={x:hint?44+(W-88)*d.x/100:W/2+(W/2-56)*Math.cos(a), y:hint?26+(H-52)*d.y/100:H/2+(H/2-30)*Math.sin(a), w, h:L.length>1?40:30, L}; });
+  const A=Object.values(at);
+  for(let it=0;it<80;it++){ let moved=false; // push overlapping boxes apart, keep them on the canvas
+    for(let i=0;i<A.length;i++) for(let j=i+1;j<A.length;j++){ const a=A[i], b=A[j], ox=(a.w+b.w)/2+14-Math.abs(a.x-b.x), oy=(a.h+b.h)/2+18-Math.abs(a.y-b.y);
+      if(ox>0&&oy>0){ moved=true; if(ox<oy){ const s=(a.x<b.x?-1:1)*ox/2; a.x+=s; b.x-=s; } else { const s=(a.y<b.y?-1:1)*oy/2; a.y+=s; b.y-=s; } } }
+    A.forEach(a=>{ a.x=Math.max(a.w/2+2,Math.min(W-a.w/2-2,a.x)); a.y=Math.max(a.h/2+2,Math.min(H-a.h/2-2,a.y)); }); if(!moved) break; }
+  return {at, W, H};
+}
+function netSvg(v, o){
+  o=o||{}; const Y=netLay(v), at=Y.at, on=new Set(), lk=new Set(), F=x=>x.toFixed(1);
+  (o.show||[]).forEach(s=>{ const l=v.links.find(l=>l.id===s||l.from+">"+l.to===s); if(l){ lk.add(l.id); on.add(l.from); on.add(l.to); } else on.add(s); });
+  if(o.sel!=null&&v.nodes[o.sel]){ const id=v.nodes[o.sel].id; on.add(id); v.links.forEach(l=>{ if(l.from===id||l.to===id){ lk.add(l.id); on.add(l.from); on.add(l.to); } }); }
+  const lit=on.size>0, boxes=v.nodes.map(d=>at[d.id]), placed=[], c=(s,id)=>lit?(s.has(id)?" on":" dim"):"";
+  const edge=(p,dx,dy)=>{ const t=Math.min((p.w/2+4)/(Math.abs(dx)||1e-9),(p.h/2+4)/(Math.abs(dy)||1e-9)); return [p.x+dx*t,p.y+dy*t]; };
+  const hit=(x,y,w,h)=>boxes.concat(placed).some(b=>Math.abs(b.x-x)<(b.w+w)/2+2&&Math.abs(b.y-y)<(b.h+h)/2+1);
+  let E="", B="", N="";
+  v.links.forEach(l=>{ const a=at[l.from], b=at[l.to], dx=b.x-a.x, dy=b.y-a.y, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len, bend=v.links.some(m=>m.from===l.to&&m.to===l.from)?22:0;
+    const cx=(a.x+b.x)/2+nx*bend, cy=(a.y+b.y)/2+ny*bend, [x1,y1]=edge(a,cx-a.x,cy-a.y), [x2,y2]=edge(b,cx-b.x,cy-b.y), k=c(lk,l.id);
+    E+=`<path d="M${F(x1)} ${F(y1)} Q${F(cx)} ${F(cy)} ${F(x2)} ${F(y2)}" class="tne${k}"${l.arrow?` marker-end="url(#tnA${k===" on"?"on":""})"`:""}/>`;
+    if(!l.label) return; const w=l.label.length*6.4+8, h=15; let best=null; // label goes on the first spot along the link that is clear of boxes and other labels
+    for(const t of [.5,.4,.6,.3,.7]){ for(const s of [0,1,-1]){ const u=1-t, px=Math.max(w/2,Math.min(Y.W-w/2,u*u*x1+2*u*t*cx+t*t*x2+nx*s*13)), py=u*u*y1+2*u*t*cy+t*t*y2+ny*s*13; if(!hit(px,py,w,h)){ best=[px,py]; break; } } if(best) break; }
+    if(!best) best=[(x1+x2)/4+cx/2, (y1+y2)/4+cy/2]; placed.push({x:best[0], y:best[1], w, h});
+    B+=`<text x="${F(best[0])}" y="${F(best[1]+4)}" text-anchor="middle" class="tnl${k}">${esc(l.label)}</text>`; });
+  v.nodes.forEach((n,i)=>{ N+=tnNode(n, i, at[n.id], o.hide===i?["?"]:at[n.id].L, ["tn", c(on,n.id), o.sel===i?"sel":"", o.hide===i?"hid":"", o.mark&&o.mark[n.id]||""].join(" "), o); });
+  return `<svg class="vtn" viewBox="0 0 ${Y.W} ${Y.H}" role="img" aria-label="${esc(v.title||"Network diagram")}"><defs>${["","on"].map(s=>`<marker id="tnA${s}" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--${s?"accent-text":"muted"})"/></marker>`).join("")}</defs>${E}${B}${N}</svg>`;
+}
+function tnHtml(v, o){
+  o=o||{}; const H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`, svg=tnSvg(v);
+  if(o.still) return `<div class="vis">${H}<div class="gbox vtnb">${svg(v,{still:true})}</div></div>`;
+  return `<div class="vis">${H}<div class="gbox vtnb">${svg(v,{show:v.steps.length?v.steps[0].show:[]})}</div>
+    ${v.steps.length?`<div class="gstep"><p class="gtext">${gloss(v.steps[0].text)}</p>${v.steps.length>1?`<div class="gnav"><span class="small muted">1 of ${v.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div>`:""}
+    <div class="vnote" aria-live="polite">${esc(o.hint||(v.type==="tree"?"Tap a box to see what it means.":"Tap a box to see what it is and what it links to."))}</div></div>`;
+}
+function wireTN(root, v){
+  const box=root.querySelector(".vtnb"); if(!box) return; const svg=tnSvg(v); let i=0, sel=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"";
+  const shown=()=>v.steps.length?v.steps[i].show:[];
+  const say=ns=>{ if(note) note.innerHTML=ns.length?ns.map(n=>`<b>${esc(n.label)}</b>${n.note?" · "+gloss(n.note):""}`).join("<br>"):hint; };
+  const draw=kb=>{ box.innerHTML=svg(v,{show:sel==null?shown():[], sel}); box.querySelectorAll("[data-i]").forEach(el=>{ const go=kb=>{ const j=+el.dataset.i; sel=sel===j?null:j; say(sel==null?[]:[v.nodes[j]]); draw(kb); };
+    el.addEventListener("click",()=>go(false)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(true); } }); });
+    if(kb&&sel!=null){ const f=box.querySelector(`[data-i="${sel}"]`); if(f) f.focus({preventScroll:true}); } };
+  const step=()=>{ sel=null; const st=root.querySelector(".gstep");
+    if(st&&v.steps.length>1){ st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; }
+    const ns=v.nodes.filter(n=>shown().includes(n.id)&&n.note); say(ns.length&&ns.length<=2?ns:[]); draw(); };
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
+  step();
+}
+function tnLabelQ(ch, k, t, ans, note, reveal){
+  const v=k.teach.visual, opts=shuffle([ans, ...[...new Set([...shuffle(v.nodes.map(x=>x.label).filter(l=>norm(l)!==norm(ans))), ...shuffle(labelPool(k, v, ans))])].slice(0,3)]);
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: what goes in the highlighted box?</div><div class="gbox qgrid">${tnSvg(v)(v,{still:true, sel:t, hide:t})}</div>${note?`<div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div>`:""}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{ const ok=opts[+btn.dataset.i]===ans;
+    main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); });
+    if(!ok){ btn.classList.add("no"); LS.q.typed=opts[+btn.dataset.i]; } reveal(ok); });
+}
+function renderTreeQ(ch, k){
+  const v=k.teach.visual, Y=treeLay(v), by={}, pr=treeProb(v); v.nodes.forEach(n=>by[n.id]=n); k.dAsk=(k.dAsk==null?-1:k.dAsk)+1;
+  const deep=v.nodes.map((n,i)=>i).filter(i=>!Y.kids[v.nodes[i].id].length&&v.nodes[i].parent&&by[v.nodes[i].parent].parent);
+  if(pr&&deep.length&&(LS.q.L>=3||k.dAsk%2===0)){ // read a probability off the tree: multiply along the branches
+    const t=deep[k.dAsk%deep.length], n=v.nodes[t], path=pr.chain(n.id), ans=pr.fmt(pr.P[n.id]), vals=path.map(id=>pr.val[id]), P1=pr.P[n.id];
+    const alt=[vals.reduce(pr.add), vals[vals.length-1], pr.red([P1[1]-P1[0],P1[1]]), ...deep.filter(j=>j!==t).map(j=>pr.P[v.nodes[j].id])].filter(r=>r[0]<=r[1]);
+    const opts0=[...new Set(shuffle(alt.map(pr.fmt)))].filter(x=>x!==ans).slice(0,3);
+    if(opts0.length>=2){ const opts=shuffle([ans, ...opts0]), names=path.map(id=>by[id].label.replace(TNUM,"").replace(/[\s:=(,]+$/,"").trim()||by[id].label);
+      LS.q.text=`Probability of ${names.join(" → ")}`; LS.q.x={q:"tree", skill:"calc"};
+      main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: what is the probability of the highlighted path, <b>${names.map(esc).join(" → ")}</b>?</div><div class="gbox vtnb" id="dq">${treeSvg(v,{still:true, sel:t, mask:true})}</div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fb"></div></div>`;
+      wireQuit();
+      main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{ const ok=opts[+btn.dataset.i]===ans;
+        main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); }); if(!ok){ btn.classList.add("no"); LS.q.typed=opts[+btn.dataset.i]; }
+        $("dq").innerHTML=treeSvg(v,{still:true, sel:t});
+        answered(ok?"right":"wrong", {answer:ans, noAnsBox:ok, why:`Multiply along the branches: ${path.map(id=>by[id].edge).join(" × ")} = ${ans}.`}); });
+      return; } }
+  const keyed=i=>{ const a=[]; for(let x=v.nodes[i]; x&&x.parent; x=by[x.parent]){ if(!x.edge||/\d/.test(x.edge)||v.nodes.some(s=>s!==x&&s.parent===x.parent&&norm(s.edge)===norm(x.edge))) return null; a.unshift(x.edge); } return a.length>=2?a:null; };
+  const cands=v.nodes.map((n,i)=>({i, path:keyed(i), note:n.note&&n.note.length>8?n.note:""})).filter(c=>c.i&&(c.path||c.note)), cd=cands[k.dAsk%(cands.length||1)];
+  if(!cd) return renderLabelQ(ch, k);
+  const t=cd.i, m=v.nodes[t], usePath=cd.path&&(!cd.note||k.dAsk%2===0); let note=cd.note;
+  m.label.split(/\s+/).filter(w=>w.length>3).forEach(w=>{ note=note.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"); });
+  LS.q.text=usePath?`Follow ${cd.path.join(" → ")}`:`Tap the box: ${note}`; LS.q.x={q:"tree", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${usePath?`${esc(v.title||k.name)}: start at the top and follow <b>${cd.path.map(esc).join(" → ")}</b>. Tap where you end up.`:`${esc(v.title||k.name)}: tap the box this describes.`}</div>${usePath?"":`<div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div>`}<div class="gbox vtnb tapq" id="dq">${treeSvg(v,{})}</div><div id="fb"></div></div>`;
+  wireQuit(); let locked=false;
+  const go=el=>{ if(locked) return; locked=true; const i=+el.dataset.i, ok=i===t;
+    $("dq").innerHTML=treeSvg(v,{still:true, sel:t, mark:{[m.id]:"ok", ...(ok?{}:{[v.nodes[i].id]:"no"})}});
+    answered(ok?"right":"wrong", {answer:m.label, why:m.note, noAnsBox:ok, extra:ok?"":`<p class="small">You tapped: <b>${esc(v.nodes[i].label)}</b></p>`}); };
+  $("dq").querySelectorAll("[data-i]").forEach(el=>{ el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
+}
+function renderNetQ(ch, k){
+  const v=k.teach.visual, by={}, dir=v.links.some(l=>l.arrow), outD=id=>v.links.filter(l=>l.arrow&&l.from===id).map(l=>l.to), out=id=>v.links.filter(l=>l.from===id||(!l.arrow&&l.to===id)).map(l=>l.from===id?l.to:l.from), inn=id=>v.links.filter(l=>l.arrow&&l.to===id).map(l=>l.from);
+  v.nodes.forEach(n=>by[n.id]=n); k.dAsk=(k.dAsk==null?-1:k.dAsk)+1; const all=v.nodes.length-1, qs=[];
+  v.nodes.forEach(n=>{ const o=[...new Set(out(n.id))], i=inn(n.id), o1=new Set(outD(n.id)), two=[...new Set([...o1].flatMap(outD))].filter(x=>x!==n.id&&!o1.has(x));
+    if(o.length&&o.length<all) qs.push({kind:"out", n, ans:o}); if(i.length&&i.length<all) qs.push({kind:"in", n, ans:i}); if(two.length) qs.push({kind:"two", n, ans:two}); });
+  const pool=LS.q.L>=3&&qs.some(q=>q.kind==="two")?qs.filter(q=>q.kind==="two"):qs.filter(q=>q.kind!=="two"), q=pool[k.dAsk%(pool.length||1)];
+  if(!q) return renderLabelQ(ch, k);
+  const X=esc(q.n.label), ask=q.kind==="in"?`follow the arrows and tap something that directly affects <b>${X}</b>.`:q.kind==="two"?`follow the arrows and tap something <b>${X}</b> affects only through something else (two arrows away).`:dir?`follow the arrows and tap something that <b>${X}</b> directly affects.`:`tap something linked directly to <b>${X}</b>.`;
+  LS.q.text=`${q.kind==="in"?"What affects":q.kind==="two"?"What is indirectly affected by":"What is affected by"} ${q.n.label}`; LS.q.x={q:"network", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: ${ask}</div><div class="gbox vtnb tapq" id="dq">${netSvg(v,{mark:{[q.n.id]:"src"}})}</div><div id="fb"></div></div>`;
+  wireQuit(); let locked=false;
+  const lab=l=>`${by[l.from].label} → ${by[l.to].label}${l.label?` (${l.label})`:""}`, lnk=(a,b)=>v.links.find(l=>(l.from===a&&l.to===b)||(!l.arrow&&l.from===b&&l.to===a));
+  const go=el=>{ if(locked) return; locked=true; const i=+el.dataset.i, id=v.nodes[i].id, ok=q.ans.includes(id), tg=ok?id:q.ans[0];
+    const ls=(q.kind==="two"?(()=>{ const m=outD(q.n.id).find(m=>outD(m).includes(tg)); return [lnk(q.n.id,m), lnk(m,tg)]; })():[q.kind==="in"?lnk(tg,q.n.id):lnk(q.n.id,tg)]).filter(Boolean);
+    $("dq").innerHTML=netSvg(v,{still:true, show:ls.map(l=>l.id), mark:{[q.n.id]:"src", ...Object.fromEntries(q.ans.map(a=>[a,"ok"])), ...(ok?{}:{[id]:"no"})}});
+    answered(ok?"right":"wrong", {answer:q.ans.map(a=>by[a].label).join(" or "), noAnsBox:ok, why:ls.map(lab).join(", then "), extra:ok?"":`<p class="small">You tapped: <b>${esc(v.nodes[i].label)}</b></p>`}); };
+  $("dq").querySelectorAll("[data-i]").forEach(el=>{ el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
+}
 /* ---------- grids: tables of values read cell by cell (footprint charts, order books, Punnett squares, truth tables) ---------- */
 const GTONE=["green","blue","pink"];
 function cleanGrid(v){
@@ -1576,6 +1784,137 @@ function wireGrid(root, v){
   root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
   step();
 }
+/* ---------- candles: price charts read candle by candle (open, high, low, close) with levels, zones and arrows on top ---------- */
+const CTONE=["blue","pink","green"];
+function cleanCandles(v){
+  const T=x=>String(x==null?"":x).trim(), F=x=>x!==""&&x!=null&&isFinite(+x);
+  const cs=arrOf(v.candles).map(c=>Array.isArray(c)?c:c&&typeof c==="object"?[c.o,c.h,c.l,c.c]:null).filter(c=>c&&c.length>=4&&c.slice(0,4).every(F)).map(c=>{ const [o,h,l,cl]=c.slice(0,4).map(Number); return {o, h:Math.max(o,h,l,cl), l:Math.min(o,h,l,cl), c:cl}; }).slice(0,36);
+  if(cs.length<6) return null; const n=cs.length, lo=Math.min(...cs.map(c=>c.l)), hi=Math.max(...cs.map(c=>c.h)), sp=hi-lo; if(!(sp>0)) return null;
+  const P=x=>F(x)&&+x>=lo-sp&&+x<=hi+sp?+x:null, ix=x=>F(x)&&Number.isInteger(+x)&&+x>=0&&+x<n?+x:null, seen=new Set();
+  const marks=arrOf(v.marks).map((m,i)=>{ if(!m||!m.label) return null; const id=T(m.id||("m"+i)).slice(0,14), kind=T(m.kind), o={id, kind, label:T(m.label).slice(0,40), note:T(m.note).slice(0,180), tone:CTONE.includes(T(m.tone))?T(m.tone):""};
+    if(seen.has(id)) return null;
+    if(kind==="level"){ o.y=P(m.y); if(o.y==null) return null; }
+    else if(kind==="zone"){ const a=P(m.y1), b=P(m.y2); if(a==null||b==null) return null; o.y1=Math.min(a,b); o.y2=Math.max(a,b); o.from=ix(m.from)??0; o.to=ix(m.to)??n-1; if(o.from>o.to) [o.from,o.to]=[o.to,o.from]; }
+    else if(kind==="candle"){ o.idx=[...new Set(arrOf(Array.isArray(m.index)?m.index:Array.isArray(m.candles)?m.candles:[m.index??m.at]).map(ix).filter(x=>x!=null))].sort((a,b)=>a-b).slice(0,12); if(!o.idx.length) return null; }
+    else if(kind==="arrow"){ o.at=ix(m.at??m.index); if(o.at==null) return null; o.dir=T(m.dir||m.direction)==="down"?"down":"up"; }
+    else return null;
+    seen.add(id); return o; }).filter(Boolean).slice(0,5);
+  marks.forEach((m,i)=>{ if(!m.tone) m.tone=CTONE[i%3]; });
+  const ids=new Set(marks.map(m=>m.id)), vol=arrOf(v.volume).map(Number);
+  const steps=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>ids.has(x))}:null).filter(Boolean).slice(0,6);
+  return {type:"candles", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), unit:T(v.unit).slice(0,12), candles:cs, volume:vol.length===n&&vol.every(x=>isFinite(x)&&x>=0)&&Math.max(...vol)>0?vol:[], marks, steps};
+}
+function candleGeo(v){
+  const cs=v.candles, n=cs.length, vh=v.volume.length?30:0, W=340, X0=4, X1=W-50, Y0=12, Y1=196; let lo=Math.min(...cs.map(c=>c.l)), hi=Math.max(...cs.map(c=>c.h));
+  v.marks.forEach(m=>{ [m.y,m.y1,m.y2].filter(x=>x!=null).forEach(x=>{ lo=Math.min(lo,x); hi=Math.max(hi,x); }); });
+  const pd=(hi-lo)*.14; lo-=pd; hi+=pd; const sl=(X1-X0)/n;
+  return {n, W, H:Y1+(vh?vh+8:0)+20, X0, X1, Y0, Y1, vh, sl, lo, hi, bw:Math.max(1.5,Math.min(14,sl*.64)), cx:i=>X0+sl*(i+.5), sy:p=>Y1-(p-lo)/(hi-lo)*(Y1-Y0)};
+}
+const cFmt=(x,d)=>(+x).toLocaleString("en-US",{minimumFractionDigits:d, maximumFractionDigits:d});
+function candleSvg(v, o){
+  o=o||{}; const G=candleGeo(v), cs=v.candles, vis=o.show?new Set(o.show):null, f=x=>(+x).toFixed(1), {X0,X1,Y0,Y1,sl,bw,cx,sy}=G;
+  const dp=Math.min(4,Math.max(0,...cs.flatMap(c=>[c.o,c.h,c.l,c.c]).map(x=>(String(x).split(".")[1]||"").length)));
+  const raw=(G.hi-G.lo)/4, p=Math.pow(10,Math.floor(Math.log10(raw))), stp=[1,2,2.5,5,10].map(m=>m*p).find(s=>s>=raw*.999), td=(String(+stp.toFixed(10)).split(".")[1]||"").length;
+  let ax=""; for(let t=Math.ceil(G.lo/stp)*stp; t<=G.hi; t+=stp) ax+=`<line x1="${X0}" y1="${f(sy(t))}" x2="${X1}" y2="${f(sy(t))}" class="ggrid"/><text x="${X1+5}" y="${f(sy(t)+3.5)}" class="gtk">${cFmt(t,td)}</text>`;
+  const up=c=>c.c>=c.o, mv=v.volume.length?Math.max(...v.volume):0, VY=Y1+8;
+  const bars=cs.map((c,i)=>{ const u=up(c)?"up":"dn", t=sy(Math.max(c.o,c.c)), h=Math.max(1.2,Math.abs(sy(c.o)-sy(c.c)));
+    return `<line x1="${f(cx(i))}" y1="${f(sy(c.h))}" x2="${f(cx(i))}" y2="${f(sy(c.l))}" class="cw ${u}"/><rect x="${f(cx(i)-bw/2)}" y="${f(t)}" width="${f(bw)}" height="${f(h)}" rx="${f(Math.min(1.5,bw/4))}" class="cb ${u}"/>${mv?`<rect x="${f(cx(i)-bw/2)}" y="${f(VY+G.vh*(1-v.volume[i]/mv))}" width="${f(bw)}" height="${f(Math.max(.8,G.vh*v.volume[i]/mv))}" class="cvol ${u}"/>`:""}`; }).join("");
+  const hits=cs.map((c,i)=>`<rect x="${f(X0+sl*i)}" y="${Y0}" width="${f(sl)}" height="${Y1-Y0}" class="chit" data-k="${i}"${o.pick?` tabindex="0" role="button" aria-label="Candle ${i+1}"`:""}/>`).join("");
+  const bd=(x,y,i)=>`<g class="cbd"><circle cx="${f(x)}" cy="${f(y)}" r="7"/><text x="${f(x)}" y="${f(y+3.3)}" text-anchor="middle">${i+1}</text></g>`;
+  let zs=""; const marks=v.marks.map((m,i)=>{ if(vis&&!vis.has(m.id)&&o.sel!==i) return ""; let s="";
+    if(m.kind==="level"){ const y=sy(m.y); s=`<line x1="${X0}" y1="${f(y)}" x2="${X1}" y2="${f(y)}" class="cml"/><line x1="${X0}" y1="${f(y)}" x2="${X1}" y2="${f(y)}" class="cmh"/>${bd(X0+9,y,i)}`; }
+    else if(m.kind==="zone"){ const x=X0+sl*m.from, y=sy(m.y2), h=Math.max(4,sy(m.y1)-y), r=`<rect x="${f(x)}" y="${f(y)}" width="${f(sl*(m.to-m.from+1))}" height="${f(h)}" rx="3" class="cmz"/>`; zs+=`<g class="cmk ${m.tone}${o.sel===i?" on":""}">${r}</g>`; s=r.replace('class="cmz"','class="cmzh"')+bd(x+8,y-9,i); }
+    else if(m.kind==="candle"){ s=m.idx.map(k=>`<rect x="${f(cx(k)-bw/2-3)}" y="${f(sy(cs[k].h)-3)}" width="${f(bw+6)}" height="${f(sy(cs[k].l)-sy(cs[k].h)+6)}" rx="3" class="cmc"/>`).join("")+bd(cx(m.idx[0]),sy(Math.max(...m.idx.map(k=>cs[k].h)))-14,i); }
+    else { const x=cx(m.at), u=m.dir==="up", y=u?sy(cs[m.at].l)+5:sy(cs[m.at].h)-5, d=u?1:-1;
+      s=`<path d="M${f(x)} ${f(y)} l-6 ${8*d} h3.4 v${9*d} h5.2 v${-9*d} h3.4 z" class="cma"/>${bd(x+bw/2+10,y+9*d,i)}`; }
+    return `<g class="cmk ${m.tone}${o.sel===i?" on":""}" data-m="${i}">${s}</g>`; }).join("");
+  let ohlc=""; const k=o.ohlc; if(k!=null&&cs[k]){ const c=cs[k], u=up(c), x=cx(k), r=x<(X0+X1)/2, lx=r?x+bw/2+16:x-bw/2-16;
+    const L=[["High",c.h],[u?"Close":"Open",Math.max(c.o,c.c)],[u?"Open":"Close",Math.min(c.o,c.c)],["Low",c.l]].map(([t,p])=>({t,p,y:sy(p)}));
+    L.forEach((a,j)=>{ a.ly=j?Math.max(a.y,L[j-1].ly+12):a.y; }); const sh=Math.max(0,L[3].ly-Y1-14); L.forEach(a=>a.ly-=sh);
+    ohlc=`<rect x="${f(x-bw/2-2.5)}" y="${f(sy(c.h)-2.5)}" width="${f(bw+5)}" height="${f(sy(c.l)-sy(c.h)+5)}" rx="2.5" class="csel"/>`+L.map(a=>`<polyline points="${f(r?x+bw/2+2:x-bw/2-2)},${f(a.y)} ${f(r?lx-5:lx+5)},${f(a.ly)} ${f(lx-(r?2:-2))},${f(a.ly)}" class="col"/><text x="${f(lx)}" y="${f(a.ly+3.6)}" text-anchor="${r?"start":"end"}" class="cox">${a.t} ${cFmt(a.p,dp)}</text>`).join(""); }
+  const tp=o.tap?`<circle cx="${f(o.tap.x)}" cy="${f(o.tap.y)}" r="6" class="ctap ${o.tap.ok?"ok":"no"}"/>`:"";
+  return `<svg class="vcd" viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="${esc(v.title||"Price chart")}: ${cs.length} candles${v.marks.length?", "+esc(v.marks.map(m=>m.label).join(", ")):""}">${ax}${zs}${bars}${o.still?"":hits}${marks}${ohlc}${tp}<text x="${X0}" y="${G.H-5}" class="gal">Time →</text>${v.unit?`<text x="${G.W-2}" y="${G.H-5}" text-anchor="end" class="gal">${esc(v.unit)}</text>`:""}</svg>`;
+}
+function candleHit(v, m, x, y){
+  const G=candleGeo(v), cs=v.candles, tol=14;
+  if(m.kind==="level") return Math.abs(y-G.sy(m.y))<=tol;
+  if(m.kind==="zone") return x>=G.X0+G.sl*m.from-6&&x<=G.X0+G.sl*(m.to+1)+6&&y>=G.sy(m.y2)-tol&&y<=G.sy(m.y1)+tol;
+  const a=m.kind==="arrow", e=a?26:0; return (a?[m.at]:m.idx).some(i=>Math.abs(x-G.cx(i))<=Math.max(G.sl/2,a?14:10)&&y>=G.sy(cs[i].h)-tol-e&&y<=G.sy(cs[i].l)+tol+e);
+}
+function candlesHtml(v, o){
+  o=o||{}; const H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`;
+  if(o.still) return `<div class="vis">${H}<div class="gbox vcbox">${candleSvg(v,{still:true})}</div></div>`;
+  return `<div class="vis">${H}<div class="gbox vcbox">${candleSvg(v,{show:v.steps.length?v.steps[0].show:null})}</div>
+    ${v.steps.length?`<div class="gstep"><p class="gtext">${gloss(v.steps[0].text)}</p>${v.steps.length>1?`<div class="gnav"><span class="small muted">1 of ${v.steps.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div>`:""}
+    ${v.marks.length?`<div class="vlegend">${v.marks.map((m,i)=>`<button type="button" class="vnode" data-i="${i}"><span class="n ${m.tone}">${i+1}</span><span>${esc(m.label)}</span></button>`).join("")}</div>`:""}<div class="vnote" aria-live="polite">${esc(o.hint||"Tap a candle to see its open, high, low and close, or a coloured mark to see what it means.")}</div></div>`;
+}
+function wireCandles(root, v){
+  const box=root.querySelector(".vcbox"); if(!box) return; let i=0, sel=null, ck=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"";
+  const shown=()=>v.steps.length?v.steps[i].show:null, one=()=>{ const s=shown(), ms=s?v.marks.filter(m=>s.includes(m.id)):[]; return ms.length===1&&ms[0].kind==="candle"&&ms[0].idx.length===1?ms[0].idx[0]:null; };
+  const say=ms=>{ if(note) note.innerHTML=ms.length?ms.map(m=>`<b>${esc(m.label)}</b>${m.note?" · "+gloss(m.note):""}`).join("<br>"):hint; };
+  const draw=()=>{ box.innerHTML=candleSvg(v,{show:shown(), sel, ohlc:ck??(sel==null?one():null)}); };
+  const leg=j=>root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===j));
+  const pick=j=>{ sel=j; ck=null; leg(j); say([v.marks[j]]); draw(); };
+  box.onclick=e=>{ const m=e.target.closest("[data-m]"), c=e.target.closest("[data-k]");
+    if(m) return pick(+m.dataset.m);
+    if(c){ const k=+c.dataset.k, x=v.candles[k], d=x.c-x.o; sel=null; ck=k; leg(-1); if(note) note.innerHTML=`<b>Candle ${k+1}: ${d>0?"price rose":d<0?"price fell":"no change"}</b> · opened ${cFmt(x.o,2).replace(/\.00$/,"")}, went as high as ${cFmt(x.h,2).replace(/\.00$/,"")} and as low as ${cFmt(x.l,2).replace(/\.00$/,"")}, closed ${cFmt(x.c,2).replace(/\.00$/,"")}${v.unit?" "+esc(v.unit):""}.`; draw(); } };
+  const step=()=>{ sel=null; ck=null; leg(-1); const st=root.querySelector(".gstep");
+    if(st&&v.steps.length>1){ st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; }
+    const s=shown(); say(s?v.marks.filter(m=>s.includes(m.id)):[]); draw(); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ i=Math.max(0,Math.min(v.steps.length-1,i+(b.dataset.g==="next"?1:-1))); step(); });
+  step();
+}
+function renderCandleQ(ch, k){
+  const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.marks.length; const t=k.dAsk, m=v.marks[t], what={level:"the price level",zone:"the area"}[m.kind]||"the candle";
+  LS.q.text=`Tap ${what} that shows: ${m.label}`; LS.q.x={q:"candles", skill:"data"};
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: tap ${what} that shows ${esc(m.label.charAt(0).toLowerCase()+m.label.slice(1))}.</div><div class="gbox" id="dq">${candleSvg(v,{pick:true, show:[]})}</div><p class="small muted">Tap the chart.</p><div id="fb"></div></div>`;
+  wireQuit(); let locked=false; const G=candleGeo(v);
+  const go=(x,y)=>{ if(locked) return; locked=true; const ok=candleHit(v,m,x,y);
+    $("dq").innerHTML=candleSvg(v,{still:true, show:[m.id], sel:t, tap:{x,y,ok}});
+    answered(ok?"right":"wrong", {answer:m.label, why:m.note, noAnsBox:ok, extra:ok?"":`<p class="small">The right spot is now highlighted.</p>`}); };
+  const svg=$("dq").querySelector("svg");
+  svg.addEventListener("click",e=>{ const r=svg.getBoundingClientRect(); if(!r.width) return; go((e.clientX-r.left)*G.W/r.width, (e.clientY-r.top)*G.H/r.height); });
+  svg.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); const c=v.candles[+el.dataset.k]; go(G.cx(+el.dataset.k), G.sy((c.o+c.c)/2)); } }));
+}
+/* ---------- frames: a before → after storyboard, 2-4 panels of shapes or mini tables ---------- */
+let FRN=0;
+const FRSEQ=/\b(before|after|then|next|later|first|finally|step \d|stage \d|frame \d)\b/i;
+function cleanFrames(v){
+  const T=x=>String(x==null?"":x).trim(), dum=[{label:"a",at:[0,0]},{label:"b",at:[0,0]}];
+  const row=r=>(Array.isArray(r)?r:r&&typeof r==="object"?[r.label,...arrOf(r.cells)]:[]).slice(0,4).map(x=>T(x).slice(0,14));
+  const frames=arrOf(v.frames).map(f=>{ if(!f||!f.label) return null; const d=Array.isArray(f.shapes)&&f.shapes.length?cleanDiagram({shapes:f.shapes, parts:dum}):null, rows=d?[]:arrOf(f.rows).map(row).filter(r=>r.some(Boolean)).slice(0,8);
+    if(!d&&!rows.length) return null; const nc=Math.max(0,...rows.map(r=>r.length)); rows.forEach(r=>{ while(r.length<nc) r.push(""); });
+    return {label:T(f.label).slice(0,40), note:T(f.note).slice(0,200), shapes:d?d.shapes:[], rows}; }).filter(Boolean).slice(0,4);
+  if(frames.length<2) return null;
+  return {type:"frames", title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), cols:arrOf(v.cols).slice(0,4).map(x=>T(x).slice(0,14)), frames};
+}
+function frameBody(v, i, u){
+  const f=v.frames[i], pv=v.frames[i-1]; if(f.shapes.length) return diagramSvg({title:f.label, shapes:f.shapes, parts:[]},{}).replace(/darr/g,"darr"+u+"_"+i);
+  const nc=f.rows[0].length, cols=v.cols.some(Boolean)?v.cols.slice(0,nc):[], same=pv&&pv.rows.length&&!pv.shapes.length;
+  return `<table class="vgt vft" aria-label="${esc(f.label)}">${cols.length?`<thead><tr>${cols.map(c=>`<th scope="col">${esc(c)}</th>`).join("")}</tr></thead>`:""}<tbody>${f.rows.map((r,ri)=>`<tr>${r.map((x,ci)=>`<td${same&&(pv.rows[ri]||[])[ci]!==x?' class="chg"':""}><span>${esc(x)||"&nbsp;"}</span></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function framesHtml(v, o){
+  o=o||{}; const u="f"+(++FRN), n=v.frames.length, H=`${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}`;
+  const strip=`<div class="vfr">${v.frames.map((f,i)=>`${i?'<div class="frar" aria-hidden="true">→</div>':""}<div class="fr${o.still?"":i?" dim":" on"}" data-i="${i}"${o.still?"":` tabindex="0" role="button" aria-label="Frame ${i+1}: ${esc(f.label)}"`}><div class="frl"><span class="n">${i+1}</span><span>${esc(f.label)}</span></div><div class="frb">${frameBody(v,i,u)}</div></div>`).join("")}</div>`;
+  if(o.still) return `<div class="vis">${H}<div class="gbox">${strip}</div></div>`;
+  const f=v.frames[0];
+  return `<div class="vis">${H}<div class="gbox">${strip}</div><div class="gstep"><p class="gtext"><b>${esc(f.label)}</b>${f.note?" · "+gloss(f.note):""}</p><div class="gnav"><span class="small muted">1 of ${n}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div></div></div>`;
+}
+function wireFrames(root, v){
+  const st=root.querySelector(".gstep"), strip=root.querySelector(".vfr"); if(!st||!strip) return; const fr=[...strip.querySelectorAll(".fr")], n=v.frames.length;
+  const go=j=>{ const i=Math.max(0,Math.min(n-1,j)), f=v.frames[i]; fr.forEach((el,k)=>{ el.classList.toggle("on",k===i); el.classList.toggle("dim",k>i); });
+    st.querySelector(".gtext").innerHTML=`<b>${esc(f.label)}</b>${f.note?" · "+gloss(f.note):""}`; st.querySelector(".gnav span").textContent=`${i+1} of ${n}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=n-1; st.dataset.i=i;
+    const el=fr[i]; if(strip.scrollWidth>strip.clientWidth+2) strip.scrollTo({left:el.offsetLeft-(strip.clientWidth-el.offsetWidth)/2, behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); };
+  fr.forEach((el,k)=>{ el.onclick=()=>go(k); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(k); } }; });
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>go((+st.dataset.i||0)+(b.dataset.g==="next"?1:-1)));
+  go(0);
+}
+function labelPic(v, t){
+  if(v.type==="candles") return {q:"what does the highlighted part show?", html:`<div class="gbox qgrid">${candleSvg(v,{still:true, show:[v.marks[t].id], sel:t})}</div>`};
+  if(v.type==="frames") return {q:"which stage is this?", html:`<div class="gbox qgrid"><div class="frb">${frameBody(v,t,"q"+(++FRN))}</div></div>`};
+  return null;
+}
 function renderGridQ(ch, k){
   const v=k.teach.visual; k.dAsk=((k.dAsk==null?-1:k.dAsk)+1)%v.marks.length; const t=k.dAsk, m=v.marks[t], own=new Set(m.cells.map(c=>c.join(",")));
   LS.q.text=`Tap a cell that shows: ${m.label}`; LS.q.x={q:"grid", skill:"data"};
@@ -1600,7 +1939,10 @@ function renderDiagramQ(ch, k){
 function wireVisual(root, v){
   if(v&&v.type==="graph") return wireGraph(root, v);
   if(v&&v.type==="diagram") return wireDiagram(root, v);
+  if(v&&(v.type==="tree"||v.type==="network")) return wireTN(root, v);
   if(v&&v.type==="grid") return wireGrid(root, v);
+  if(v&&v.type==="candles") return wireCandles(root, v);
+  if(v&&v.type==="frames") return wireFrames(root, v);
   const items=visItems(v), noteEl=root.querySelector(".vnote"); if(!noteEl) return;
   const sel=i=>{ root.querySelectorAll("[data-i]").forEach(el=>el.classList.toggle("on", +el.dataset.i===i)); root.querySelectorAll(".carea").forEach(a=>a.style.display=items[i]&&items[i].area?"":"none"); const it=items[i]; if(it) noteEl.innerHTML=`<b>${esc(it.label)}</b>${it.note?" · "+gloss(it.note):""}`; };
   root.querySelectorAll("[data-i]").forEach(el=>{ el.onclick=()=>sel(+el.dataset.i); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sel(+el.dataset.i); } }; });
@@ -1782,7 +2124,10 @@ function visualType(k,L){
   const v=k.teach&&k.teach.visual; if(!v) return null;
   if(v.type==="graph") return v.asks&&v.asks.length&&L>=2&&L<=4&&k.lastVq!=="graph" ? "graph" : null;
   if(v.type==="diagram"){ if(L===1 && v.parts.filter(x=>x.note&&x.note.length>8).length>=1 && v.parts.length>=3) return "label"; return L>=2&&L<=4&&v.parts.length>=3&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="tree"||v.type==="network"){ if(L===1 && v.nodes.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="grid"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="candles"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length&&k.lastVq!=="dtap" ? "dtap" : null; }
+  if(v.type==="frames"){ if(L===1 && v.frames.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.frames.length>=3&&!v.frames.some(f=>FRSEQ.test(f.label)) ? "order" : null; }
   if(v.type==="timeline"){ if(L===1 && v.items.filter(x=>x.note&&x.note.length>8).length>=1) return "label"; return L>=2&&L<=3 ? "order" : null; }
   if(L===1 && ["flow","cycle","parts","curve","scale"].includes(v.type) && visItems(v).filter(x=>x.note&&x.note.length>8).length>=1 && visItems(v).length>=3) return "label";
   if(L===2){ if(["flow","cycle","scale","bars"].includes(v.type) && visItems(v).length>=3) return "order"; if(v.type==="compare") return "sort"; }
@@ -3169,6 +3514,8 @@ function renderStep(){
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
   else if(type==="chain") renderOrderQ(ch, {name:k.name, teach:{visual:{type:"flow", chain:true, title:x.q, why:x.why, steps:x.steps.map(label=>({label}))}}});
   else if(type==="graph") renderGraphQ(ch, k);
+  else if(type==="dtap"&&k.teach.visual.type==="candles") renderCandleQ(ch, k);
+  else if(type==="dtap"&&["tree","network"].includes(k.teach.visual.type)) (k.teach.visual.type==="tree"?renderTreeQ:renderNetQ)(ch, k);
   else if(type==="dtap") (k.teach.visual.type==="grid"?renderGridQ:renderDiagramQ)(ch, k);
   else if(type==="label") renderLabelQ(ch, k);
   else if(type==="order") renderOrderQ(ch, k);
@@ -3253,9 +3600,10 @@ function renderLabelQ(ch, k){
     box.querySelectorAll("[data-i]").forEach(el=>{ el.classList.add("tappable"); el.setAttribute("tabindex","0"); el.setAttribute("role","button"); el.setAttribute("aria-label","Choose this one"); el.addEventListener("click",()=>go(el)); el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); go(el); } }); });
     return;
   }
-  const gq=v.type==="grid", own=shuffle(items.map(x=>x.label).filter(l=>l!==ans));
+  if(v.type==="tree"||v.type==="network") return tnLabelQ(ch, k, t, ans, note, reveal);
+  const lp=labelPic(v,t), gq=v.type==="grid"||!!lp, own=shuffle(items.map(x=>x.label).filter(l=>l!==ans));
   const opts=shuffle([ans, ...(gq?[...new Set([...own, ...shuffle(labelPool(k, v, ans))])]:own).slice(0,3)]);
-  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: ${gq?"what do the highlighted cells show?":"which part does this describe?"}</div>${gq?`<div class="gbox vgrid qgrid">${gridTable(v,{still:true, show:[items[t].id]})}</div>`:`<div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div>`}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
+  main.innerHTML = head()+`<div class="card pop">${ch}<div class="prompt">${esc(v.title||k.name)}: ${lp?lp.q:gq?"what do the highlighted cells show?":"which part does this describe?"}</div>${lp?lp.html:gq?`<div class="gbox vgrid qgrid">${gridTable(v,{still:true, show:[items[t].id]})}</div>`:`<div class="vans"><span style="font-weight:600">“${gloss(note)}”</span></div>`}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
   wireQuit();
   main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{
     const ok=opts[+btn.dataset.i]===ans;
@@ -3266,10 +3614,10 @@ function renderLabelQ(ch, k){
 }
 function renderOrderQ(ch, k){
   const v=k.teach.visual, isScale=v.type==="scale", isBars=v.type==="bars", isTime=v.type==="timeline";
-  const correct = isTime ? v.items.map(x=>x.label) : isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
+  const correct = v.type==="frames" ? v.frames.map(x=>x.label) : isTime ? v.items.map(x=>x.label) : isScale ? v.items.slice().sort((a,b)=>a.pos-b.pos).map(x=>x.label) : isBars ? v.items.slice().sort((a,b)=>b.value-a.value).map(x=>x.label) : v.steps.map(x=>x.label);
   let pool = shuffle(correct); let guard=0; while(pool.join("|")===correct.join("|") && guard++<5) pool=shuffle(correct);
   const picked=[];
-  const prompt = v.chain ? `${v.title}: put the chain of cause and effect in order.` : isTime ? `${v.title||k.name}: put these in time order, earliest first.` : isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : `${v.title||k.name}: put the steps in order.`;
+  const prompt = v.chain ? `${v.title}: put the chain of cause and effect in order.` : isTime ? `${v.title||k.name}: put these in time order, earliest first.` : isScale ? `Order these from ${v.left||"lowest"} to ${v.right||"highest"}.` : isBars ? `${v.title||k.name}: order these from biggest to smallest.` : v.type==="cycle" ? `${v.title||k.name}: put the loop in order. Start anywhere.` : v.type==="frames" ? `${v.title||k.name}: put the frames in the order they happen.` : `${v.title||k.name}: put the steps in order.`;
   const draw=()=>{
     $("slots").innerHTML = correct.map((_,i)=>picked[i]!=null ? `<button type="button" class="slot" data-p="${i}"><span class="n">${i+1}</span><span>${esc(picked[i])}</span></button>` : `<div class="slot empty"><span class="n">${i+1}</span><span>Tap a card below</span></div>`).join("");
     $("pool").innerHTML = pool.map((x,i)=>picked.includes(x)?"":`<button type="button" class="chip" data-i="${i}">${esc(x)}</button>`).join("");
