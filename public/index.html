@@ -1252,11 +1252,12 @@ ${planOf(c).teach?"SUBJECT APPROACH: "+planOf(c).teach:""}
 Be accurate. Return ONLY JSON: {"items":[{"name": concept name exactly as given, "predict":{}, "anchor":"", "eli5":"", "simplest":"", "hook":"", "builds_on":"", "builds":"", "visual":{}, "takeaway":"", "chain":"", "terms":[]${c.kind==="maths"?', "worked":{}':""}${c.kind==="skill"?', "mistakes":[]':""}}]}`;
   const {data:out} = await writerJson(prompt);
   const items = (out&&out.items)||[];
-  cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const t=cleanTeach(it); if(t){ t.v=4; k.teach=t; addTerms(c, it&&it.terms); } else k.teachTried=true; });
+  cons.forEach((k,i)=>{ const it = items.find(x=>x&&norm(x.name)===norm(k.name)) || items[i]; const t=cleanTeach(it); if(t){ t.v=TSTYLE; k.teach=t; addTerms(c, it&&it.terms); } else k.teachTried=true; });
   saveCourse(c);
 }
 const hookOf = k => (k.teach && k.teach.hook) || k.hook || "";
-const needsTeach = k => k && !k.teachTried && (!k.teach || (k.teach.v!==4 && k.rung===0 && !k.seen));
+const TSTYLE = 5; // bump when the lesson style or picture types change: unstarted concepts rewrite theirs when reached, "Refresh lessons" rewrites the rest
+const needsTeach = k => k && !k.teachTried && (!k.teach || (k.teach.v!==TSTYLE && k.rung===0 && !k.seen));
 function addTerms(c, terms){
   c.glossary = c.glossary || {};
   arrOf(terms).forEach(t=>{ if(t&&t.term&&t.def){ const term=String(t.term).trim().slice(0,40); if(term.length>=3) c.glossary[term.toLowerCase()]={term, def:String(t.def).slice(0,160)}; } });
@@ -3476,7 +3477,7 @@ function renderPath(){
   wireDel(c);
   ensurePathText(c); prefetchCombos(c);
 }
-function delHtml(c){ return c.example?"":`<div class="row">${S.sample?`<button class="btn ghost sm" id="refQ">Refresh questions</button>`:""}<button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`; }
+function delHtml(c){ return c.example?"":`<div class="row">${S.sample?`<button class="btn ghost sm" id="refQ">Refresh questions</button>${isLang(c)?"":`<button class="btn ghost sm" id="refT">Refresh lessons</button>`}`:""}<button class="btn ghost sm" id="del" style="color:var(--bad)">Delete course</button></div><div id="confirm"></div>`; }
 /* Rewrite every concept's practice questions in the current style. Progress (levels, review dates) is kept. */
 const QSTYLE = 9; // bump when the question style changes, so "Refresh questions" knows what is out of date
 const staleIds = c => order(c).filter(id=>c.concepts[id] && c.concepts[id].bank && c.concepts[id].qv!==QSTYLE);
@@ -3493,7 +3494,28 @@ async function refreshQuestions(c, onProgress){
   L("questions_refreshed",{course:c.title, data:{concepts:ids.length, failed}});
   return {total:ids.length, failed};
 }
+/* Rewrite every concept's mini-lesson (big idea, picture, hook) in the current style. Progress is kept. */
+const staleT = c => isLang(c) ? [] : order(c).filter(id=>{ const k=c.concepts[id]; return k && k.teach && k.teach.v!==TSTYLE; });
+async function refreshLessons(c, onProgress){
+  const ids = staleT(c), batches=[]; for(let i=0;i<ids.length;i+=2) batches.push(ids.slice(i,i+2));
+  let done=0, failed=0, next=0;
+  const worker = async()=>{ while(next<batches.length){ const b=batches[next++], before=b.map(id=>c.concepts[id].teach);
+    try{ await genTeach(c, b); }catch(e){} b.forEach((id,i)=>{ if(c.concepts[id].teach===before[i]) failed++; delete c.concepts[id].teachTried; });
+    done+=b.length; onProgress(done, ids.length); } };
+  await Promise.all([worker(), worker()]);
+  saveCourse(c);
+  L("lessons_refreshed",{course:c.title, data:{concepts:ids.length, failed}});
+  return {total:ids.length, failed};
+}
 function wireDel(c){
+  const rt=$("refT"); if(rt) rt.onclick=()=>{ const n=staleT(c).length;
+    if(!n){ toast("All lessons are already in the newest style"); return; }
+    $("confirm").innerHTML=`<div class="fb info"><strong>Rewrite ${n} concept${n>1?"s'":"'s"} lessons with the newest pictures and explanations?</strong><span class="small">Your levels, review dates and questions stay. Takes about ${Math.max(1,Math.round(n/6))} minute${n>6?"s":""} and costs roughly US$${(n*0.02).toFixed(2)} in AI use.</span><div class="row"><button class="btn sm" id="rtGo">Refresh</button><button class="btn ghost sm" id="rtNo">Cancel</button></div></div>`;
+    $("rtNo").onclick=()=>$("confirm").innerHTML="";
+    $("rtGo").onclick=async()=>{ $("confirm").innerHTML=`<div class="fb info"><div class="row"><span class="spinner"></span><strong id="rtP">Rewriting lessons… 0/${n}</strong></div><span class="small muted">You can keep using Climb; this finishes in the background.</span></div>`;
+      const r = await refreshLessons(c, (d,t)=>{ const el=$("rtP"); if(el) el.textContent=`Rewriting lessons… ${d}/${t}`; });
+      const box=$("confirm"); if(box) box.innerHTML=`<div class="fb ${r.failed?"no":"ok"}"><strong>${r.failed?`Refreshed ${r.total-r.failed} of ${r.total}. Try again for the rest.`:`All ${r.total} lessons rewritten.`}</strong></div>`;
+      toast(r.failed?"Some lessons couldn't be refreshed":"Lessons refreshed"); }; };
   const rq=$("refQ"); if(rq) rq.onclick=()=>{ const n=staleIds(c).length;
     if(!n){ toast("All questions are already in the newest style"); return; }
     $("confirm").innerHTML=`<div class="fb info"><strong>Rewrite all ${n} concepts' practice questions in the newest style?</strong><span class="small">Your levels and review dates stay. Takes about ${Math.max(1,Math.round(n/8))} minute${n>8?"s":""} and costs roughly US$${(n*0.012).toFixed(2)} in AI use.</span><div class="row"><button class="btn sm" id="rqGo">Refresh</button><button class="btn ghost sm" id="rqNo">Cancel</button></div></div>`;
