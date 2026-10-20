@@ -732,7 +732,7 @@ line.ds,polyline.ds,path.ds{fill:none}
 .vgt td.no{background:var(--bad-soft);box-shadow:inset 0 0 0 2px var(--bad)}
 .vcd{width:100%;max-width:480px;height:auto;display:block;margin:0 auto;overflow:visible;touch-action:manipulation}
 .cw{stroke-width:1.4}.cw.up{stroke:var(--good)}.cw.dn{stroke:var(--bad)}.cb.up,.cvol.up{fill:var(--good)}.cb.dn,.cvol.dn{fill:var(--bad)}.cvol{opacity:.4;stroke:none}
-.chit{fill:transparent;cursor:pointer;outline:none}.chit:focus-visible{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
+.kchit{fill:transparent;cursor:pointer;outline:none}.kchit:focus-visible{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
 .cmk{--t:var(--g3);cursor:pointer}.cmk.green{--t:var(--g2)}.cmk.pink{--t:var(--g4)}
 .cml{stroke:var(--t);stroke-width:2;stroke-dasharray:6 4}.cmh{stroke:transparent;stroke-width:18}
 .cmz{fill:color-mix(in srgb,var(--t) 20%,transparent);stroke:var(--t);stroke-width:1.5}
@@ -741,7 +741,7 @@ line.ds,polyline.ds,path.ds{fill:none}
 .cmk.on .cml{stroke-width:3}.cmk.on .cmz{fill:color-mix(in srgb,var(--t) 32%,transparent);stroke-width:2.5}.cmk.on .cmc{stroke-width:3}
 .cbd circle{fill:var(--t);stroke:var(--surface);stroke-width:1.5}.cbd text{font:900 9.5px var(--ui);fill:var(--surface)}
 .cox{font:800 10.5px var(--ui);fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;stroke-linejoin:round}.col{fill:none;stroke:var(--muted);stroke-width:1}
-.csel{fill:none;stroke:var(--ink);stroke-width:1.5}
+.kcsel{fill:none;stroke:var(--ink);stroke-width:1.5}
 .ctap{stroke:var(--surface);stroke-width:2}.ctap.ok{fill:var(--good)}.ctap.no{fill:var(--bad)}
 .vfr{display:flex;align-items:stretch;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;position:relative;padding:4px 2px 6px}
 .fr{flex:1 0 0;min-width:150px;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px;background:var(--surface);border-radius:14px;padding:8px;box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer;transition:opacity 200ms var(--ease-out),box-shadow 200ms var(--ease-out)}
@@ -788,6 +788,37 @@ line.ds,polyline.ds,path.ds{fill:none}
   .roundbtn{display:none}
   .week{max-width:520px;align-self:flex-end;margin-top:-64px}
 }
+/* data charts */
+.vchart{padding:8px 4px 4px}
+.chart{width:100%;max-width:480px;height:auto;display:block;margin:0 auto;font-variant-numeric:tabular-nums}
+.cs0{--cc:var(--g1)}.cs1{--cc:var(--g2)}.cs2{--cc:var(--g3)}.cs3{--cc:var(--g4)}.cs4{--cc:var(--ink)}.cs5{--cc:var(--muted)}
+.cpie .cs4,.clg.cpl .cs4{--cc:color-mix(in srgb,var(--g1) 55%,var(--ink))}.cpie .cs5,.clg.cpl .cs5{--cc:color-mix(in srgb,var(--g2) 55%,var(--ink))}.cpie .cs6,.clg.cpl .cs6{--cc:color-mix(in srgb,var(--g3) 55%,var(--ink))}.cpie .cs7,.clg.cpl .cs7{--cc:color-mix(in srgb,var(--g4) 55%,var(--ink))}
+.cgr{stroke:var(--line);stroke-width:1;opacity:.8}.c0,.cax{stroke:var(--muted);stroke-width:1.2}
+.ctk{font:700 11px var(--ui);fill:var(--muted);font-variant-numeric:tabular-nums}.ctk.ctkb{fill:var(--ink)}.cal{font:800 11.5px var(--ui);fill:var(--muted)}
+.cvl{font:800 11px var(--ui);fill:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none}.cvl.cvi{fill:var(--surface)}.cdn{font:900 17px var(--ui);fill:var(--ink);font-variant-numeric:tabular-nums}
+.chart [data-k],.chart [data-m],.chart [data-t]{cursor:pointer}
+.cbr,.cslice{fill:var(--cc)}.cslice{stroke:var(--surface);stroke-width:2;stroke-linejoin:round}
+.cln{fill:none;stroke:var(--cc);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round;pointer-events:none}
+.car{fill:color-mix(in srgb,var(--cc) 20%,transparent);pointer-events:none}.car.cstk{fill:color-mix(in srgb,var(--cc) 55%,var(--surface))}
+.cdot{fill:var(--cc);stroke:var(--surface);stroke-width:1.5}.cdot.csc{fill-opacity:.85}.chit{fill:transparent}
+.cbub{fill:color-mix(in srgb,var(--cc) 32%,transparent);stroke:var(--cc);stroke-width:1.5}
+.cbx{fill:color-mix(in srgb,var(--cc) 26%,var(--surface));stroke:var(--cc);stroke-width:1.8}.cwh{stroke:var(--cc);stroke-width:1.6}.cmed{stroke:var(--ink);stroke-width:2.6}
+.chm{stroke:none}.chv{font:800 11px var(--ui);fill:var(--ink);font-variant-numeric:tabular-nums;pointer-events:none}.chv.chvo{fill:var(--surface)}
+.ctr{stroke:var(--ink);stroke-width:1.8;stroke-dasharray:6 5;pointer-events:none}.ctrh{stroke:transparent;stroke-width:16}
+.cband.green{fill:color-mix(in srgb,var(--g2) 16%,transparent)}.cband.blue{fill:color-mix(in srgb,var(--g3) 16%,transparent)}.cband.pink{fill:color-mix(in srgb,var(--g4) 16%,transparent)}
+.clev{stroke-width:2;stroke-dasharray:5 4;pointer-events:none}.clev.green{stroke:var(--g2)}.clev.blue{stroke:var(--g3)}.clev.pink{stroke:var(--g4)}
+.crg{fill:none;stroke:var(--ink);stroke-width:2.2;pointer-events:none}.csel{fill:none;stroke:var(--accent);stroke-width:3;pointer-events:none}
+.cok{fill:none;stroke:var(--good);stroke-width:3.5;pointer-events:none}.cno{fill:none;stroke:var(--bad);stroke-width:3.5;pointer-events:none}
+.cbg circle{stroke:var(--surface);stroke-width:2}.cbg text{font:900 11px var(--ui);fill:var(--surface);pointer-events:none}
+.cbg.green circle{fill:var(--g2)}.cbg.blue circle{fill:var(--g3)}.cbg.pink circle{fill:var(--g4)}.cbg.cbq circle{fill:var(--ink)}
+.chart .cold{opacity:.45}
+.clg{display:flex;flex-wrap:wrap;gap:4px 14px;font:700 13px/1.3 var(--ui);color:var(--ink);margin:2px 2px 6px}
+.clg span{display:inline-flex;align-items:center;gap:6px;min-width:0}.clg i{width:12px;height:12px;border-radius:3px;background:var(--cc);flex:none}.clg .clnk i{height:4px;border-radius:2px}
+.clg b{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.cln.cdraw{stroke-dasharray:1;stroke-dashoffset:1;animation:gdraw 700ms var(--ease-out) forwards}
+.cfade{animation:cfade 420ms var(--ease-out) both}
+@keyframes cfade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){.cln.cdraw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}.cfade{animation:none}}
 </style>
 
 <div class="app">
@@ -1158,6 +1189,7 @@ function cleanVisual0(v){
     const items = arrOf(v.items).filter(x=>x&&x.label&&isFinite(+x.value)).map(x=>({label:T(x.label).slice(0,48), value:+x.value, note:T(x.note).slice(0,180)})).slice(0,6);
     return items.length>=2 ? {type:"bars", title:T(v.title), unit:T(v.unit).slice(0,12), items} : null;
   }
+  if(v.type==="chart") return cleanChart(v);
   const T = x => String(x==null?"":x).trim();
   const st = a => arrOf(a).filter(x=>x&&x.label).map(x=>({label:T(x.label).slice(0,48), note:T(x.note).slice(0,180)})).slice(0,5);
   if(v.type==="flow"||v.type==="cycle"){ const steps=st(v.steps); return steps.length>=2 ? {type:v.type, title:T(v.title), steps} : null; }
@@ -1203,6 +1235,7 @@ For each concept return (pitch everything at the concept's STAGE):
   "frames" (a before → after storyboard of 2-4 panels showing ONE thing CHANGING: an order book before and after a big order, a reaction, a cell dividing, a sentence being rewritten, a market before and after news. Use it when the change itself is the lesson; use "flow" for a list of steps and "diagram" for one structure. Each frame {"label": what is true in this panel, max 4 words, never just "Before", "After" or "Step 1","note": one plain sentence on what changed and why, max 25 words} plus EITHER "shapes": drawn exactly like "diagram" shapes (canvas 100 wide, about 70 tall; keep the same layout in every frame so the change stands out) OR "rows": a mini table of 1-8 rows, each 1-4 short strings (max 12 characters), same columns in every frame, with optional shared "cols": column headers; the app highlights cells that changed. Shape: {"type":"frames","title":"","caption":"","cols":[""],"frames":[{"label":"","note":"","rows":[[""]]}]}),
   "curve" (a single shape rising or falling with nothing crossing it: give the curve's shape as 5-12 [x,y] points from 0 to 100, plus 2-4 marked points of interest),
   "bars" (comparing amounts: 2-6 bars; real values only if you are sure of them, otherwise made-up values with "(illustrative)" in the title),
+  "chart" (USE THIS for any real data chart: values over time, scatter or correlation, distributions, shares of a whole, grouped or stacked comparisons, spreads, heatmaps. Real values only if you are sure of them, otherwise realistic made-up values with "(illustrative)" in the title. "kind": "line", "area" or "stacked-area" (2-40 points per series), "scatter" or "bubble" ("data": [[x,y],...] or [[x,y,size],...], up to 40 points; "trend": true makes the app draw the best-fit line), "bar", "grouped-bar", "stacked-bar", "hbar" (long category names) or "histogram" (bins as categories, one series), "pie" or "donut" (2-8 slices, one series), "box" (one {"min","q1","median","q3","max"} per category), "heatmap" ("rows": row labels, "cols": column labels, "cells": rows of numbers, up to 8x8). "categories": the x labels (up to 12; up to 40 for line kinds); each series' "data" has exactly one number per category. Up to 6 series. "x"/"y": {"label","unit"} with units like "%", "S$", "kg"; "y": {"min": 0} to start at zero. A series with "axis": "y2" uses a second right-hand axis (then give "y2": {"label","unit"}); a series with "type": "bar" or "line" mixes bars and a line. "marks": 2-4 things to point out, each {"id","label","note","tone": "green","blue" or "pink"} plus EITHER "kind": "point", "bar" or "slice" with "series": series id and "index": position counted from 0 (heatmap: "row","col"), OR "kind": "range" with "x1","x2" (a shaded stretch: category labels or x numbers), OR "kind": "level" with "y" (a reference line). "steps": 2-5 build-up steps {"text": one plain sentence,"show": the series ids, mark ids or "trend" that appear at this step}; anything never listed shows from the start. Shape: {"type":"chart","kind":"line","title":"","caption":"","x":{"label":"","unit":""},"y":{"label":"","unit":"","min":0},"categories":[""],"series":[{"id":"","label":"","data":[0]}],"marks":[{"id":"","label":"","note":"","kind":"point","series":"","index":0,"tone":"green"}],"steps":[{"text":"","show":[]}]}. Keep "graph" for economics or maths diagrams where lines cross or shift, "bars" for a simple 2-6 bar comparison, and "candles" for open-high-low-close price charts),
   "flow" (a sequence of 3-5 steps), "cycle" (a loop of 3-5 steps), "compare" (2-3 things side by side, 2-4 short items each), "scale" (3-5 things placed along a spectrum, pos 0-100), "parts" (a whole and its 3-5 parts), "stat" (one number that matters).
   If the concept is a chart, table or screen the learner must learn to read, the visual must show what it actually looks like, with example values, not just describe it.
   Every label must be plain words a beginner understands, e.g. "Highest point", not "Cmax". If a technical name matters, put it in the note: "Highest point (called Cmax)". Labels max 4 words. Notes max 18 words, saying what that part means in everyday terms.
@@ -1368,6 +1401,254 @@ function curveSvg(v, hide){
   const ym=(Y0+Y1)/2;
   return `<svg class="vcurve" viewBox="0 0 320 206" role="img" aria-label="${esc(v.title||"Graph")}"><path class="carea" d="${area}" style="display:none"/><line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" class="ax"/><line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" class="ax"/><path d="${d}" class="cl"/>${marks}<text x="${(X0+X1)/2}" y="196" text-anchor="middle" class="axl">${esc(v.x||"")} →</text><text x="18" y="${ym}" text-anchor="middle" class="axl" transform="rotate(-90 18 ${ym})">${esc(v.y||"")} →</text></svg>`;
 }
+/* ---------- charts: real data charts on one shared scale/axis module (line, area, scatter, bubble, bars, histogram, pie, box, heatmap) ---------- */
+const CKINDS=["line","area","stacked-area","scatter","bubble","bar","grouped-bar","stacked-bar","hbar","histogram","pie","donut","box","heatmap"];
+const cPie=k=>k==="pie"||k==="donut", cXY=k=>k==="scatter"||k==="bubble", cLn=k=>k==="line"||k==="area"||k==="stacked-area";
+const cNum=x=>{ if(typeof x==="string") x=x.replace(/[,\s%$£€]/g,""); return (typeof x==="number"||typeof x==="string"&&x!=="")&&isFinite(+x)?+x:null; };
+const cN=x=>+(+x).toFixed(1), cTw=s=>String(s).length*6.6, cCut=(s,n)=>s.length>n?s.slice(0,n-1)+"…":s, cDec=x=>Math.min(3,(String(+(+x).toFixed(6)).split(".")[1]||"").length), cPct=x=>+(x*100).toFixed(x<.1?1:0)+"%";
+const cIsBar=(c,s)=>s.as?s.as==="bar":["bar","grouped-bar","stacked-bar","hbar","histogram"].includes(c.kind);
+let cUid=0;
+const cWrap=(l,w)=>{ const ws=l.split(/\s+/); if(ws.length<2) return cTw(l)<=w?[l]:null; let a=ws[0], j=1; while(j<ws.length&&cTw(a+" "+ws[j])<=w) a+=" "+ws[j++]; const b=ws.slice(j).join(" "); return cTw(a)<=w&&cTw(b)<=w?(b?[a,b]:[a]):null; };
+function cleanChart(v){
+  const T=x=>String(x==null?"":x).trim(), F=cNum;
+  let kind=T(v.kind||v.chart).toLowerCase().replace(/[\s_]+/g,"-"); kind={column:"bar",columns:"bar",stacked:"stacked-bar",grouped:"grouped-bar",horizontal:"hbar","horizontal-bar":"hbar",doughnut:"donut","box-plot":"box",boxplot:"box",heat:"heatmap"}[kind]||kind; if(!CKINDS.includes(kind)) kind="line";
+  const ax=a=>{ a=a&&typeof a==="object"?a:{label:a}; const t=T(a.type); return {label:T(a.label).slice(0,40), unit:T(a.unit).slice(0,10), min:F(a.min), max:F(a.max), type:["number","category","time"].includes(t)?t:""}; };
+  const c={type:"chart", kind, title:T(v.title).slice(0,80), caption:T(v.caption).slice(0,200), x:ax(v.x), y:ax(v.y), y2:null, z:ax(v.z||v.size), cats:arrOf(v.categories).map(x=>T(x).slice(0,24)), series:[], marks:[], build:[], trend:null, xy:false};
+  if(kind==="heatmap"){
+    const cols=arrOf(v.cols||v.columns||v.categories).map(x=>T(x).slice(0,14)).slice(0,8), rows=arrOf(v.rows).slice(0,8); let cells=arrOf(v.cells||v.values).slice(0,8); if(!cells.length) cells=rows.map(r=>r&&r.cells);
+    const nc=Math.min(8, cols.length||Math.max(0,...cells.map(r=>arrOf(r).length)));
+    const ok=cells.map((r,i)=>({l:T(rows[i]&&typeof rows[i]==="object"?rows[i].label:rows[i]).slice(0,14), r:arrOf(r).slice(0,nc).map(F)})).filter(o=>o.r.length===nc&&o.r.every(x=>x!=null));
+    if(ok.length<2||nc<2) return null;
+    Object.assign(c,{cats:[], cols:Array.from({length:nc},(_,i)=>cols[i]||String(i+1)), rows:ok.map((o,i)=>o.l||String(i+1)), cells:ok.map(o=>o.r)});
+  } else {
+    let ser=arrOf(v.series).filter(s=>s&&typeof s==="object");
+    if(!ser.length&&(v.data||v.slices)) ser=[{id:"s0", label:c.y.label, data:v.data||v.slices}];
+    ser=ser.map(s=>{ const d=arrOf(s.data); if(kind!=="box"&&!cXY(kind)&&d.length&&d.every(p=>p&&typeof p==="object"&&!Array.isArray(p)&&"value" in p)){ if(!c.cats.length) c.cats=d.map(p=>T(p.label).slice(0,24)); return {...s, data:d.map(p=>p.value)}; } return s; });
+    if(kind==="box"&&ser.length>1&&ser.every(s=>s.data&&typeof s.data==="object"&&!Array.isArray(s.data))){ if(!c.cats.length) c.cats=ser.map(s=>T(s.label).slice(0,24)); ser=[{id:"s0", label:c.y.label, data:ser.map(s=>s.data)}]; }
+    if(cPie(kind)||kind==="histogram"||kind==="box") ser=ser.slice(0,1);
+    const ids=new Set(), sid=(s,i)=>{ let id=T(s.id||("s"+i)).slice(0,14)||("s"+i); while(ids.has(id)) id+="_"; ids.add(id); return id; };
+    const pair=p=>Array.isArray(p)?p.map(F):p&&typeof p==="object"?[F(p.x),F(p.y),F(p.size??p.z??p.r)]:null, first=ser.length?arrOf(ser[0].data)[0]:null;
+    c.xy=cXY(kind)||(kind==="line"||kind==="area")&&(Array.isArray(first)||!!first&&typeof first==="object"&&"x" in first);
+    if(!c.xy){ const n=c.cats.length||Math.max(0,...ser.map(s=>arrOf(s.data).length)); if(!c.cats.length) c.cats=Array.from({length:n},(_,i)=>String(i+1)); c.cats=c.cats.slice(0,cLn(kind)?40:cPie(kind)?8:12); }
+    const n=c.cats.length, y2ok=!!v.y2&&["line","area","bar","grouped-bar"].includes(kind);
+    ser.slice(0,6).forEach((s,i)=>{ let d;
+      if(c.xy){ d=arrOf(s.data).map(pair).filter(p=>p&&p[0]!=null&&p[1]!=null&&(kind!=="bubble"||p[2]!=null&&p[2]>=0)).slice(0,40).map(p=>p.slice(0,kind==="bubble"?3:2)); if(!cXY(kind)) d.sort((a,b)=>a[0]-b[0]); if(d.length<2) return; }
+      else if(kind==="box"){ d=arrOf(s.data).slice(0,n).map(o=>{ const q=o&&typeof o==="object"?(Array.isArray(o)?o:[o.min,o.q1,o.median??o.med,o.q3,o.max]).map(F):[]; return q.length===5&&q.every(x=>x!=null)?q.sort((a,b)=>a-b):null; }); if(d.length<n||d.some(x=>!x)) return; }
+      else { d=arrOf(s.data).slice(0,n).map(F); if(d.length<n||d.some(x=>x==null)) return; if((kind==="stacked-bar"||kind==="stacked-area"||cPie(kind))&&d.some(x=>x<0)) return; }
+      c.series.push({id:sid(s,i), label:T(s.label||s.name).slice(0,28), data:d, y2:y2ok&&T(s.axis)==="y2", as:!c.xy&&["line","bar","grouped-bar"].includes(kind)&&["line","bar"].includes(T(s.type))?T(s.type):""}); });
+    if(!c.series.length||!n&&!c.xy) return null;
+    if(cPie(kind)){ const s=c.series[0], keep=s.data.map((_,i)=>i).filter(i=>s.data[i]>0); if(keep.length<2) return null; c.cats=keep.map(i=>c.cats[i]); s.data=keep.map(i=>s.data[i]); }
+    if(c.series.every(s=>s.y2)) c.series.forEach(s=>s.y2=false);
+    if(c.series.some(s=>s.y2)) c.y2=ax(v.y2);
+    if(v.trend&&cXY(kind)){ const p=c.series[0].data, N=p.length, mx=p.reduce((a,q)=>a+q[0],0)/N, my=p.reduce((a,q)=>a+q[1],0)/N, sxx=p.reduce((a,q)=>a+(q[0]-mx)**2,0), syy=p.reduce((a,q)=>a+(q[1]-my)**2,0), sxy=p.reduce((a,q)=>a+(q[0]-mx)*(q[1]-my),0);
+      if(N>=3&&sxx>0) c.trend={b:sxy/sxx, a:my-sxy/sxx*mx, r:syy>0?sxy/Math.sqrt(sxx*syy):0}; }
+  }
+  const isH=kind==="heatmap", P=cPie(kind), sids=c.series.map(s=>s.id), mids=new Set([...sids,"trend"]);
+  const ci=x=>{ if(c.xy) return F(x); const j=c.cats.findIndex(l=>norm(l)===norm(T(x))), f=F(x); return j>=0?j:f!=null&&Number.isInteger(f)&&f>=0&&f<c.cats.length?f:null; };
+  c.marks=arrOf(v.marks).map((m,j)=>{ if(!m||!m.label) return null; let id=T(m.id||("m"+j)).slice(0,14)||("m"+j); while(mids.has(id)) id+="_"; const b={id, label:T(m.label).slice(0,40), note:T(m.note).slice(0,180), tone:GTONE.includes(T(m.tone))?T(m.tone):""}, k=T(m.kind||m.type).toLowerCase();
+    if(k==="range"||k==="band"){ if(P||isH||kind==="hbar") return null; let a=ci(m.x1??m.from), z=ci(m.x2??m.to); if(a==null||z==null) return null; if(a>z) [a,z]=[z,a]; mids.add(id); return {...b, k:"range", x1:a, x2:z}; }
+    if(k==="level"||k==="line"){ const y=F(m.y??m.value); if(y==null||P||isH) return null; mids.add(id); return {...b, k:"level", y, y2:!!c.y2&&T(m.axis)==="y2"}; }
+    let s, i;
+    if(isH){ s=F(m.row); i=F(m.col); if(!(Number.isInteger(s)&&s>=0&&s<c.rows.length&&Number.isInteger(i)&&i>=0&&i<c.cols.length)) return null; }
+    else { s=m.series!=null?sids.indexOf(T(m.series)):-1; if(s<0&&Number.isInteger(F(m.series))&&F(m.series)>=0&&F(m.series)<sids.length) s=F(m.series); if(s<0) s=0;
+      i=F(m.index??m.i); if(!c.xy&&!Number.isInteger(i)) i=ci(m.category??m.x); if(!(Number.isInteger(i)&&i>=0&&i<c.series[s].data.length)) return null; }
+    mids.add(id); return {...b, k:"el", s, i}; }).filter(Boolean).slice(0,6);
+  c.marks.forEach((m,j)=>{ if(!m.tone) m.tone=GTONE[j%3]; });
+  const all=new Set([...sids, ...c.marks.map(m=>m.id), ...(c.trend?["trend"]:[])]);
+  c.build=arrOf(v.steps).map(st=>st&&st.text?{text:T(st.text).slice(0,200), show:strs(st.show).filter(x=>all.has(x))}:null).filter(Boolean).slice(0,6);
+  return c;
+}
+function cStep(r, int){ const p=Math.pow(10,Math.floor(Math.log10(r))); return (int&&p<=1?[1,2,5,10]:[1,2,2.5,5,10]).map(m=>Math.max(int?1:0,m*p)).find(m=>m>=r*(1-1e-9)); }
+function cScale(lo,hi,n,zero,int){ if(zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); } if(!(hi>lo)){ const d=Math.abs(hi)*.2||1; hi+=d; if(!zero||lo<0) lo-=d; }
+  const st=cStep((hi-lo)/n,int), a=Math.floor(lo/st+1e-9)*st, b=Math.ceil(hi/st-1e-9)*st, t=[]; for(let x=a;x<=b+st/1e6;x+=st) t.push(+x.toPrecision(12)); return {lo:t[0], hi:t[t.length-1], st, t}; }
+function cAlign(lo,hi,n,zero){ if(zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); } if(!(hi>lo)) hi=lo+1; let st=cStep((hi-lo)/n), a=0;
+  for(let g=0;g<8;g++){ a=Math.floor(lo/st+1e-9)*st; if(a+n*st>=hi-1e-9) break; st=cStep(st*1.01); } const t=[]; for(let j=0;j<=n;j++) t.push(+(a+j*st).toPrecision(12)); return {lo:t[0], hi:t[n], st, t}; }
+const CPRE=/^([A-Z]{0,3}\$|£|€|¥|₹|₩|RM)$/;
+function cFmt(sc,u,plain){ // shared tick/value formatter: nice decimals, k/M/B, unit prefix/suffix
+  const big=!plain&&Math.max(Math.abs(sc.lo),Math.abs(sc.hi))>=1e4, td=big?0:cDec(sc.st), pre=CPRE.test(u), suf=u&&!pre?(/^(%|‰|°[CF]?)$/.test(u)?u:" "+u):"";
+  const f=(x,full,k)=>{ const X=Math.abs(x), [d,s]=plain?[1,""]:X>=1e9?[1e9,"B"]:X>=1e6?[1e6,"M"]:X>=1e3&&big&&!full?[1e3,"k"]:[1,""], a=X/d; k=k!=null?k:full||big?Math.min(2,cDec(a)):td;
+    const t=plain?String(+a.toFixed(k)):a.toLocaleString("en",{minimumFractionDigits:k,maximumFractionDigits:k}); return (x<0&&+t!==0?"−":"")+(pre?u:"")+t+s+(full||suf.length<=2?suf:""); };
+  f.inTick=!u||pre||suf.length<=2; f.td=td; return f; }
+function cYs(c){ const k=c.kind, S=c.series, stk=k==="stacked-bar"||k==="stacked-area";
+  const mk=(ss,ax,al)=>{ const v=[]; if(stk) c.cats.forEach((_,i)=>v.push(ss.reduce((a,s)=>a+s.data[i],0))); ss.forEach(s=>s.data.forEach(d=>k==="box"?v.push(d[0],d[4]):c.xy?v.push(d[1]):v.push(d)));
+    let lo=Math.min(...v), hi=Math.max(...v); c.marks.forEach(m=>{ if(m.k==="level"&&m.y2===(ax===c.y2)){ lo=Math.min(lo,m.y); hi=Math.max(hi,m.y); } });
+    if(ax.min!=null&&ax.min<lo) lo=ax.min; if(ax.max!=null&&ax.max>hi) hi=ax.max; const z=ss.some(s=>cIsBar(c,s))||k==="area"||k==="stacked-area";
+    return al?cAlign(lo,hi,al,z):cScale(lo,hi,4,z); };
+  const s1=mk(S.filter(s=>!s.y2),c.y), s2=c.y2?mk(S.filter(s=>s.y2),c.y2,s1.t.length-1):null;
+  return {s1, s2, f1:cFmt(s1,c.y.unit), f2:s2&&cFmt(s2,c.y2.unit)}; }
+function cXs(c){ if(!c.xy) return null; const xv=c.series.flatMap(s=>s.data.map(d=>d[0])), plain=c.x.type==="time"||xv.every(x=>Number.isInteger(x)&&x>=1000&&x<=2300);
+  let lo=Math.min(...xv), hi=Math.max(...xv); if(c.x.min!=null&&c.x.min<lo) lo=c.x.min; if(c.x.max!=null&&c.x.max>hi) hi=c.x.max; const xs=cScale(lo,hi,5,false,plain); return {xs, xf:cFmt(xs,c.x.unit,plain)}; }
+function cNoun(c,s){ return cPie(c.kind)?"slice":c.kind==="heatmap"?"cell":c.kind==="box"?"box":c.series[s]&&cIsBar(c,c.series[s])?"bar":"point"; }
+function cShown(c,i){ if(!c.build.length) return {all:null, cur:[]}; const ref=new Set(c.build.flatMap(s=>s.show)), all=new Set([...c.series.map(s=>s.id), ...c.marks.map(m=>m.id), "trend"].filter(x=>!ref.has(x)));
+  c.build.slice(0,i+1).forEach(s=>s.show.forEach(x=>all.add(x))); c.marks.forEach(m=>{ if(all.has(m.id)&&m.k==="el"&&c.series[m.s]&&c.kind!=="heatmap") all.add(c.series[m.s].id); }); return {all:[...all], cur:c.build[i].show}; }
+function cMs(c,o){ return o.ms||c.marks.map((_,j)=>j).filter(j=>!o.show||o.show.includes(c.marks[j].id)||o.sel==="m:"+j); }
+function cOver(c,o,A,W,H,ms){ // element marks (ring + numbered badge), selection and right/wrong rings
+  const cur=new Set(o.cur||[]), ring=(a,cl)=>a.p?`<path d="${a.p}" class="${cl}"${a.tr?` transform="${a.tr}"`:""}/>`:a.r!=null?`<circle cx="${cN(a.x)}" cy="${cN(a.y)}" r="${cN(a.r+4)}" class="${cl}"/>`:`<rect x="${cN(a.x-2)}" y="${cN(a.y-2)}" width="${cN(a.w+4)}" height="${cN(a.h+4)}" rx="3" class="${cl}"/>`;
+  let out="";
+  ms.forEach(j=>{ const m=c.marks[j]; if(m.k!=="el") return; const a=A[m.s+","+m.i]; if(!a) return; const old=cur.size&&!cur.has(m.id)&&o.sel!=="m:"+j?" cold":"";
+    out+=ring(a,"crg"+old)+cBadge(m,j,o,Math.max(10,Math.min(W-10,a.bx)),Math.max(o.top||10,Math.min(H-10,a.by)),old); });
+  if(o.sel&&o.sel.startsWith("k:")&&A[o.sel.slice(2)]) out+=ring(A[o.sel.slice(2)],"csel");
+  Object.entries(o.mark||{}).forEach(([key,t])=>{ if(A[key]) out+=ring(A[key],"c"+t); });
+  return out; }
+function cBadge(m,j,o,x,y,old){ return `<g class="cbg ${m.tone}${old||""}${o.q?" cbq":""}" data-m="${j}"><circle cx="${cN(x)}" cy="${cN(y)}" r="9"/><text x="${cN(x)}" y="${cN(y+4)}" text-anchor="middle">${o.q?"?":j+1}</text></g>`; }
+function chartSvg(c,o){
+  o=o||{}; if(cPie(c.kind)) return cPieSvg(c,o); if(c.kind==="heatmap") return cHeatSvg(c,o);
+  const k=c.kind, W=340, hz=k==="hbar", uid=o.uid||("c"+(++cUid)), on=id=>!o.show||o.show.includes(id), fr=id=>o.fresh&&o.fresh.includes(id), S=c.series, n=c.cats.length, cat=!c.xy, stk=k==="stacked-bar"||k==="stacked-area";
+  const Y=cYs(c), sc=Y.s1, sc2=Y.s2, yf=Y.f1, yf2=Y.f2, X=cXs(c), xs=X&&X.xs, xf=X&&X.xf, yt=sc.t.map(x=>yf(x)), y2t=sc2?sc2.t.map(x=>yf2(x)):[], BI=S.map((_,j)=>j).filter(j=>cIsBar(c,S[j]));
+  let cl=c.cats.map(l=>cCut(l,hz?16:24)), ml, mr, rot=false, thin=1, wr=null;
+  if(hz){ ml=Math.min(130,Math.max(...cl.map(cTw))+10); mr=Math.max(14,cTw(yt[yt.length-1])/2+4); }
+  else { ml=Math.max(26,...yt.map(cTw))+12; mr=sc2?Math.max(...y2t.map(cTw))+10:cat?10:Math.max(12,cTw(xf(xs.hi))/2+4); }
+  let pw=W-ml-mr, band=cat&&!hz?pw/n:0;
+  if(cat&&!hz&&Math.max(...cl.map(cTw))>band-4){ const mw=Math.max(...cl.map(cTw));
+    if(c.x.type==="time"||cLn(k)||k==="histogram"||c.cats.every(l=>/\d/.test(l)&&l.length<=9)) thin=Math.ceil((mw+8)/band);
+    else if((wr=c.cats.map(l=>cWrap(l,band-4))).every(Boolean)); else { wr=null; rot=true; cl=c.cats.map(l=>cCut(l,12)); for(let g=0;g<2;g++){ const need=cTw(cl[0])*.77-band/2+4; if(need>ml){ ml=need; pw=W-ml-mr; band=pw/n; } } } }
+  const mt=24, rowH=hz?Math.max(26,BI.length*12+12):0, ph=hz?n*rowH:170, mb=(rot?16+Math.max(...cl.map(cTw))*.64:wr?32:20)+((hz?c.y.label:c.x.label)?16:0), H=mt+ph+mb, X0=ml, X1=W-mr, Y0=mt, Y1=mt+ph;
+  const vy=(v,s2)=>{ const q=s2?sc2:sc; return Y1-(v-q.lo)/(q.hi-q.lo)*ph; }, vx=v=>X0+(v-sc.lo)/(sc.hi-sc.lo)*(X1-X0), px=x=>X0+(x-xs.lo)/(xs.hi-xs.lo)*(X1-X0), cx=i=>X0+band*(i+.5), cy=i=>Y0+rowH*(i+.5);
+  let g="", bands="", back="", dat="", top=""; const A={}, cls=(s,j)=>`cs${j}${fr(s.id)?" cfade":""}`;
+  if(hz){ sc.t.forEach((t,j)=>{ const x=cN(vx(t)); g+=`<line x1="${x}" y1="${Y0}" x2="${x}" y2="${Y1}" class="${t===0?"c0":"cgr"}"/><text x="${x}" y="${Y1+15}" text-anchor="middle" class="ctk">${esc(yt[j])}</text>`; }); cl.forEach((l,i)=>{ g+=`<text x="${cN(X0-6)}" y="${cN(cy(i)+4)}" text-anchor="end" class="ctk ctkb">${esc(l)}</text>`; }); }
+  else { sc.t.forEach((t,j)=>{ const y=cN(vy(t)); g+=`<line x1="${cN(X0)}" y1="${y}" x2="${X1}" y2="${y}" class="${t===0&&sc.lo<0?"c0":"cgr"}"/><text x="${cN(X0-6)}" y="${cN(y+4)}" text-anchor="end" class="ctk">${esc(yt[j])}</text>${sc2?`<text x="${X1+6}" y="${cN(y+4)}" class="ctk">${esc(y2t[j])}</text>`:""}`; });
+    if(cat) cl.forEach((l,i)=>{ if(i%thin) return; const x=cN(cx(i)); g+=wr?`<text x="${x}" y="${Y1+15}" text-anchor="middle" class="ctk">${wr[i].map((t,q)=>`<tspan x="${x}" dy="${q?12:0}">${esc(t)}</tspan>`).join("")}</text>`:rot?`<text x="${x}" y="${Y1+14}" text-anchor="end" class="ctk" transform="rotate(-40 ${x} ${Y1+14})">${esc(l)}</text>`:`<text x="${x}" y="${Y1+15}" text-anchor="middle" class="ctk">${esc(l)}</text>`; });
+    else { let t=xs.t; if(Math.max(...t.map(x=>cTw(xf(x))))>(X1-X0)/(t.length-1)-6) t=t.filter((_,j)=>j%2===0); t.forEach(v=>{ const x=cN(px(v)); g+=`<line x1="${x}" y1="${Y0}" x2="${x}" y2="${Y1}" class="cgr"/><text x="${x}" y="${Y1+15}" text-anchor="middle" class="ctk">${esc(xf(v))}</text>`; }); }
+    g+=`<line x1="${cN(X0)}" y1="${Y1}" x2="${X1}" y2="${Y1}" class="cax"/>`; }
+  const ul=(a,f)=>a.label+(a.unit&&!f.inTick&&!a.label.toLowerCase().includes(a.unit.toLowerCase())?` (${a.unit})`:""), yl=hz?c.x.label:ul(c.y,yf), y2l=sc2?ul(c.y2,yf2):"", xl=hz?ul(c.y,yf):c.xy?ul(c.x,xf):c.x.label;
+  if(yl) g+=`<text x="2" y="12" class="cal">${esc(cCut(yl,sc2?26:52))}</text>`; if(y2l) g+=`<text x="${W-2}" y="12" text-anchor="end" class="cal">${esc(cCut(y2l,26))}</text>`;
+  if(xl) g+=`<text x="${cN((X0+X1)/2)}" y="${cN(H-4)}" text-anchor="middle" class="cal">${esc(cCut(xl,52))}</text>`;
+  // bars (plain, grouped, stacked, horizontal, histogram)
+  if(BI.length){ const L=hz?rowH:band, ctr=hz?cy:cx, inner=k==="histogram"?L-1.5:L*(stk?.6:Math.min(.8,.5+.1*BI.length)), bw=stk?inner:inner/BI.length, vals=!o.noVals&&BI.length===1&&!stk&&n<=8;
+    c.cats.forEach((_,i)=>{ let acc=0; BI.forEach((j,q)=>{ const s=S[j]; if(!on(s.id)) return; const v=s.data[i], a=stk?acc:0, b=stk?acc+v:v; if(stk) acc+=v;
+      const off=ctr(i)-inner/2+(stk?0:q*bw), key=j+","+i; let x,y,w,h; if(hz){ x=vx(Math.min(a,b)); w=Math.max(1,vx(Math.max(a,b))-x); y=off; h=bw; } else { y=vy(Math.max(a,b),s.y2); h=Math.max(1,vy(Math.min(a,b),s.y2)-y); x=off; w=bw; }
+      const lab=vals?(s.y2?yf2:yf)(v,true):"", fit=lab&&(hz?x+w+6+cTw(lab)<=W-2:cTw(lab)*.9<=L-2);
+      A[key]={x,y,w,h, bx:hz?x+w+(fit?cTw(lab)+16:12):x+w/2, by:hz?y+h/2:v<0?y+h+12:y-(fit?24:12)};
+      dat+=`<rect x="${cN(x)}" y="${cN(y)}" width="${cN(w)}" height="${cN(h)}" rx="2" class="cbr ${cls(s,j)}" data-k="${key}"/>`;
+      if(fit) dat+=hz?`<text x="${cN(x+w+5)}" y="${cN(y+h/2+4)}" class="cvl">${esc(lab)}</text>`:`<text x="${cN(x+w/2)}" y="${cN(v<0?y+h+13:y-5)}" text-anchor="middle" class="cvl">${esc(lab)}</text>`; }); }); }
+  // lines and areas
+  if(cLn(k)||S.some(s=>s.as==="line")){ const vis=S.map((s,j)=>j).filter(j=>!cIsBar(c,S[j])&&on(S[j].id)), cum={};
+    if(k==="stacked-area"){ let run=c.cats.map(()=>0); vis.forEach(j=>{ const lo=run; run=run.map((r,i)=>r+S[j].data[i]); cum[j]=[lo,run]; }); }
+    vis.forEach(j=>{ const s=S[j], pts=s.data.map((d,i)=>c.xy?[px(d[0]),vy(d[1],s.y2)]:[cx(i),vy(cum[j]?cum[j][1][i]:d,s.y2)]), d=pts.map((p,i)=>`${i?"L":"M"}${cN(p[0])} ${cN(p[1])}`).join("");
+      if(k==="area"||k==="stacked-area"){ const bot=cum[j]?cum[j][0].map((v,i)=>[cx(i),vy(v)]).reverse():[[pts[pts.length-1][0],vy(Math.max(sc.lo,Math.min(sc.hi,0)),s.y2)],[pts[0][0],vy(Math.max(sc.lo,Math.min(sc.hi,0)),s.y2)]];
+        back+=`<path d="${d}${bot.map(p=>`L${cN(p[0])} ${cN(p[1])}`).join("")}Z" class="car${cum[j]?" cstk":""} ${cls(s,j)}"/>`; }
+      dat+=`<path d="${d}" class="cln cs${j}${fr(s.id)?" cdraw":""}" pathLength="1"/>`;
+      const hr=Math.min(12,Math.max(6,(c.xy?(X1-X0)/pts.length:band)/2));
+      pts.forEach((p,i)=>{ const key=j+","+i; A[key]={x:p[0], y:p[1], r:4, bx:p[0], by:p[1]-16}; top+=`<g data-k="${key}" class="cs${j}">${pts.length<=16?`<circle cx="${cN(p[0])}" cy="${cN(p[1])}" r="3.5" class="cdot${fr(s.id)?" cfade":""}"/>`:""}<circle cx="${cN(p[0])}" cy="${cN(p[1])}" r="${cN(hr)}" class="chit"/></g>`; }); }); }
+  // scatter and bubbles
+  if(cXY(k)){ const zm=Math.max(1e-9,...S.flatMap(s=>s.data.map(d=>d[2]||0)));
+    S.forEach((s,j)=>{ if(!on(s.id)) return; s.data.map((d,i)=>[d,i]).sort((a,b)=>(b[0][2]||0)-(a[0][2]||0)).forEach(([d,i])=>{ const x=px(d[0]), y=vy(d[1]), r=k==="bubble"?Math.max(3,Math.sqrt(d[2]/zm)*22):4.5, key=j+","+i; A[key]={x,y,r,bx:x,by:y-r-12};
+      dat+=`<g data-k="${key}" class="${cls(s,j)}"><circle cx="${cN(x)}" cy="${cN(y)}" r="${cN(r)}" class="${k==="bubble"?"cbub":"cdot csc"}"/>${r<10?`<circle cx="${cN(x)}" cy="${cN(y)}" r="10" class="chit"/>`:""}</g>`; }); }); }
+  // box plots
+  if(k==="box"&&on(S[0].id)) S[0].data.forEach((q,i)=>{ const x=cx(i), w=Math.min(36,band*.5), Q=q.map(v=>vy(v)), key="0,"+i; A[key]={x:x-w/2, y:Q[3], w, h:Math.max(1,Q[1]-Q[3]), bx:x, by:Q[4]-12};
+    dat+=`<g data-k="${key}" class="${cls(S[0],0)}"><line x1="${cN(x)}" y1="${cN(Q[0])}" x2="${cN(x)}" y2="${cN(Q[4])}" class="cwh"/><line x1="${cN(x-w/4)}" y1="${cN(Q[0])}" x2="${cN(x+w/4)}" y2="${cN(Q[0])}" class="cwh"/><line x1="${cN(x-w/4)}" y1="${cN(Q[4])}" x2="${cN(x+w/4)}" y2="${cN(Q[4])}" class="cwh"/><rect x="${cN(x-w/2)}" y="${cN(Q[3])}" width="${cN(w)}" height="${cN(Math.max(1,Q[1]-Q[3]))}" rx="3" class="cbx"/><line x1="${cN(x-w/2)}" y1="${cN(Q[2])}" x2="${cN(x+w/2)}" y2="${cN(Q[2])}" class="cmed"/><rect x="${cN(x-band/2)}" y="${cN(Q[4])}" width="${cN(band)}" height="${cN(Q[0]-Q[4])}" class="chit"/></g>`; });
+  // least-squares trend
+  if(c.trend&&on("trend")){ const f=x=>c.trend.a+c.trend.b*x, l=`x1="${cN(px(xs.lo))}" y1="${cN(vy(f(xs.lo)))}" x2="${cN(px(xs.hi))}" y2="${cN(vy(f(xs.hi)))}"`;
+    back+=`<g clip-path="url(#cc${uid})"><line ${l} class="ctr${fr("trend")?" cfade":""}"/></g>`; dat=`<line ${l} class="ctrh" data-t="1" clip-path="url(#cc${uid})"/>`+dat; }
+  // range and level marks
+  const ms=cMs(c,o), cur=new Set(o.cur||[]);
+  ms.forEach(j=>{ const m=c.marks[j], old=cur.size&&!cur.has(m.id)&&o.sel!=="m:"+j?" cold":"";
+    if(m.k==="range"){ const pt=cat&&cLn(k), a=Math.max(X0,pt?cx(m.x1):cat?X0+band*m.x1:px(m.x1)), z=Math.min(X1,pt?cx(m.x2):cat?X0+band*(m.x2+1):px(m.x2)); bands+=`<rect x="${cN(a)}" y="${Y0}" width="${cN(Math.max(2,z-a))}" height="${ph}" class="cband ${m.tone}${old}" data-m="${j}"/>`; top+=cBadge(m,j,o,(a+z)/2,Y0+11,old); }
+    if(m.k==="level"){ if(hz){ const x=cN(vx(m.y)); top+=`<line x1="${x}" y1="${Y0}" x2="${x}" y2="${Y1}" class="clev ${m.tone}${old}"/><line x1="${x}" y1="${Y0}" x2="${x}" y2="${Y1}" class="ctrh" data-m="${j}"/>`+cBadge(m,j,o,Math.min(W-10,+x+11),Y0-10,old); }
+      else { const y=cN(vy(m.y,m.y2)); top+=`<line x1="${cN(X0)}" y1="${y}" x2="${X1}" y2="${y}" class="clev ${m.tone}${old}"/><line x1="${cN(X0)}" y1="${y}" x2="${X1}" y2="${y}" class="ctrh" data-m="${j}"/>`+cBadge(m,j,o,X1-10,Math.max(10,y-11),old); } } });
+  top+=cOver(c,{...o, top:Y0},A,W,H,ms);
+  return `<svg class="chart" viewBox="0 0 ${W} ${cN(H)}" role="img" aria-label="${esc(c.title||"Chart")}"><defs><clipPath id="cc${uid}"><rect x="${cN(X0)}" y="${Y0}" width="${cN(X1-X0)}" height="${ph}"/></clipPath></defs>${bands}${g}${back}${dat}${top}</svg>`;
+}
+function cPieSvg(c,o){
+  const W=340, H=228, cx=170, cy=116, R=94, r0=c.kind==="donut"?R*.58:0, s=c.series[0], tot=s.data.reduce((a,b)=>a+b,0), f=cFmt(cScale(0,tot,4,true),c.y.unit), ms=cMs(c,o), A={}, P=(r,a)=>[cx+r*Math.cos(a), cy+r*Math.sin(a)];
+  if(o.show&&!o.show.includes(s.id)) return `<svg class="chart cpie" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.title||"Chart")}"><circle cx="${cx}" cy="${cy}" r="${R}" class="cgr" style="fill:none"/></svg>`;
+  const pop=new Set([...ms.map(j=>c.marks[j]).filter(m=>m.k==="el").map(m=>m.i), ...Object.keys(o.mark||{}).map(x=>+x.split(",")[1]), ...(o.sel&&o.sel.startsWith("k:")?[+o.sel.split(",")[1]]:[])]);
+  let a0=-Math.PI/2, dat="";
+  s.data.forEach((v,i)=>{ const a1=a0+v/tot*2*Math.PI, mid=(a0+a1)/2, big=a1-a0>Math.PI?1:0, [x1,y1]=P(R,a0), [x2,y2]=P(R,a1), key="0,"+i, e=pop.has(i)?7:0, tr=e?`translate(${cN(Math.cos(mid)*e)} ${cN(Math.sin(mid)*e)})`:"";
+    const d=r0?`M${cN(x1)} ${cN(y1)}A${R} ${R} 0 ${big} 1 ${cN(x2)} ${cN(y2)}L${P(r0,a1).map(cN).join(" ")}A${cN(r0)} ${cN(r0)} 0 ${big} 0 ${P(r0,a0).map(cN).join(" ")}Z`:`M${cx} ${cy}L${cN(x1)} ${cN(y1)}A${R} ${R} 0 ${big} 1 ${cN(x2)} ${cN(y2)}Z`;
+    const [bx,by]=P(R+e+3,mid), [lx,ly]=P((r0?(R+r0)/2:R*.62)+e,mid); A[key]={p:d, tr, bx, by};
+    dat+=`<path d="${d}" class="cslice cs${i}${o.fresh&&o.fresh.includes(s.id)?" cfade":""}" data-k="${key}"${tr?` transform="${tr}"`:""}/>`;
+    if(!o.noVals&&v/tot>=.07) dat+=`<text x="${cN(lx)}" y="${cN(ly+4)}" text-anchor="middle" class="cvl cvi">${cPct(v/tot)}</text>`; a0=a1; });
+  if(r0&&!o.noVals) dat+=`<text x="${cx}" y="${cy+2}" text-anchor="middle" class="cdn">${esc(f(tot,true))}</text><text x="${cx}" y="${cy+18}" text-anchor="middle" class="ctk">Total</text>`;
+  return `<svg class="chart cpie" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.title||"Chart")}">${dat}${cOver(c,o,A,W,H,ms)}</svg>`;
+}
+function cHeatSvg(c,o){
+  const W=340, nr=c.rows.length, nc=c.cols.length, rl=c.rows.map(l=>cCut(l,12)), ml=Math.min(110,Math.max(...rl.map(cTw))+10), cw=(W-ml-4)/nc, chh=Math.min(34,Math.max(26,cw*.7)), cl=c.cols.map(l=>cCut(l,10)), rot=Math.max(...cl.map(cTw))>cw-4;
+  const Y0=6, Y1=Y0+nr*chh, Ly=Y1+(rot?16+Math.max(...cl.map(cTw))*.64:22), H=Ly+(c.x.label?20:4)+22, all=c.cells.flat(), lo=Math.min(...all), hi=Math.max(...all), dv=lo<0&&hi>0, M=Math.max(Math.abs(lo),Math.abs(hi))||1, f=cFmt(cScale(lo,hi,4,false),c.y.unit), ms=cMs(c,o), A={};
+  const tint=v=>{ const [h,t]=dv?[v<0?"--g4":"--g3",Math.abs(v)/M]:["--g3",(v-lo)/((hi-lo)||1)]; return [h,Math.round(10+t*75)]; };
+  let g="";
+  c.cells.forEach((r,ri)=>{ g+=`<text x="${cN(ml-6)}" y="${cN(Y0+chh*(ri+.5)+4)}" text-anchor="end" class="ctk ctkb">${esc(rl[ri])}</text>`; r.forEach((v,ci)=>{ const x=ml+cw*ci, y=Y0+chh*ri, [h,p]=tint(v), key=ri+","+ci, t=f(v,true); A[key]={x:x+1,y:y+1,w:cw-2,h:chh-2,bx:x+cw-4,by:y+4};
+    g+=`<rect x="${cN(x+1)}" y="${cN(y+1)}" width="${cN(cw-2)}" height="${cN(chh-2)}" rx="4" class="chm" style="fill:color-mix(in srgb,var(${h}) ${p}%,var(--surface))" data-k="${key}"/>`;
+    if(!o.noVals&&cTw(t)*.9<=cw-4) g+=`<text x="${cN(x+cw/2)}" y="${cN(y+chh/2+4)}" text-anchor="middle" class="chv${p>50?" chvo":""}">${esc(t)}</text>`; }); });
+  cl.forEach((l,ci)=>{ const x=cN(ml+cw*(ci+.5)); g+=rot?`<text x="${x}" y="${cN(Y1+14)}" text-anchor="end" class="ctk" transform="rotate(-40 ${x} ${cN(Y1+14)})">${esc(l)}</text>`:`<text x="${x}" y="${cN(Y1+15)}" text-anchor="middle" class="ctk">${esc(l)}</text>`; });
+  if(c.x.label) g+=`<text x="${cN(ml+(W-ml)/2)}" y="${cN(Ly+12)}" text-anchor="middle" class="cal">${esc(cCut(c.x.label,46))}</text>`;
+  const ky=H-14, kw=22; [0,.25,.5,.75,1].forEach((t,j)=>{ const v=lo+(hi-lo)*t, [h,p]=tint(v); g+=`<rect x="${cN(ml+20+j*kw)}" y="${cN(ky-9)}" width="${kw}" height="10" style="fill:color-mix(in srgb,var(${h}) ${p}%,var(--surface))"/>`; });
+  g+=`<text x="${cN(ml+16)}" y="${cN(ky)}" text-anchor="end" class="ctk">${esc(f(lo))}</text><text x="${cN(ml+24+5*kw)}" y="${cN(ky)}" class="ctk">${esc(f(hi))}</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${cN(H)}" role="img" aria-label="${esc(c.title||"Chart")}">${g}${cOver(c,o,A,W,H,ms)}</svg>`;
+}
+function cLegend(c,o){ o=o||{};
+  if(cPie(c.kind)){ const s=c.series[0], t=s.data.reduce((a,b)=>a+b,0), f=cFmt(cScale(0,t,4,true),c.y.unit); return `<div class="clg cpl">${c.cats.map((l,i)=>`<span><i class="cs${i}"></i>${esc(l)}${o.noVals?"":` <b>${esc(c.y.unit==="%"?f(s.data[i],true):cPct(s.data[i]/t))}</b>`}</span>`).join("")}</div>`; }
+  if(c.series.length<2) return "";
+  return `<div class="clg">${c.series.map((s,j)=>`<span${cIsBar(c,s)||c.kind==="box"?"":` class="clnk"`}><i class="cs${j}"></i>${esc(s.label||"Series "+(j+1))}${s.y2?" <b>(right axis)</b>":""}</span>`).join("")}</div>`; }
+function cVal(c,s,i){ if(c.kind==="heatmap") return c.cells[s][i]; const d=c.series[s].data[i]; return c.kind==="box"?d[2]:c.xy?d[1]:d; }
+function cTip(c,key){ const [s,i]=key.split(",").map(Number), k=c.kind;
+  if(k==="heatmap"){ const a=c.cells.flat(), f=cFmt(cScale(Math.min(...a),Math.max(...a),4,false),c.y.unit); return [`${c.rows[s]} · ${c.cols[i]}`, f(c.cells[s][i],true)]; }
+  const S=c.series[s], Y=cYs(c), f=S.y2?Y.f2:Y.f1, nm=c.series.length>1?S.label:"";
+  if(cPie(k)){ const t=S.data.reduce((a,b)=>a+b,0), pf=cFmt(cScale(0,t,4,true),c.y.unit); return [c.cats[i], c.y.unit==="%"?pf(S.data[i],true):`${pf(S.data[i],true)} (${cPct(S.data[i]/t)})`]; }
+  if(k==="box"){ const q=S.data[i]; return [c.cats[i], `middle line (median) ${f(q[2],true)} · box ${f(q[1],true)} to ${f(q[3],true)} · whole range ${f(q[0],true)} to ${f(q[4],true)}`]; }
+  if(c.xy){ const d=S.data[i], X=cXs(c), zf=k==="bubble"?cFmt(cScale(0,Math.max(...S.data.map(p=>p[2])),4,true),c.z.unit):null; return [nm||"This point", `${c.x.label||"x"} ${X.xf(d[0],true)} · ${c.y.label||"y"} ${f(d[1],true)}${zf?` · ${c.z.label||"size"} ${zf(d[2],true)}`:""}`]; }
+  return [[nm,c.cats[i]].filter(Boolean).join(" · "), f(S.data[i],true)]; }
+function cMarkHtml(c,j){ const m=c.marks[j], v=m.k==="el"?cTip(c,m.s+","+m.i)[1]:m.k==="level"?(m.y2?cYs(c).f2:cYs(c).f1)(m.y,true):""; return `<b>${esc(m.label)}</b>${v?" · "+esc(v):""}${m.note?" · "+gloss(m.note):""}`; }
+function wireChart(root,c){
+  const box=root.querySelector(".vchart"); if(!box) return; let i=0, sel=null; const note=root.querySelector(".vnote"), hint=note?note.innerHTML:"", B=c.build, uid="w"+(++cUid);
+  const say=h=>{ if(note) note.innerHTML=h||hint; }, lg=j=>root.querySelectorAll(".vlegend .vnode").forEach(el=>el.classList.toggle("on", +el.dataset.i===j));
+  const draw=fresh=>{ const s=cShown(c,i); box.innerHTML=chartSvg(c,{show:s.all, cur:s.cur, sel, fresh, uid});
+    box.querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{ const key=el.dataset.k, t=cTip(c,key), sh=cShown(c,i).all; sel="k:"+key; lg(-1);
+      say(`<b>${esc(t[0])}</b> · ${esc(t[1])}`+c.marks.filter(m=>m.k==="el"&&m.s+","+m.i===key&&(!sh||sh.includes(m.id))).map(m=>`<br><b>${esc(m.label)}</b>${m.note?" · "+gloss(m.note):""}`).join("")); draw(); });
+    box.querySelectorAll("[data-m]").forEach(el=>el.onclick=()=>pick(+el.dataset.m));
+    box.querySelectorAll("[data-t]").forEach(el=>el.onclick=()=>{ const t=c.trend, f=cYs(c).f1; say(`<b>Trend line</b> · the straight line that fits the dots best: on average ${esc(c.y.label||"y")} ${t.b>=0?"rises":"falls"} about ${esc(f(Math.abs(t.b),true))} for each 1${c.x.unit?" "+esc(c.x.unit):""} more ${esc(c.x.label||"x")} (r = ${t.r.toFixed(2)})`); }); };
+  const pick=j=>{ sel="m:"+j; lg(j); say(cMarkHtml(c,j)); draw(); };
+  const step=dir=>{ sel=null; lg(-1); const st=root.querySelector(".gstep");
+    if(st&&B.length>1){ st.querySelector(".gtext").innerHTML=gloss(B[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${B.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=B.length-1; }
+    const s=cShown(c,i), prev=dir>0?cShown(c,i-1).all:dir<0?null:[], fresh=prev?(s.all||[...c.series.map(x=>x.id),"trend"]).filter(x=>!prev.includes(x)):[];
+    const cm=c.marks.map((_,j)=>j).filter(j=>s.cur.includes(c.marks[j].id)); say(cm.map(j=>cMarkHtml(c,j)).join("<br>")); draw(fresh); };
+  root.querySelectorAll(".vlegend .vnode").forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+  root.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ const d=b.dataset.g==="next"?1:-1; i=Math.max(0,Math.min(B.length-1,i+d)); step(d); });
+  step(0);
+}
+function chartHtml(c,o){
+  o=o||{}; const H=`${c.title&&!o.noTitle?`<h3>${esc(c.title)}</h3>`:""}${c.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(c.caption)}</p>`:""}`, B=c.build;
+  if(o.still) return `<div class="vis">${H}${cLegend(c)}<div class="gbox vchart">${chartSvg(c,{})}</div></div>`;
+  const s=cShown(c,0);
+  return `<div class="vis">${H}${cLegend(c)}<div class="gbox vchart">${chartSvg(c,{show:s.all, cur:s.cur})}</div>
+    ${B.length?`<div class="gstep"><p class="gtext">${gloss(B[0].text)}</p>${B.length>1?`<div class="gnav"><span class="small muted">1 of ${B.length}</span><button type="button" class="btn sm soft" data-g="back" disabled>Back</button><button type="button" class="btn sm" data-g="next">Next</button></div>`:""}</div>`:""}
+    ${c.marks.length?`<div class="vlegend">${c.marks.map((m,j)=>`<button type="button" class="vnode" data-i="${j}"><span class="n ${m.tone}">${j+1}</span><span>${esc(m.label)}</span></button>`).join("")}</div>`:""}<div class="vnote" aria-live="polite">${esc(o.hint||`Tap a ${cNoun(c,0)} to see its value.`)}</div></div>`;
+}
+function cOpts(c,m){ // the right reading plus two near-but-wrong ones, all at the same precision
+  const S=c.series[m.s]; let t=cVal(c,m.s,m.i), st, f;
+  if(cPie(c.kind)){ t=Math.round(t/S.data.reduce((a,b)=>a+b,0)*100); st=10; f=x=>Math.round(x)+"%"; }
+  else { const Y=cYs(c), sc=S.y2?Y.s2:Y.s1, ff=S.y2?Y.f2:Y.f1, kk=Math.min(2,cDec(Math.abs(t)/(Math.abs(t)>=1e9?1e9:Math.abs(t)>=1e6?1e6:1))); st=sc.st; f=x=>ff(x,true,kk); }
+  const neg=c.kind!=="box"&&!cPie(c.kind)&&c.series.some(s=>s.data.some(d=>(c.xy?d[1]:d)<0)), out=[f(t)];
+  for(const x of shuffle([.5,1,1.5,2].flatMap(q=>[t+q*st,t-q*st]))){ if(out.length>=3) break; if(!neg&&x<0||cPie(c.kind)&&(x<=0||x>=100)) continue; const sx=f(x); if(!out.includes(sx)) out.push(sx); }
+  return {ans:out[0], opts:shuffle(out)}; }
+function renderChartQ(ch, k){
+  const c=k.teach.visual, els=c.marks.map((_,j)=>j).filter(j=>c.marks[j].k==="el"), rd=els.filter(j=>c.kind!=="heatmap");
+  k.cAsk=(k.cAsk||0)+1; const read=rd.length&&k.cAsk%2===0, pool=read?rd:els, j=pool[(k.cAsk>>1)%pool.length], m=c.marks[j], key=m.s+","+m.i, nm=cNoun(c,m.s), lc=s=>s.charAt(0).toLowerCase()+s.slice(1);
+  LS.q.x={q:"chart", skill:"data"};
+  if(!read){ LS.q.text=`Tap the ${nm} for: ${m.label}`;
+    main.innerHTML=head()+`<div class="card pop">${ch}<div class="prompt">${esc(c.title||k.name)}: tap the ${nm} for “${esc(m.label)}”.</div>${cLegend(c,{noVals:true})}<div class="gbox vchart" id="cq">${chartSvg(c,{ms:[], noVals:true, uid:"q"})}</div><div id="fb"></div></div>`;
+    wireQuit(); let locked=false;
+    $("cq").querySelectorAll("[data-k]").forEach(el=>el.onclick=()=>{ if(locked) return; locked=true; const ok=el.dataset.k===key||c.marks.some(x=>x.k==="el"&&x.label===m.label&&x.s+","+x.i===el.dataset.k), t=cTip(c,el.dataset.k);
+      $("cq").innerHTML=chartSvg(c,{ms:[j], uid:"q", mark:ok?{}:{[el.dataset.k]:"no"}}); if(!ok) LS.q.typed=t.join(": ");
+      answered(ok?"right":"wrong", {answer:m.label, why:m.note, noAnsBox:ok, extra:ok?"":`<p class="small">You tapped: <b>${esc(t[0])}</b> · ${esc(t[1])}. The right one is marked 1.</p>`}); });
+    return; }
+  const {ans, opts}=cOpts(c,m), what=cPie(c.kind)?"share of the whole":c.kind==="box"?"middle line (median)":lc((c.series[m.s].y2?c.y2.label:c.y.label)||"value"), sl=c.series.length>1&&!cPie(c.kind)&&lc(c.series[m.s].label)!==what?c.series[m.s].label:"";
+  LS.q.text=`${c.title||k.name}: read the ${what} of the highlighted ${nm}`;
+  main.innerHTML=head()+`<div class="card pop">${ch.replace("· Spot it","· Read the chart")}<div class="prompt">${esc(c.title||k.name)}: what is the ${esc(what)} of the ${sl?esc(sl)+" ":""}${nm} marked ?${c.series[m.s]&&c.series[m.s].y2?" Use the right-hand scale.":""}</div>${cLegend(c,{noVals:true})}<div class="gbox vchart" id="cq">${chartSvg(c,{ms:[j], q:true, noVals:true, uid:"q"})}</div><div class="opts">${opts.map((o,i)=>`<button class="opt num" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{ const ok=opts[+btn.dataset.i]===ans; main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); }); if(!ok){ btn.classList.add("no"); LS.q.typed=opts[+btn.dataset.i]; }
+    $("cq").innerHTML=chartSvg(c,{ms:[j], uid:"q", mark:{[key]:ok?"ok":"no"}}); answered(ok?"right":"wrong", {answer:`${m.label}: ${ans}`, why:m.note, noAnsBox:ok}); });
+}
+function renderChartLabelQ(ch, k){
+  const c=k.teach.visual, cands=c.marks.map((_,j)=>j).filter(j=>c.marks[j].note&&c.marks[j].note.length>8), t=cands[Math.floor(Math.random()*cands.length)], ans=c.marks[t].label;
+  const own=shuffle(c.marks.map(x=>x.label).filter(l=>l!==ans)), opts=shuffle([ans, ...[...new Set([...own, ...shuffle(labelPool(k, c, ans))])].slice(0,3)]);
+  main.innerHTML=head()+`<div class="card pop">${ch}<div class="prompt">${esc(c.title||k.name)}: what does the part marked ? show?</div><div class="qgrid">${cLegend(c)}<div class="gbox vchart">${chartSvg(c,{ms:[t], q:true, uid:"q"})}</div></div><div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="vbox"></div><div id="fb"></div></div>`;
+  wireQuit();
+  main.querySelectorAll(".opts .opt").forEach(btn=>btn.onclick=()=>{ const ok=opts[+btn.dataset.i]===ans; main.querySelectorAll(".opts .opt").forEach(x=>{ x.disabled=true; if(opts[+x.dataset.i]===ans) x.classList.add("ok"); }); if(!ok){ btn.classList.add("no"); LS.q.typed=opts[+btn.dataset.i]; }
+    const qg=main.querySelector(".qgrid"); if(qg) qg.remove(); $("vbox").innerHTML=visualHtml(c,{noTitle:true, hint:"Tap any part to review it."}); wireVisual($("vbox"), c);
+    const el=$("vbox").querySelector(`.vlegend [data-i="${t}"]`); if(el) el.click();
+    answered(ok?"right":"wrong", {answer:ans, showAns:true, why:ok?"":c.marks[t].note, canGuess:ok}); });
+}
 function visualHtml(v, o){
   o=o||{}; const hide=o.hide;
   if(v.type==="graph") return graphHtml(v, o);
@@ -1388,6 +1669,7 @@ function visualHtml(v, o){
     body=`<div class="vscale"><div class="track">${its.map((x,j)=>`<button type="button" class="mk" data-i="${x.i}" style="left:${x.pos}%" aria-label="${esc(x.label)}">${j+1}</button>`).join("")}</div><div class="ends"><span>${esc(v.left)}</span><span>${esc(v.right)}</span></div><div class="vlegend">${its.map((x,j)=>`<button type="button" class="vnode" data-i="${x.i}"><span class="n">${j+1}</span><span>${esc(x.label)}</span></button>`).join("")}</div></div>`; }
   else if(v.type==="curve") body=curveSvg(v, hide)+`<div class="vlegend">${v.marks.map((m,i)=>`<button type="button" class="vnode${i===hide?" hid":""}" data-i="${i}"><span class="n">${i===hide?"?":i+1}</span><span>${i===hide?"?":esc(m.label)}</span></button>`).join("")}</div>`;
   else if(v.type==="bars"){ const max=Math.max(...v.items.map(x=>Math.abs(x.value)))||1; body=`<div class="vbars">${v.items.map((x,i)=>`<button type="button" class="vbar" data-i="${i}"><span>${esc(x.label)}</span><span class="bt"><i style="width:${Math.max(2,Math.abs(x.value)/max*100)}%"></i></span><span class="bv">${esc(String(+x.value.toFixed(2)))}${esc(v.unit||"")}</span></button>`).join("")}</div>`; }
+  else if(v.type==="chart") return chartHtml(v, o);
   else if(v.type==="stat") body=`<div class="vstat"><b>${esc(v.value)}</b><span class="small">${esc(v.label)}</span>${v.note?`<span class="small muted">${esc(v.note)}</span>`:""}</div>`;
   const tappable = ["flow","cycle","parts","scale","curve","bars"].includes(v.type) && hide==null && !o.still;
   return `<div class="vis">${v.title&&!o.noTitle?`<h3>${esc(v.title)}</h3>`:""}${v.caption&&!o.noTitle?`<p class="small muted vcap">${gloss(v.caption)}</p>`:""}${body}${tappable?`<div class="vnote" aria-live="polite">${esc(o.hint||"Tap each part to see what it does.")}</div>`:""}</div>`;
@@ -1975,16 +2257,16 @@ function candleGeo(v){
   const pd=(hi-lo)*.14; lo-=pd; hi+=pd; const sl=(X1-X0)/n;
   return {n, W, H:Y1+(vh?vh+8:0)+20, X0, X1, Y0, Y1, vh, sl, lo, hi, bw:Math.max(1.5,Math.min(14,sl*.64)), cx:i=>X0+sl*(i+.5), sy:p=>Y1-(p-lo)/(hi-lo)*(Y1-Y0)};
 }
-const cFmt=(x,d)=>(+x).toLocaleString("en-US",{minimumFractionDigits:d, maximumFractionDigits:d});
+const kFmt=(x,d)=>(+x).toLocaleString("en-US",{minimumFractionDigits:d, maximumFractionDigits:d});
 function candleSvg(v, o){
   o=o||{}; const G=candleGeo(v), cs=v.candles, vis=o.show?new Set(o.show):null, f=x=>(+x).toFixed(1), {X0,X1,Y0,Y1,sl,bw,cx,sy}=G;
   const dp=Math.min(4,Math.max(0,...cs.flatMap(c=>[c.o,c.h,c.l,c.c]).map(x=>(String(x).split(".")[1]||"").length)));
   const raw=(G.hi-G.lo)/4, p=Math.pow(10,Math.floor(Math.log10(raw))), stp=[1,2,2.5,5,10].map(m=>m*p).find(s=>s>=raw*.999), td=(String(+stp.toFixed(10)).split(".")[1]||"").length;
-  let ax=""; for(let t=Math.ceil(G.lo/stp)*stp; t<=G.hi; t+=stp) ax+=`<line x1="${X0}" y1="${f(sy(t))}" x2="${X1}" y2="${f(sy(t))}" class="ggrid"/><text x="${X1+5}" y="${f(sy(t)+3.5)}" class="gtk">${cFmt(t,td)}</text>`;
+  let ax=""; for(let t=Math.ceil(G.lo/stp)*stp; t<=G.hi; t+=stp) ax+=`<line x1="${X0}" y1="${f(sy(t))}" x2="${X1}" y2="${f(sy(t))}" class="ggrid"/><text x="${X1+5}" y="${f(sy(t)+3.5)}" class="gtk">${kFmt(t,td)}</text>`;
   const up=c=>c.c>=c.o, mv=v.volume.length?Math.max(...v.volume):0, VY=Y1+8;
   const bars=cs.map((c,i)=>{ const u=up(c)?"up":"dn", t=sy(Math.max(c.o,c.c)), h=Math.max(1.2,Math.abs(sy(c.o)-sy(c.c)));
     return `<line x1="${f(cx(i))}" y1="${f(sy(c.h))}" x2="${f(cx(i))}" y2="${f(sy(c.l))}" class="cw ${u}"/><rect x="${f(cx(i)-bw/2)}" y="${f(t)}" width="${f(bw)}" height="${f(h)}" rx="${f(Math.min(1.5,bw/4))}" class="cb ${u}"/>${mv?`<rect x="${f(cx(i)-bw/2)}" y="${f(VY+G.vh*(1-v.volume[i]/mv))}" width="${f(bw)}" height="${f(Math.max(.8,G.vh*v.volume[i]/mv))}" class="cvol ${u}"/>`:""}`; }).join("");
-  const hits=cs.map((c,i)=>`<rect x="${f(X0+sl*i)}" y="${Y0}" width="${f(sl)}" height="${Y1-Y0}" class="chit" data-k="${i}"${o.pick?` tabindex="0" role="button" aria-label="Candle ${i+1}"`:""}/>`).join("");
+  const hits=cs.map((c,i)=>`<rect x="${f(X0+sl*i)}" y="${Y0}" width="${f(sl)}" height="${Y1-Y0}" class="kchit" data-k="${i}"${o.pick?` tabindex="0" role="button" aria-label="Candle ${i+1}"`:""}/>`).join("");
   const bd=(x,y,i)=>`<g class="cbd"><circle cx="${f(x)}" cy="${f(y)}" r="7"/><text x="${f(x)}" y="${f(y+3.3)}" text-anchor="middle">${i+1}</text></g>`;
   let zs=""; const marks=v.marks.map((m,i)=>{ if(vis&&!vis.has(m.id)&&o.sel!==i) return ""; let s="";
     if(m.kind==="level"){ const y=sy(m.y); s=`<line x1="${X0}" y1="${f(y)}" x2="${X1}" y2="${f(y)}" class="cml"/><line x1="${X0}" y1="${f(y)}" x2="${X1}" y2="${f(y)}" class="cmh"/>${bd(X0+9,y,i)}`; }
@@ -1996,7 +2278,7 @@ function candleSvg(v, o){
   let ohlc=""; const k=o.ohlc; if(k!=null&&cs[k]){ const c=cs[k], u=up(c), x=cx(k), r=x<(X0+X1)/2, lx=r?x+bw/2+16:x-bw/2-16;
     const L=[["High",c.h],[u?"Close":"Open",Math.max(c.o,c.c)],[u?"Open":"Close",Math.min(c.o,c.c)],["Low",c.l]].map(([t,p])=>({t,p,y:sy(p)}));
     L.forEach((a,j)=>{ a.ly=j?Math.max(a.y,L[j-1].ly+12):a.y; }); const sh=Math.max(0,L[3].ly-Y1-14); L.forEach(a=>a.ly-=sh);
-    ohlc=`<rect x="${f(x-bw/2-2.5)}" y="${f(sy(c.h)-2.5)}" width="${f(bw+5)}" height="${f(sy(c.l)-sy(c.h)+5)}" rx="2.5" class="csel"/>`+L.map(a=>`<polyline points="${f(r?x+bw/2+2:x-bw/2-2)},${f(a.y)} ${f(r?lx-5:lx+5)},${f(a.ly)} ${f(lx-(r?2:-2))},${f(a.ly)}" class="col"/><text x="${f(lx)}" y="${f(a.ly+3.6)}" text-anchor="${r?"start":"end"}" class="cox">${a.t} ${cFmt(a.p,dp)}</text>`).join(""); }
+    ohlc=`<rect x="${f(x-bw/2-2.5)}" y="${f(sy(c.h)-2.5)}" width="${f(bw+5)}" height="${f(sy(c.l)-sy(c.h)+5)}" rx="2.5" class="kcsel"/>`+L.map(a=>`<polyline points="${f(r?x+bw/2+2:x-bw/2-2)},${f(a.y)} ${f(r?lx-5:lx+5)},${f(a.ly)} ${f(lx-(r?2:-2))},${f(a.ly)}" class="col"/><text x="${f(lx)}" y="${f(a.ly+3.6)}" text-anchor="${r?"start":"end"}" class="cox">${a.t} ${kFmt(a.p,dp)}</text>`).join(""); }
   const tp=o.tap?`<circle cx="${f(o.tap.x)}" cy="${f(o.tap.y)}" r="6" class="ctap ${o.tap.ok?"ok":"no"}"/>`:"";
   return `<svg class="vcd" viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="${esc(v.title||"Price chart")}: ${cs.length} candles${v.marks.length?", "+esc(v.marks.map(m=>m.label).join(", ")):""}">${ax}${zs}${bars}${o.still?"":hits}${marks}${ohlc}${tp}<text x="${X0}" y="${G.H-5}" class="gal">Time →</text>${v.unit?`<text x="${G.W-2}" y="${G.H-5}" text-anchor="end" class="gal">${esc(v.unit)}</text>`:""}</svg>`;
 }
@@ -2022,7 +2304,7 @@ function wireCandles(root, v){
   const pick=j=>{ sel=j; ck=null; leg(j); say([v.marks[j]]); draw(); };
   box.onclick=e=>{ const m=e.target.closest("[data-m]"), c=e.target.closest("[data-k]");
     if(m) return pick(+m.dataset.m);
-    if(c){ const k=+c.dataset.k, x=v.candles[k], d=x.c-x.o; sel=null; ck=k; leg(-1); if(note) note.innerHTML=`<b>Candle ${k+1}: ${d>0?"price rose":d<0?"price fell":"no change"}</b> · opened ${cFmt(x.o,2).replace(/\.00$/,"")}, went as high as ${cFmt(x.h,2).replace(/\.00$/,"")} and as low as ${cFmt(x.l,2).replace(/\.00$/,"")}, closed ${cFmt(x.c,2).replace(/\.00$/,"")}${v.unit?" "+esc(v.unit):""}.`; draw(); } };
+    if(c){ const k=+c.dataset.k, x=v.candles[k], d=x.c-x.o; sel=null; ck=k; leg(-1); if(note) note.innerHTML=`<b>Candle ${k+1}: ${d>0?"price rose":d<0?"price fell":"no change"}</b> · opened ${kFmt(x.o,2).replace(/\.00$/,"")}, went as high as ${kFmt(x.h,2).replace(/\.00$/,"")} and as low as ${kFmt(x.l,2).replace(/\.00$/,"")}, closed ${kFmt(x.c,2).replace(/\.00$/,"")}${v.unit?" "+esc(v.unit):""}.`; draw(); } };
   const step=()=>{ sel=null; ck=null; leg(-1); const st=root.querySelector(".gstep");
     if(st&&v.steps.length>1){ st.querySelector(".gtext").innerHTML=gloss(v.steps[i].text); st.querySelector(".gnav span").textContent=`${i+1} of ${v.steps.length}`; st.querySelector('[data-g="back"]').disabled=i===0; st.querySelector('[data-g="next"]').disabled=i>=v.steps.length-1; }
     const s=shown(); say(s?v.marks.filter(m=>s.includes(m.id)):[]); draw(); };
@@ -2108,6 +2390,7 @@ function wireVisual(root, v){
   if(v&&(v.type==="tree"||v.type==="network")) return wireTN(root, v);
   if(v&&v.type==="annotate") return wireAnnot(root, v);
   if(v&&v.type==="venn") return wireVenn(root, v);
+  if(v&&v.type==="chart") return wireChart(root, v);
   if(v&&v.type==="grid") return wireGrid(root, v);
   if(v&&v.type==="candles") return wireCandles(root, v);
   if(v&&v.type==="frames") return wireFrames(root, v);
@@ -2291,6 +2574,7 @@ function pickLevel(c,k){
 function visualType(k,L){
   const v=k.teach&&k.teach.visual; if(!v) return null;
   if(v.type==="graph") return v.asks&&v.asks.length&&L>=2&&L<=4&&k.lastVq!=="graph" ? "graph" : null;
+  if(v.type==="chart"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.some(m=>m.k==="el")&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="diagram"){ if(L===1 && v.parts.filter(x=>x.note&&x.note.length>8).length>=1 && v.parts.length>=3) return "label"; return L>=2&&L<=4&&v.parts.length>=3&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="tree"||v.type==="network"){ if(L===1 && v.nodes.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&k.lastVq!=="dtap" ? "dtap" : null; }
   if(v.type==="grid"){ if(L===1 && v.marks.length>=2 && v.marks.some(x=>x.note&&x.note.length>8)) return "label"; return L>=2&&L<=3&&v.marks.length&&k.lastVq!=="dtap" ? "dtap" : null; }
@@ -3684,6 +3968,7 @@ function renderStep(){
   if(LANGQ.has(type)) renderLangQ(ch, k, type);
   else if(type==="chain") renderOrderQ(ch, {name:k.name, teach:{visual:{type:"flow", chain:true, title:x.q, why:x.why, steps:x.steps.map(label=>({label}))}}});
   else if(type==="graph") renderGraphQ(ch, k);
+  else if(type==="dtap"&&k.teach.visual.type==="chart") renderChartQ(ch, k);
   else if(type==="dtap"&&k.teach.visual.type==="candles") renderCandleQ(ch, k);
   else if(type==="dtap"&&["tree","network"].includes(k.teach.visual.type)) (k.teach.visual.type==="tree"?renderTreeQ:renderNetQ)(ch, k);
   else if(type==="dtap") ({grid:renderGridQ, annotate:renderAnnotQ, venn:renderVennQ}[k.teach.visual.type]||renderDiagramQ)(ch, k);
@@ -3747,6 +4032,7 @@ function labelPool(k, v, ans){
 }
 function renderLabelQ(ch, k){
   const v=k.teach.visual, items=visItems(v);
+  if(v.type==="chart") return renderChartLabelQ(ch, k);
   const cands=items.map((_,i)=>i).filter(i=>items[i].note&&items[i].note.length>8);
   const t=cands[Math.floor(Math.random()*cands.length)], ans=items[t].label;
   let note=items[t].note;
