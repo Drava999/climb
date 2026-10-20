@@ -145,7 +145,9 @@ details[open] summary{margin-bottom:10px}
 .climbed{display:flex;flex-direction:column;gap:8px}
 .climbed div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;background:var(--raise);border-radius:10px}
 .sheet-bg{position:fixed;inset:0;background:var(--scrim);z-index:30;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow:auto}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:85vh;max-height:85dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet>*{flex-shrink:0;min-width:0}
+.shead{position:sticky;top:-20px;z-index:2;background:var(--surface);margin:-20px 0 0;padding:20px 0 8px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;z-index:40;max-width:calc(100% - 32px);text-align:center}
 .pop{animation:pop .3s ease}
 @keyframes pop{0%{transform:translateY(6px);opacity:.6}100%{transform:none;opacity:1}}
@@ -717,7 +719,7 @@ line.ds,polyline.ds,path.ds{fill:none}
 .vvl{font:900 13px var(--ui)}.vvl.green{fill:var(--g2)}.vvl.blue{fill:var(--g3)}.vvl.pink{fill:var(--g4)}
 .vvi{cursor:pointer;outline:none}.vvi rect{fill:transparent}.vvi text{font:800 12px var(--ui);fill:var(--ink);pointer-events:none;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
 .vvi.dim text{fill:var(--muted)}.vvi.sel rect{fill:var(--surface);stroke:var(--ink);stroke-width:2}.vvi:focus-visible rect{stroke:var(--accent-text);stroke-width:3}
-.vgrid{overflow-x:auto;max-width:100%;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.vgrid{overflow-x:auto;max-width:100%;padding:6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
 .vgt{border-collapse:separate;border-spacing:3px;margin:0 auto;font:800 14px/1.2 var(--ui);font-variant-numeric:tabular-nums;color:var(--ink)}
 .vgt th{font:800 13px/1.2 var(--ui);color:var(--muted);padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .vgt thead th{text-align:center}.vgt tbody th{text-align:right}.vgt thead td{background:none;min-width:0}
@@ -3909,7 +3911,7 @@ function sheet(c, k){
   const met = k.seen>0 || k.rung>0;
   const kids = c.units.filter(u=>u.parent===k.id);
   const bg=document.createElement("div"); bg.className="sheet-bg";
-  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(k.name)}"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(k.name)}</h2><button class="x" aria-label="Close">✕</button></div>
+  bg.innerHTML=`<div class="sheet pop" role="dialog" aria-label="${esc(k.name)}"><div class="row shead" style="justify-content:space-between;flex-wrap:nowrap"><h2>${esc(k.name)}</h2><button class="x" aria-label="Close">✕</button></div>
   ${met?`<div class="row" style="justify-content:space-between"><span class="small muted">Level ${k.rung} · ${LVN[k.rung]}</span>${pips(k.rung)}</div>
   ${k.items&&k.items.length?`<div>${k.items.map(it=>itemHtml(c,it)).join("")}</div>${k.note?`<div class="hook"><span class="label">Good to know</span><span>${esc(k.note)}</span></div>`:""}`:""}
   ${k.teach&&k.teach.eli5?`<p class="eli5" style="font-size:18px">${gloss(k.teach.eli5, k.name)}</p>`:""}
